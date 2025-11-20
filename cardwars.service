@@ -1,0 +1,46 @@
+[Unit]
+Description=Card Wars Kingdom Web Application
+Documentation=https://github.com/Lu2312/Welcome-Card-Wars-Kingdom_files
+After=network.target
+
+[Service]
+Type=notify
+User=www-data
+Group=www-data
+
+# Working directory where the application is located
+WorkingDirectory=/var/www/card-wars-kingdom
+
+# Environment variables
+Environment="PATH=/var/www/card-wars-kingdom/venv/bin"
+Environment="FLASK_ENV=production"
+EnvironmentFile=-/var/www/card-wars-kingdom/.env
+
+# Start command with Gunicorn
+ExecStart=/var/www/card-wars-kingdom/venv/bin/gunicorn \
+    --bind 0.0.0.0:3000 \
+    --workers 4 \
+    --worker-class sync \
+    --timeout 30 \
+    --keep-alive 5 \
+    --log-level info \
+    --access-logfile /var/log/card-wars-kingdom/access.log \
+    --error-logfile /var/log/card-wars-kingdom/error.log \
+    wsgi:app
+
+# Restart policy
+Restart=always
+RestartSec=10
+
+# Security settings
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/www/card-wars-kingdom /var/log/card-wars-kingdom
+
+# Resource limits
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target
