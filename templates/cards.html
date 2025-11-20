@@ -1,20 +1,221 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cards - Card Wars Kingdom</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="https://i.postimg.cc/522JrMVz/AT-Card-Wars2-Logo-Eng-1.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com/">
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="anonymous">
+    <title>Card Database - Card Wars Kingdom</title>
+    <meta name="description" content="Explore the complete Card Wars Kingdom card database with detailed stats, abilities, and strategies.">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Rubik+Doodle+Shadow&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/Welcome Card Wars Kingdom_files/a53f14ee4cfcc268.css">
+    <style>
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .card-shimmer {
+            background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0) 100%);
+            background-size: 1000px 100%;
+            animation: shimmer 2s infinite;
+        }
+        .card-item {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        .rarity-common { border-color: #9e9e9e; }
+        .rarity-rare { border-color: #2196f3; }
+        .rarity-epic { border-color: #9c27b0; }
+        .rarity-legendary { border-color: #ff9800; }
+        .filter-active {
+            background: linear-gradient(135deg, #a532ff 0%, #625fff 100%);
+            color: white;
+        }
+    </style>
 </head>
-<body>
-    <h1>Card Wars Kingdom - Cards Collection</h1>
-    <nav>
-        <a href="/">Home</a> |
-        <a href="/cards">Cards</a> |
-        <a href="/status">Status</a> |
-        <a href="/download">Download</a>
+<body class="font-[Poppins] antialiased bg-black text-white">
+    <nav class="w-full fixed top-0 z-50 backdrop-blur-xl bg-[#00000080] border-b border-white/10 shadow-[0_2px_30px_-8px_rgba(165,50,255,0.4)]">
+        <div class="mx-auto max-w-7xl px-4 h-16 flex items-center justify-between">
+            <a class="flex items-center gap-2" href="/">
+                <img src="/Welcome Card Wars Kingdom_files/Main-Logo.webp" alt="CWK" class="h-6 sm:h-8 w-auto drop-shadow-lg">
+            </a>
+            <div class="hidden sm:flex items-center gap-6 font-medium tracking-wide">
+                <a class="text-white/80 hover:text-white transition" href="/">Home</a>
+                <a class="text-white hover:text-white transition border-b-2 border-brand-500" href="/cards">Cards</a>
+                <a class="text-white/80 hover:text-white transition" href="/status">Status</a>
+                <a class="text-white/80 hover:text-white transition" href="https://discord.gg/card-wars-revived-1227932764117143642">Support</a>
+            </div>
+            <a href="/download" class="hidden sm:flex shiny-wrap relative inline-flex items-center justify-center rounded-md bg-brand-500 px-5 py-3 text-white shadow hover:opacity-95 transition">
+                <span class="relative z-[1] flex items-center gap-2">
+                    <span class="material-symbols-outlined">download</span>Download
+                </span>
+            </a>
+        </div>
     </nav>
-    <div id="cards-container">
-        <p>Cards collection will be displayed here.</p>
-    </div>
-</body>
-</html>
+
+    <main class="pt-16 min-h-screen bg-gradient-to-b from-black via-[#0a0a0d] to-black">
+        <!-- Hero Section -->
+        <section class="relative py-20 overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-r from-brand-500/20 to-purple-600/20 blur-3xl"></div>
+            <div class="max-w-7xl mx-auto px-4 relative z-10">
+                <div class="text-center space-y-4">
+                    <h1 class="text-5xl sm:text-6xl lg:text-7xl font-extrabold drop-shadow-2xl" style="font-family:'Rubik Doodle Shadow',system-ui">
+                        🃏 Card Database
+                    </h1>
+                    <p class="text-lg sm:text-xl text-white/80 max-w-2xl mx-auto">
+                        Discover all creatures, spells, and buildings from Card Wars Kingdom. Master their abilities and dominate the battlefield!
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Filters & Search -->
+        <section class="max-w-7xl mx-auto px-4 py-8">
+            <div class="bg-white/5 backdrop-blur-lg rounded-2xl p-6 border border-white/10 shadow-2xl">
+                <!-- Search Bar -->
+                <div class="mb-6">
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-white/50">search</span>
+                        <input 
+                            type="text" 
+                            id="searchInput"
+                            placeholder="Search by card name or description..."
+                            class="w-full bg-white/10 border border-white/20 rounded-xl pl-12 pr-4 py-4 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-brand-500 transition"
+                        >
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                        <label class="block text-sm font-semibold text-white/80 mb-2">🎴 Card Type</label>
+                        <div class="flex flex-wrap gap-2">
+                            <button class="filter-btn filter-active px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition text-sm font-medium" data-filter="type" data-value="all">All</button>
+                            <button class="filter-btn px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition text-sm font-medium" data-filter="type" data-value="creature">Creature</button>
+                            <button class="filter-btn px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition text-sm font-medium" data-filter="type" data-value="spell">Spell</button>
+                            <button class="filter-btn px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition text-sm font-medium" data-filter="type" data-value="building">Building</button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-white/80 mb-2">✨ Rarity</label>
+                        <div class="flex flex-wrap gap-2">
+                            <button class="filter-btn filter-active px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition text-sm font-medium" data-filter="rarity" data-value="all">All</button>
+                            <button class="filter-btn px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition text-sm font-medium" data-filter="rarity" data-value="common">Common</button>
+                            <button class="filter-btn px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition text-sm font-medium" data-filter="rarity" data-value="rare">Rare</button>
+                            <button class="filter-btn px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition text-sm font-medium" data-filter="rarity" data-value="epic">Epic</button>
+                            <button class="filter-btn px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition text-sm font-medium" data-filter="rarity" data-value="legendary">Legendary</button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-white/80 mb-2">🌟 Landscape</label>
+                        <div class="flex flex-wrap gap-2">
+                            <button class="filter-btn filter-active px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition text-sm font-medium" data-filter="landscape" data-value="all">All</button>
+                            <button class="filter-btn px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition text-sm font-medium" data-filter="landscape" data-value="corn">Corn</button>
+                            <button class="filter-btn px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition text-sm font-medium" data-filter="landscape" data-value="plains">Plains</button>
+                            <button class="filter-btn px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition text-sm font-medium" data-filter="landscape" data-value="swamp">Swamp</button>
+                            <button class="filter-btn px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition text-sm font-medium" data-filter="landscape" data-value="sand">Sand</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 text-center text-sm text-white/60">
+                    <span id="cardCount">Showing all cards</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cards Grid -->
+        <section class="max-w-7xl mx-auto px-4 py-12">
+            <div id="cardsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- Cards will be inserted here by JavaScript -->
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-[#0a0a0d] py-10 border-t border-white/10 backdrop-blur-lg mt-20">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col items-center text-center space-y-6">
+            <img src="/Welcome Card Wars Kingdom_files/card-wars-kingdom-icon.png" alt="Card Wars Icon" class="w-16 h-16 drop-shadow-xl">
+            <div class="flex flex-col sm:flex-row gap-4 text-sm font-semibold">
+                <a href="/download" class="text-white/90 hover:text-white hover:underline">FREE DOWNLOAD</a>
+                <a href="https://discord.gg/card-wars-revived-1227932764117143642" target="_blank" class="text-white/90 hover:text-white hover:underline">DISCORD SERVER</a>
+                <a href="/status" class="text-white/90 hover:text-white hover:underline">STATUS PAGE</a>
+            </div>
+            <p class="text-xs text-white/60 max-w-lg leading-relaxed">
+                © 2025 Card Wars Kingdom Remake • Fan Project<br>
+                Cartoon Network™ & Warner Bros. Discovery own all original rights. No monetization involved.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        const cardsData = [
+            {
+                id: 1,
+                name: "Corn Dog",
+                type: "creature",
+                rarity: "common",
+                landscape: "corn",
+                cost: 2,
+                attack: 3,
+                defense: 2,
+                description: "A loyal companion from the Corn Fields. This creature deals steady damage and can hold the front line with moderate defense.",
+                ability: "Floop: Deal 1 damage to opponent",
+                image: "placeholder"
+            },
+            {
+                id: 2,
+                name: "Husker Knight",
+                type: "creature",
+                rarity: "rare",
+                landscape: "corn",
+                cost: 4,
+                attack: 5,
+                defense: 4,
+                description: "Elite warrior of the Corn Kingdom. Known for aggressive tactics and powerful strikes that can turn the tide of battle.",
+                ability: "On Play: +2 Attack to all friendly Corn creatures",
+                image: "placeholder"
+            },
+            {
+                id: 3,
+                name: "Crystal Guardian",
+                type: "creature",
+                rarity: "epic",
+                landscape: "plains",
+                cost: 5,
+                attack: 4,
+                defense: 7,
+                description: "Ancient protector of the Crystal Plains. Its crystalline armor provides exceptional defense against enemy attacks.",
+                ability: "When damaged: Reduce incoming damage by 2",
+                image: "placeholder"
+            },
+            {
+                id: 4,
+                name: "Sand Angel",
+                type: "creature",
+                rarity: "legendary",
+                landscape: "sand",
+                cost: 6,
+                attack: 7,
+                defense: 5,
+                description: "Mystical being from the Desert of Doom. Commands the power of sandstorms to devastate enemies and protect allies.",
+                ability: "Floop: Deal 3 damage to all enemy creatures",
+                image: "placeholder"
+            },
+            {
+                id: 5,
+                name: "Swamp Troll",
+                type: "creature",
+                rarity: "rare",
+                landscape: "swamp",
+                cost: 3,
+                attack: 4,
+                defense: 3,
+               

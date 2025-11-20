@@ -1,6 +1,7 @@
-from flask import Flask, render_template, jsonify, send_from_directory
+from flask import Flask, render_template, jsonify, send_from_directory, request
 import os
 from datetime import datetime, timedelta
+import requests
 
 app = Flask(__name__)
 
@@ -30,6 +31,43 @@ def status():
 def download():
     """Download page"""
     return render_template('download.html')
+
+@app.route('/api/latest-release')
+def latest_release():
+    """Get latest release information from GitHub"""
+    try:
+        # GitHub API endpoint for latest release
+        github_api = 'https://api.github.com/repos/Sgsysysgsgsg/Card-Wars-Kingdom-Revived/releases/latest'
+        response = requests.get(github_api, timeout=10)
+        
+        if response.status_code == 200:
+            release_data = response.json()
+            
+            # Extract relevant information
+            release_info = {
+                'version': release_data.get('tag_name', 'N/A'),
+                'name': release_data.get('name', 'N/A'),
+                'published_at': release_data.get('published_at', 'N/A'),
+                'body': release_data.get('body', ''),
+                'html_url': release_data.get('html_url', ''),
+                'assets': []
+            }
+            
+            # Extract download links for assets
+            for asset in release_data.get('assets', []):
+                release_info['assets'].append({
+                    'name': asset.get('name', ''),
+                    'size': asset.get('size', 0),
+                    'download_url': asset.get('browser_download_url', ''),
+                    'download_count': asset.get('download_count', 0)
+                })
+            
+            return jsonify(release_info)
+        else:
+            return jsonify({'error': 'Failed to fetch release data'}), 500
+            
+    except requests.RequestException as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/api/health')
 def health():

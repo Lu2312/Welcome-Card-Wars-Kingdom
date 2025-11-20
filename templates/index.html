@@ -3,6 +3,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preload" as="image" href="/Welcome Card Wars Kingdom_files/home.gif">
     <link rel="preload" as="image" href="/Welcome Card Wars Kingdom_files/Main-Logo.webp">
     <link rel="preload" as="image" href="/Welcome Card Wars Kingdom_files/map-ice.png">
     <link rel="preload" as="image" href="/Welcome Card Wars Kingdom_files/map-candy2.png">
@@ -20,10 +21,41 @@
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="anonymous">
     <title>Welcome Card Wars Kingdom</title>
     <meta name="description" content="Card Wars Kingdom – Free to Play Online Card Game based on Cartoon Network's Adventure Time.">
-    <link href="/Welcome Card Wars Kingdom_files/css2" rel="stylesheet">
-    <link href="/Welcome Card Wars Kingdom_files/css2(1)" rel="stylesheet">
-    <link href="/Welcome Card Wars Kingdom_files/css2(2)" rel="stylesheet">
-    <link href="/Welcome Card Wars Kingdom_files/f71277d823fc51b3aec6b4ce0ad76286" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Rubik+Doodle+Shadow&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/Welcome Card Wars Kingdom_files/a53f14ee4cfcc268.css">
+    <style>
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(165, 50, 255, 0.5); }
+            50% { box-shadow: 0 0 40px rgba(165, 50, 255, 0.8); }
+        }
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+        .animate-fadeInUp {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+        .hero-gif-container {
+            animation: pulse-glow 2s ease-in-out infinite;
+            background: linear-gradient(135deg, rgba(165, 50, 255, 0.1) 0%, rgba(98, 95, 255, 0.1) 100%);
+            backdrop-filter: blur(10px);
+        }
+    </style>
 </head>
 <body class="font-[Poppins] antialiased">
     <div hidden=""></div>
@@ -31,7 +63,7 @@
         <nav class="w-full fixed top-0 z-50 backdrop-blur-xl bg-[#00000080] border-b border-white/10 shadow-[0_2px_30px_-8px_rgba(165,50,255,0.4)]">
             <div class="mx-auto max-w-7xl px-4 h-16 flex items-center justify-between">
                 <a class="flex items-center gap-2" href="/">
-                    <img src="/Welcome Card Wars Kingdom_files/Main-Logo.webp" alt="CWK" class="h-8 w-auto drop-shadow-lg">
+                    <img src="/Welcome Card Wars Kingdom_files/Main-Logo.webp" alt="CWK" class="h-6 sm:h-8 w-auto drop-shadow-lg">
                 </a>
                 <div class="hidden sm:flex items-center gap-6 font-medium tracking-wide ">
                     <a class="text-white/80 hover:text-white transition" href="/">Home</a>
@@ -40,11 +72,11 @@
                     <a class="text-white/80 hover:text-white transition" href="https://discord.gg/card-wars-revived-1227932764117143642">Support</a>
                 </div>
                 <div class="hidden sm:flex items-center gap-4">
-                    <button aria-label="Download" class="shiny-wrap relative inline-flex items-center justify-center rounded-md bg-brand-500 px-5 py-3 text-white shadow hover:opacity-95 transition ">
+                    <a href="/download" aria-label="Download" class="shiny-wrap relative inline-flex items-center justify-center rounded-md bg-brand-500 px-5 py-3 text-white shadow hover:opacity-95 transition ">
                         <span class="relative z-[1] flex items-center gap-2">
                             <span class="material-symbols-outlined">download</span>Download
                         </span>
-                    </button>
+                    </a>
                     <div class="relative group cursor-pointer">
                         <span class="absolute inset-0 rounded-full bg-green-400 opacity-50 animate-pulseRing"></span>
                         <span class="relative block h-3.5 w-3.5 rounded-full bg-green-500 shadow-[0_0_10px_rgba(0,255,0,0.9)]"></span>
@@ -59,89 +91,117 @@
             </div>
             <div class="sm:hidden bg-[#0a0a0af0] backdrop-blur-xl transition-all duration-300 overflow-hidden max-h-0">
                 <div class="px-4 py-3 space-y-3 text-center font-semibold">
+                    <div class="flex items-center justify-center gap-2 pb-2 border-b border-white/10">
+                        <img src="/Welcome Card Wars Kingdom_files/Main-Logo.webp" alt="CWK" class="h-8 w-auto drop-shadow-lg">
+                    </div>
                     <a target="_blank" class="block text-white/90 hover:text-white py-2" href="https://discord.gg/card-wars-revived-1227932764117143642">News</a>
                     <a href="/#museum-teleporte" class="block text-white/90 hover:text-white py-2">Museum</a>
                     <a target="_blank" class="block text-white/90 hover:text-white py-2" href="https://discord.gg/card-wars-revived-1227932764117143642">Support</a>
                     <a class="block text-white/90 hover:text-white py-2" href="/status">Status</a>
-                    <button class="shiny-wrap relative inline-flex items-center justify-center rounded-md bg-brand-500 px-5 py-3 text-white shadow hover:opacity-95 transition w-full mt-2">
+                    <a href="/download" class="shiny-wrap relative inline-flex items-center justify-center rounded-md bg-brand-500 px-5 py-3 text-white shadow hover:opacity-95 transition w-full mt-2">
                         <span class="relative z-[1] flex items-center gap-2">
                             <span class="material-symbols-outlined">download</span>Download
                         </span>
-                    </button>
+                    </a>
                 </div>
             </div>
         </nav>
 
-        <section class="relative">
+        <section class="relative bg-gradient-to-b from-black via-[#0a0a0d] to-black pt-16">
+            <div class="mx-auto max-w-7xl px-4 pt-8 pb-8">
+                <div class="hero-gif-container rounded-3xl p-8 border border-white/10 shadow-2xl">
+                    <img src="/Welcome Card Wars Kingdom_files/home.gif" alt="Card Wars Kingdom" class="h-20 sm:h-28 lg:h-32 w-auto drop-shadow-2xl mx-auto animate-float">
+                    <div class="text-center mt-6">
+                        <h2 class="text-lg sm:text-xl font-semibold text-white/80 tracking-wider">EPIC BATTLES AWAIT</h2>
+                    </div>
+                </div>
+            </div>
+            
             <div class="relative flex items-center justify-center overflow-hidden">
-                <video class="w-full opacity-70 bg-[#0f1923] object-cover max-h-[640px]" autoplay muted loop playsinline src="/Welcome Card Wars Kingdom_files/home-hero.mp4"></video>
-                <div class="absolute inset-0 grid place-items-center">
-                    <div class="text-center grid gap-4 px-4">
-                        <p class="text-white/90">A Cards game for Adventure Time</p>
-                        <h1 class="text-4xl sm:text-5xl font-extrabold" style="font-family:'Rubik Doodle Shadow',system-ui">Card Wars Kingdom</h1>
-                        <div class="mt-2">
-                            <button class="shiny-wrap relative inline-flex items-center justify-center rounded-md bg-brand-500 px-5 py-3 text-white shadow hover:opacity-95 transition ">
-                                <span class="relative z-[1] flex items-center gap-2">PLAY IT NOW</span>
-                            </button>
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent z-[1]"></div>
+                <video class="w-full opacity-80 bg-[#0f1923] object-cover max-h-[640px] relative" autoplay muted loop playsinline src="/Welcome Card Wars Kingdom_files/home-hero.mp4"></video>
+                <div class="absolute inset-0 grid place-items-center z-[2]">
+                    <div class="text-center grid gap-6 px-4 animate-fadeInUp">
+                        <p class="text-white/90 text-lg sm:text-xl font-medium tracking-wide">A Cards game for Adventure Time</p>
+                        <h1 class="text-5xl sm:text-6xl lg:text-7xl font-extrabold drop-shadow-[0_0_30px_rgba(165,50,255,0.5)]" style="font-family:'Rubik Doodle Shadow',system-ui">Card Wars Kingdom</h1>
+                        <div class="mt-4 flex flex-col sm:flex-row gap-4 justify-center">
+                            <a href="/download" class="shiny-wrap relative inline-flex items-center justify-center rounded-xl bg-brand-500 px-8 py-4 text-white shadow-2xl hover:opacity-95 hover:scale-105 transition-all duration-300 font-semibold text-lg">
+                                <span class="relative z-[1] flex items-center gap-3">
+                                    <span class="material-symbols-outlined text-2xl">download</span>PLAY IT NOW
+                                </span>
+                            </a>
+                            <a href="/#museum-teleporte" class="relative inline-flex items-center justify-center rounded-xl bg-white/10 backdrop-blur-md px-8 py-4 text-white shadow-xl hover:bg-white/20 transition-all duration-300 font-semibold text-lg border border-white/20">
+                                <span class="flex items-center gap-3">
+                                    <span class="material-symbols-outlined text-2xl">explore</span>EXPLORE MORE
+                                </span>
+                            </a>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section class="bg-white text-black bg-[url('https://i.postimg.cc/J0TRZ6md/Design-sans-titre1.png')] bg-cover">
-            <div class="max-w-7xl mx-auto px-6 py-12">
-                <div class="flex flex-col lg:flex-row gap-8 items-start justify-between">
+        <section class="bg-white text-black bg-[url('https://i.postimg.cc/J0TRZ6md/Design-sans-titre1.png')] bg-cover relative">
+            <div class="absolute inset-0 bg-gradient-to-b from-transparent to-white/50"></div>
+            <div class="max-w-7xl mx-auto px-6 py-20 relative z-10">
+                <div class="flex flex-col lg:flex-row gap-12 items-start justify-between">
                     <div class="lg:max-w-[60%]">
-                        <h1 class="mb-4 text-[42px] leading-[46px] sm:text-[60px] sm:leading-[62px] lg:text-[100px] lg:leading-[100px] font-extrabold tracking-tight">
-                            WELCOME TO <br> ADVENTURE TIME:<span class="text-black">CARD WARS</span> <span class="text-black">KINGDOM!</span>
+                        <h1 class="mb-6 text-[42px] leading-[46px] sm:text-[50px] sm:leading-[54px] lg:text-[100px] lg:leading-[100px] font-extrabold tracking-tight drop-shadow-md">
+                            WELCOME TO <br> ADVENTURE TIME:<br><span class="text-brand-500">CARD WARS</span> <span class="text-brand-500">KINGDOM!</span>
                         </h1>
-                        <p class="text-[15px] leading-7 sm:text-base">
-                            <span class="font-bold">Dive into the fantastical world</span> of Adventure Time with Card Wars Kingdom, where you can battle your way to the top as a champion of the Card Wars! Join your favorite characters from the Land of Ooo in this epic card game, filled with strategic battles, powerful creatures, and exciting adventures.<br><br>
+                        <p class="text-base sm:text-lg leading-relaxed text-gray-800">
+                            <span class="font-bold text-xl">Dive into the fantastical world</span> of Adventure Time with Card Wars Kingdom, where you can battle your way to the top as a champion of the Card Wars! Join your favorite characters from the Land of Ooo in this epic card game, filled with strategic battles, powerful creatures, and exciting adventures.<br><br>
                             Build your ultimate deck, summon unique creatures, and challenge players worldwide in this thrilling, fast-paced card battler. Master your strategy, discover powerful combos, and unleash devastating moves to crush your opponents. Whether you're battling in epic PvP duels or embarking on quests with Finn, Jake, and other iconic heroes, there's always an adventure waiting.<br><br>
-                            Are you ready to become the ultimate Card Wars champion? Let the battles begin
+                            <span class="font-bold text-brand-500">Are you ready to become the ultimate Card Wars champion? Let the battles begin! ⚔️</span>
                         </p>
                     </div>
-                    <div class="lg:max-w-[40%] grid gap-4 place-items-center">
-                        <video class="w-full h-auto object-cover rounded-md" autoplay muted loop playsinline src="/Welcome Card Wars Kingdom_files/trailer.mp4"></video>
-                        <div class="grid grid-cols-2 gap-4 mt-4">
-                            <img src="/Welcome Card Wars Kingdom_files/map-ice.png" class="w-full" alt="map ice">
-                            <img src="/Welcome Card Wars Kingdom_files/map-candy2.png" class="w-full" alt="map candy 2">
-                            <img src="/Welcome Card Wars Kingdom_files/map-candy.png" class="w-full" alt="map candy">
-                            <img src="/Welcome Card Wars Kingdom_files/map-badlands.png" class="w-full" alt="map badlands">
+                    <div class="lg:max-w-[40%] grid gap-6 place-items-center">
+                        <div class="relative group">
+                            <div class="absolute -inset-1 bg-gradient-to-r from-brand-500 to-indigo-600 rounded-2xl blur opacity-25 group-hover:opacity-75 transition duration-1000"></div>
+                            <video class="relative w-full h-auto object-cover rounded-xl shadow-2xl ring-1 ring-white/20" autoplay muted loop playsinline src="/Welcome Card Wars Kingdom_files/trailer.mp4"></video>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 mt-4 w-full">
+                            <img src="/Welcome Card Wars Kingdom_files/map-ice.png" class="w-full rounded-lg shadow-lg hover:scale-105 transition-transform duration-300" alt="map ice">
+                            <img src="/Welcome Card Wars Kingdom_files/map-candy2.png" class="w-full rounded-lg shadow-lg hover:scale-105 transition-transform duration-300" alt="map candy 2">
+                            <img src="/Welcome Card Wars Kingdom_files/map-candy.png" class="w-full rounded-lg shadow-lg hover:scale-105 transition-transform duration-300" alt="map candy">
+                            <img src="/Welcome Card Wars Kingdom_files/map-badlands.png" class="w-full rounded-lg shadow-lg hover:scale-105 transition-transform duration-300" alt="map badlands">
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section class="bg-brand-500">
-            <div class="max-w-7xl mx-auto px-6 py-12">
-                <div class="flex flex-col lg:flex-row items-center justify-center gap-10">
-                    <div class="hidden lg:block lg:max-w-[50%]">
-                        <img src="/Welcome Card Wars Kingdom_files/main-characters.png" alt="Main characters" class="w-full min-h-full">
+        <section class="bg-brand-500 relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-brand-500 via-purple-600 to-indigo-600"></div>
+            <div class="max-w-7xl mx-auto px-6 py-20 relative z-10">
+                <div class="flex flex-col lg:flex-row items-center justify-center gap-16">
+                    <div class="hidden lg:block lg:max-w-[50%] animate-fadeInUp">
+                        <img src="/Welcome Card Wars Kingdom_files/main-characters.png" alt="Main characters" class="w-full min-h-full drop-shadow-2xl hover:scale-105 transition-transform duration-500">
                     </div>
-                    <div class="lg:max-w-[50%] grid gap-4">
-                        <h1 class="text-[64px] leading-[64px] font-extrabold">YOUR <br><span>HEROES</span></h1>
-                        <h2 class="text-sm font-bold tracking-wide">IMAGINATION IS YOUR STRONGEST SPELL.</h2>
-                        <p class="text-sm leading-6">In Card Wars Kingdom, you'll summon an army of powerful creatures, each with unique abilities and skills that give you the edge in battle. From fiery spells to strategic gameplay, your heroes wield an array of magic that no other deck can match. No two creatures fight alike, and no two battles ever play out the same way.</p>
-                        <a href="/cards" class="w-max px-5 py-3 bg-black text-[#ECE8E1] hover:bg-white hover:text-brand-500 transition rounded-md">VIEW ALL AGENTS</a>
+                    <div class="lg:max-w-[50%] grid gap-6">
+                        <h1 class="text-[64px] sm:text-[80px] leading-[64px] sm:leading-[80px] font-extrabold drop-shadow-lg">YOUR <br><span class="text-yellow-300">HEROES</span></h1>
+                        <h2 class="text-base sm:text-lg font-bold tracking-wide text-white/90">✨ IMAGINATION IS YOUR STRONGEST SPELL.</h2>
+                        <p class="text-sm sm:text-base leading-7 text-white/95">In Card Wars Kingdom, you'll summon an army of powerful creatures, each with unique abilities and skills that give you the edge in battle. From fiery spells to strategic gameplay, your heroes wield an array of magic that no other deck can match. No two creatures fight alike, and no two battles ever play out the same way.</p>
+                        <a href="/cards" class="w-max px-8 py-4 bg-black text-white hover:bg-yellow-300 hover:text-black transition-all duration-300 rounded-xl font-semibold shadow-xl hover:shadow-2xl hover:scale-105">VIEW ALL HEROES →</a>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section class="bg-[#ECE8E1] text-black" id="museum-teleporte">
-            <div class="max-w-7xl mx-auto px-6 py-12">
-                <div class="flex flex-col lg:flex-row items-center gap-10">
-                    <div class="grid gap-4 lg:max-w-[60%]">
-                        <h1 class="text-5xl font-extrabold">YOUR MAPS</h1>
-                        <h2 class="text-sm font-extrabold tracking-wide">FIGHT AROUND THE ADVENTURE TIME WORLDS</h2>
-                        <p class="text-sm leading-7">Embark on a thrilling journey through the Adventure Time universe in Card Wars Kingdom! Battle your way through iconic locations like the Grasslands, Ice Kingdom, and the Fire Kingdom. Assemble your team of powerful creatures, unleash magical spells, and take on epic challenges across diverse maps. Discover hidden secrets, collect rare cards, and conquer every battlefield in your quest to become the ultimate Card Wars champion!</p>
-                        <a href="/cards" class="w-max px-5 py-3 bg-brand-500 text-[#ECE8E1] hover:bg-[#0F1923] hover:text-[#ECE8E1] transition rounded-md">VIEW ALL MAPS</a>
+        <section class="bg-gradient-to-br from-[#ECE8E1] to-[#d4cfc4] text-black relative" id="museum-teleporte">
+            <div class="max-w-7xl mx-auto px-6 py-20">
+                <div class="flex flex-col lg:flex-row items-center gap-16">
+                    <div class="grid gap-6 lg:max-w-[60%]">
+                        <h1 class="text-5xl sm:text-6xl font-extrabold text-brand-500 drop-shadow-md">🗺️ YOUR MAPS</h1>
+                        <h2 class="text-base sm:text-lg font-extrabold tracking-wide text-gray-700">FIGHT AROUND THE ADVENTURE TIME WORLDS</h2>
+                        <p class="text-sm sm:text-base leading-8 text-gray-800">Embark on a thrilling journey through the Adventure Time universe in Card Wars Kingdom! Battle your way through iconic locations like the Grasslands, Ice Kingdom, and the Fire Kingdom. Assemble your team of powerful creatures, unleash magical spells, and take on epic challenges across diverse maps. Discover hidden secrets, collect rare cards, and conquer every battlefield in your quest to become the ultimate Card Wars champion!</p>
+                        <a href="/cards" class="w-max px-8 py-4 bg-brand-500 text-white hover:bg-indigo-600 transition-all duration-300 rounded-xl font-semibold shadow-xl hover:shadow-2xl hover:scale-105">EXPLORE ALL MAPS →</a>
                     </div>
                     <div class="lg:max-w-[40%]">
-                        <img src="/Welcome Card Wars Kingdom_files/main-map.png" alt="Main Map" class="w-[420px] max-w-full mx-auto rounded-full border-4 border-brand-500">
+                        <div class="relative group">
+                            <div class="absolute -inset-4 bg-gradient-to-r from-brand-500 to-purple-600 rounded-full blur-xl opacity-50 group-hover:opacity-75 transition duration-1000 animate-pulse"></div>
+                            <img src="/Welcome Card Wars Kingdom_files/main-map.png" alt="Main Map" class="relative w-[420px] max-w-full mx-auto rounded-full border-8 border-white shadow-2xl hover:scale-105 transition-transform duration-500">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -155,9 +215,9 @@
                 <h2 class="text-3xl sm:text-4xl font-bold">Game and rest assured</h2>
                 <p class="mt-4 text-sm sm:text-base text-white/90">Our game is open source, meaning anyone can access, review, and contribute to its code. This transparency ensures that the software is secure and free from hidden threats. By allowing the community to inspect and improve the code, we enhance its safety and reliability for all users.</p>
                 <div class="mt-8 flex justify-center">
-                    <button class="shiny-wrap relative inline-flex items-center justify-center rounded-md bg-brand-500 px-5 py-3 text-white shadow hover:opacity-95 transition ">
+                    <a href="https://github.com/Sgsysysgsgsg/Card-Wars-Kingdom-Revived" target="_blank" class="shiny-wrap relative inline-flex items-center justify-center rounded-md bg-brand-500 px-5 py-3 text-white shadow hover:opacity-95 transition ">
                         <span class="relative z-[1] flex items-center gap-2">VIEW SOURCE CODE</span>
-                    </button>
+                    </a>
                 </div>
             </div>
         </section>

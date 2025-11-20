@@ -4,15 +4,302 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Download - Card Wars Kingdom</title>
+    <link rel="icon" href="https://i.postimg.cc/522JrMVz/AT-Card-Wars2-Logo-Eng-1.png">
+    <link rel="stylesheet" href="/Welcome Card Wars Kingdom_files/a53f14ee4cfcc268.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0a0a0d 0%, #1a1a2e 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        nav {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 3rem;
+        }
+        
+        nav a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            margin: 0 1rem;
+            transition: color 0.3s;
+        }
+        
+        nav a:hover {
+            color: white;
+        }
+        
+        .download-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .download-header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #a532ff, #ff3366);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .version-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(165, 50, 255, 0.2);
+        }
+        
+        .version-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .version-tag {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #a532ff;
+        }
+        
+        .release-date {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+        }
+        
+        .release-notes {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        
+        .release-notes h3 {
+            margin-top: 0;
+            color: #a532ff;
+        }
+        
+        .download-buttons {
+            display: grid;
+            gap: 1rem;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+        
+        .download-btn {
+            background: linear-gradient(135deg, #a532ff, #ff3366);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            text-decoration: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(165, 50, 255, 0.4);
+        }
+        
+        .download-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .file-name {
+            font-weight: 600;
+        }
+        
+        .file-size {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .error {
+            background: rgba(255, 51, 102, 0.1);
+            border: 1px solid rgba(255, 51, 102, 0.3);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            color: #ff3366;
+        }
+        
+        .direct-link {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .direct-link a {
+            color: #a532ff;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .direct-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-    <h1>Download Card Wars Kingdom</h1>
     <nav>
-        <a href="/">Home</a> |
-        <a href="/cards">Cards</a> |
-        <a href="/status">Status</a> |
-        <a href="/download">Download</a>
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <a href="/">Home</a>
+                <a href="/cards">Cards</a>
+                <a href="/status">Status</a>
+                <a href="/download">Download</a>
+            </div>
+        </div>
     </nav>
-    <p>Download links will be available here.</p>
+    
+    <div class="container">
+        <div class="download-header">
+            <h1>Download Card Wars Kingdom</h1>
+            <p>Get the latest version and start playing now!</p>
+        </div>
+        
+        <div id="release-content">
+            <div class="loading">
+                <p>Loading latest release information...</p>
+            </div>
+        </div>
+        
+        <div class="direct-link">
+            <p>View all releases on <a href="https://github.com/Sgsysysgsgsg/Card-Wars-Kingdom-Revived/releases" target="_blank">GitHub</a></p>
+        </div>
+    </div>
+    
+    <script>
+        async function loadLatestRelease() {
+            const contentDiv = document.getElementById('release-content');
+            
+            try {
+                const response = await fetch('/api/latest-release');
+                const data = await response.json();
+                
+                if (data.error) {
+                    contentDiv.innerHTML = `
+                        <div class="error">
+                            <h3>⚠️ Could not load release information</h3>
+                            <p>${data.error}</p>
+                            <p>Please visit <a href="https://github.com/Sgsysysgsgsg/Card-Wars-Kingdom-Revived/releases/tag/v4.0.4" target="_blank">GitHub releases page</a> to download manually.</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Format date
+                const releaseDate = new Date(data.published_at).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                
+                // Format file size
+                function formatBytes(bytes) {
+                    if (bytes === 0) return '0 Bytes';
+                    const k = 1024;
+                    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                    const i = Math.floor(Math.log(bytes) / Math.log(k));
+                    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+                }
+                
+                // Build download buttons
+                let downloadButtons = '';
+                if (data.assets && data.assets.length > 0) {
+                    data.assets.forEach(asset => {
+                        downloadButtons += `
+                            <a href="${asset.download_url}" class="download-btn" download>
+                                <div class="download-info">
+                                    <span class="file-name">${asset.name}</span>
+                                    <span class="file-size">${formatBytes(asset.size)} • ${asset.download_count} downloads</span>
+                                </div>
+                                <span>⬇️</span>
+                            </a>
+                        `;
+                    });
+                } else {
+                    downloadButtons = `
+                        <a href="${data.html_url}" class="download-btn" target="_blank">
+                            <div class="download-info">
+                                <span class="file-name">View on GitHub</span>
+                                <span class="file-size">No direct downloads available</span>
+                            </div>
+                            <span>🔗</span>
+                        </a>
+                    `;
+                }
+                
+                // Format release notes
+                const releaseNotes = data.body ? data.body.replace(/\n/g, '<br>') : 'No release notes available.';
+                
+                contentDiv.innerHTML = `
+                    <div class="version-card">
+                        <div class="version-info">
+                            <div>
+                                <div class="version-tag">${data.version}</div>
+                                <div>${data.name}</div>
+                            </div>
+                            <div class="release-date">Released on ${releaseDate}</div>
+                        </div>
+                        
+                        <div class="release-notes">
+                            <h3>📝 Release Notes</h3>
+                            <div>${releaseNotes}</div>
+                        </div>
+                        
+                        <div class="download-buttons">
+                            ${downloadButtons}
+                        </div>
+                    </div>
+                `;
+                
+            } catch (error) {
+                contentDiv.innerHTML = `
+                    <div class="error">
+                        <h3>⚠️ Error loading release</h3>
+                        <p>${error.message}</p>
+                        <p>Please visit <a href="https://github.com/Sgsysysgsgsg/Card-Wars-Kingdom-Revived/releases/tag/v4.0.4" target="_blank">GitHub releases page</a> to download manually.</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // Load release on page load
+        loadLatestRelease();
+    </script>
 </body>
 </html>
