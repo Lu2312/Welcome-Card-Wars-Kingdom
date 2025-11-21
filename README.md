@@ -1,57 +1,67 @@
-# 🎴 Card Wars Kingdom - Fan Remake
+# 🎮 Card Wars Kingdom - Web Server
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python Version](https://img.shields.io/badge/python-3.8%2B-blue)](https://www.python.org/downloads/)
+Servidor web oficial para Card Wars Kingdom Revived, con información del juego, descarga de releases y estado del servidor.
 
-A fan-made remake of the Card Wars Kingdom game from Adventure Time, built with Flask.
+## 🌐 Sitio Web
 
-## 🚀 Features
+**Dominio:** [cardwars-kingdom.net](https://cardwars-kingdom.net)  
+**Repositorio:** [https://github.com/Lu2312/Welcome-Card-Wars-Kingdom](https://github.com/Lu2312/Welcome-Card-Wars-Kingdom)  
+**Servidor:** VPS 159.89.157.63
 
-- 🎮 Full web-based gameplay
-- 🃏 Card collection system
-- 🗺️ Multiple Adventure Time maps
-- 👥 Online multiplayer support
-- 📱 Responsive design
+## ⚙️ Arquitectura en Producción
 
-## 🛠️ Tech Stack
+- **Puerto 8080**: Gunicorn (interno)
+- **Puerto 80**: Nginx (público)
+- **Servicio**: cardwars-kingdom-net.service
+- **CDN**: Cloudflare
 
-- **Backend:** Flask (Python)
-- **Frontend:** HTML5, CSS3 (Tailwind), JavaScript
-- **Server:** Gunicorn
-- **Deployment:** VPS Ready
+## ✨ Características
 
-## 📋 Prerequisites
+- 🏠 **Página Principal** - Información sobre el juego
+- 🃏 **Galería de Cartas** - Colección completa de cartas
+- 📊 **Estado del Servidor** - Monitoreo en tiempo real
+- 📥 **Descargas** - Últimas versiones del juego desde GitHub
+- 👥 **Usuarios Online** - Contador de jugadores activos
+- 🔄 **API REST** - Endpoints para integraciones
 
-- Python 3.8 or higher
-- pip (Python package manager)
-- Virtual environment (recommended)
+## 🚀 Inicio Rápido
 
-## ⚙️ Installation
+### Requisitos Previos
 
-1. **Clone the repository**
+- Python 3.8 o superior
+- pip (gestor de paquetes de Python)
+
+### Instalación Local
+
+1. **Clonar el repositorio**
 ```bash
-git clone https://github.com/yourusername/card-wars-kingdom.git
-cd card-wars-kingdom
+git clone https://github.com/Lu2312/Welcome-Card-Wars-Kingdom.git
+cd Welcome-Card-Wars-Kingdom
 ```
 
-2. **Create virtual environment**
+2. **Crear entorno virtual**
 ```bash
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Windows
+venv\Scripts\activate
+
+# Linux/Mac
+source venv/bin/activate
 ```
 
-3. **Install dependencies**
+3. **Instalar dependencias**
 ```bash
 pip install -r requirements.txt
 ```
 
-4. **Run the application**
+4. **Ejecutar el servidor**
 ```bash
-# Development
 python app.py
+```
 
-# Production with Gunicorn
-gunicorn --bind 0.0.0.0:3000 --workers 4 wsgi:app
+5. **Abrir en navegador**
+`````
 ```
 
 ## 🐳 Docker Deployment

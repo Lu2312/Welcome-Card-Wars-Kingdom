@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 # Configuration
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')
-app.config['DEBUG'] = True
+app.config['DEBUG'] = os.environ.get('DEBUG', 'False') == 'True'
 
 # Simple in-memory storage for online users (use Redis in production)
 online_users = {}
@@ -121,7 +121,7 @@ def internal_error(error):
     return "<h1>500 - Internal Server Error</h1>", 500
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 3000))
+    port = int(os.environ.get('PORT', 8080))
     print(f"\n🎮 Card Wars Kingdom Server Starting...")
     print(f"🌐 Open your browser at: http://localhost:{port}")
     print(f"📁 Make sure your files are in the correct folders!")
