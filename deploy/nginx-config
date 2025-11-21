@@ -1,20 +1,62 @@
 server {
     listen 80;
+    listen [::]:80;
     server_name cardwars-kingdom.net www.cardwars-kingdom.net;
 
     access_log /var/log/nginx/cardwars-kingdom-net-access.log;
     error_log /var/log/nginx/cardwars-kingdom-net-error.log;
 
+    # Redirigir todo a HTTPS
+    return 301 https://$server_name$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name cardwars-kingdom.net www.cardwars-kingdom.net;
+
+    # Logs
+    access_log /var/log/nginx/cardwars-kingdom-net-access.log;
+    error_log /var/log/nginx/cardwars-kingdom-net-error.log;
+
+    # SSL Configuration (comentado hasta que instales los certificados)
+    # ssl_certificate /etc/ssl/certs/cardwars-kingdom.net.crt;
+    # ssl_certificate_key /etc/ssl/private/cardwars-kingdom.net.key;
+    
+    # Por ahora usa certificados autofirmados temporales
+    ssl_certificate /etc/ssl/certs/ssl-cert-snakeoil.pem;
+    ssl_certificate_key /etc/ssl/private/ssl-cert-snakeoil.key;
+
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers HIGH:!aNULL:!MD5;
+    ssl_prefer_server_ciphers on;
+
+    # Security headers
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-XSS-Protection "1; mode=block" always;
+
+    # Proxy to Gunicorn running on port 8000
     location / {
         proxy_pass http://127.0.0.1:8000;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_redirect off;
     }
 
+    # Static files
     location /static {
         alias /var/www/cardwars-kingdom/static;
         expires 30d;
+        add_header Cache-Control "public, immutable";
+    }
+
+    # Health check endpoint
+    location /health {
+        access_log off;
+        return 200 "OK\n";
+        add_header Content-Type text/plain;
     }
 }
