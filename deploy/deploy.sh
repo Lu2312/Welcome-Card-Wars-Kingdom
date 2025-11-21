@@ -23,7 +23,7 @@ fi
 
 # Paso 1: Copiar archivos de la aplicación
 echo -e "${YELLOW}1. Copiando archivos de la aplicación...${NC}"
-cp -r "$REPO_DIR"/{app.py,wsgi.py,requirements.txt,static,templates,.env.example} "$PROJECT_DIR/"
+cp -r "$REPO_DIR"/{app.py,wsgi.py,requirements.txt,gunicorn_config.py,static,templates,.env.example} "$PROJECT_DIR/"
 echo -e "${GREEN}✓ Archivos copiados${NC}"
 echo ""
 
@@ -66,19 +66,34 @@ chown -R www-data:www-data "$PROJECT_DIR"
 echo -e "${GREEN}✓ Permisos configurados${NC}"
 echo ""
 
+# Paso 4.5: Copiar archivo de servicio systemd
+echo -e "${YELLOW}4.5. Actualizando servicio systemd...${NC}"
+cp "$REPO_DIR/deploy/cardwars-kingdom-net.service" /etc/systemd/system/
+echo -e "${GREEN}✓ Archivo de servicio actualizado${NC}"
+echo ""
+
 # Paso 5: Iniciar servicio
 echo -e "${YELLOW}5. Iniciando servicio...${NC}"
 systemctl daemon-reload
-systemctl restart cardwars-kingdom-net.service
-sleep 2
+
+# Detener servicio si está corriendo
+systemctl stop cardwars-kingdom-net.service || true
+
+# Intentar iniciar
+systemctl start cardwars-kingdom-net.service
+sleep 3
 
 if systemctl is-active --quiet cardwars-kingdom-net.service; then
     echo -e "${GREEN}✓ Servicio iniciado correctamente${NC}"
     systemctl status cardwars-kingdom-net.service --no-pager -l
 else
     echo -e "${RED}✗ Error al iniciar servicio${NC}"
-    echo "Últimos logs:"
-    journalctl -u cardwars-kingdom-net.service -n 20 --no-pager
+    echo ""
+    echo "Últimos logs del servicio:"
+    journalctl -u cardwars-kingdom-net.service -n 30 --no-pager
+    echo ""
+    echo "Estado del servicio:"
+    systemctl status cardwars-kingdom-net.service --no-pager -l || true
     exit 1
 fi
 echo ""
