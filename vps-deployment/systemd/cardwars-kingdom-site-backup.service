@@ -1,0 +1,47 @@
+[Unit]
+Description=Card Wars Kingdom Website - Backup Instance (cardwars-kingdom.net)
+After=network.target cardwars-kingdom-site.service
+
+[Service]
+Type=notify
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/Welcome-Card-Wars-Kingdom
+Environment="PATH=/var/www/Welcome-Card-Wars-Kingdom/venv/bin"
+
+ExecStart=/var/www/Welcome-Card-Wars-Kingdom/venv/bin/gunicorn \
+    --bind 127.0.0.1:8081 \
+    --workers 2 \
+    --threads 2 \
+    --worker-class gthread \
+    --worker-tmp-dir /dev/shm \
+    --timeout 120 \
+    --graceful-timeout 30 \
+    --keep-alive 5 \
+    --max-requests 1000 \
+    --max-requests-jitter 50 \
+    --access-logfile /var/log/gunicorn/cardwars-site-backup-access.log \
+    --error-logfile /var/log/gunicorn/cardwars-site-backup-error.log \
+    --log-level info \
+    --pid /var/run/gunicorn/cardwars-site-backup.pid \
+    --name cardwars-site-backup \
+    app:app
+
+ExecReload=/bin/kill -s HUP $MAINPID
+KillMode=mixed
+TimeoutStopSec=30
+PrivateTmp=true
+
+# Security
+NoNewPrivileges=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/log/gunicorn /var/run/gunicorn /var/www/Welcome-Card-Wars-Kingdom
+
+# Restart policy
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

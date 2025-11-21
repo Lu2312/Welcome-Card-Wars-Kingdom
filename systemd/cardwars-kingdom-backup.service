@@ -1,0 +1,20 @@
+[Unit]
+Description=Card Wars Kingdom Gunicorn Service (Backup)
+After=network.target
+
+[Service]
+Type=notify
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/cardwars-kingdom
+Environment="PATH=/var/www/cardwars-kingdom/venv/bin"
+ExecStart=/var/www/cardwars-kingdom/venv/bin/gunicorn -c gunicorn_config_backup.py app:app
+ExecReload=/bin/kill -s HUP $MAINPID
+KillMode=mixed
+TimeoutStopSec=5
+PrivateTmp=true
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
