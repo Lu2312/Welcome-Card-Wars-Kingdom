@@ -121,7 +121,7 @@ def internal_error(error):
     return "<h1>500 - Internal Server Error</h1>", 500
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 8080))
+    port = int(os.environ.get('PORT', 8000))
     print(f"\n🎮 Card Wars Kingdom Server Starting...")
     print(f"🌐 Open your browser at: http://localhost:{port}")
     print(f"📁 Make sure your files are in the correct folders!")
