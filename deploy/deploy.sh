@@ -38,12 +38,26 @@ echo ""
 
 # Paso 3: Configurar Nginx
 echo -e "${YELLOW}3. Configurando Nginx...${NC}"
-cp "$REPO_DIR/deploy/nginx-config" /etc/nginx/sites-available/cardwars-kingdom-net
-ln -sf /etc/nginx/sites-available/cardwars-kingdom-net /etc/nginx/sites-enabled/
+
+# Limpiar configuraciones antiguas
+echo "Limpiando configuraciones antiguas..."
+rm -f /etc/nginx/sites-enabled/cardwars-kingdom.net.conf
+rm -f /etc/nginx/sites-available/cardwars-kingdom.net.conf
 rm -f /etc/nginx/sites-enabled/default
-nginx -t
-systemctl restart nginx
-echo -e "${GREEN}✓ Nginx configurado${NC}"
+
+# Copiar nueva configuración
+cp "$REPO_DIR/deploy/nginx-config" /etc/nginx/sites-available/cardwars-kingdom-net
+ln -sf /etc/nginx/sites-available/cardwars-kingdom-net /etc/nginx/sites-enabled/cardwars-kingdom-net
+
+# Verificar configuración
+if nginx -t; then
+    echo -e "${GREEN}✓ Configuración de Nginx válida${NC}"
+    systemctl restart nginx
+    echo -e "${GREEN}✓ Nginx reiniciado${NC}"
+else
+    echo -e "${RED}✗ Error en configuración de Nginx${NC}"
+    exit 1
+fi
 echo ""
 
 # Paso 4: Configurar permisos
@@ -56,8 +70,17 @@ echo ""
 echo -e "${YELLOW}5. Iniciando servicio...${NC}"
 systemctl daemon-reload
 systemctl restart cardwars-kingdom-net.service
-systemctl status cardwars-kingdom-net.service --no-pager
-echo -e "${GREEN}✓ Servicio iniciado${NC}"
+sleep 2
+
+if systemctl is-active --quiet cardwars-kingdom-net.service; then
+    echo -e "${GREEN}✓ Servicio iniciado correctamente${NC}"
+    systemctl status cardwars-kingdom-net.service --no-pager -l
+else
+    echo -e "${RED}✗ Error al iniciar servicio${NC}"
+    echo "Últimos logs:"
+    journalctl -u cardwars-kingdom-net.service -n 20 --no-pager
+    exit 1
+fi
 echo ""
 
 echo -e "${GREEN}=========================================="
@@ -67,3 +90,5 @@ echo "Verificar que todo funciona:"
 echo "  curl http://localhost"
 echo "  sudo bash $REPO_DIR/deploy/status.sh"
 echo ""
+echo "Ver logs en tiempo real:"
+echo "  sudo bash $REPO_DIR/deploy/logs.sh"
