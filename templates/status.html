@@ -3,18 +3,359 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Status - Card Wars Kingdom</title>
+    <title>Heroes - Card Wars Kingdom</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            font-size: 3em;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.2em;
+        }
+
+        /* Navigation */
+        nav {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        nav a {
+            color: #667eea;
+            text-decoration: none;
+            padding: 10px 20px;
+            margin: 0 10px;
+            font-weight: 600;
+            transition: all 0.3s;
+            border-radius: 20px;
+        }
+
+        nav a:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        /* Heroes Section */
+        .heroes-container {
+            max-width: 1400px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+
+        .section-title {
+            text-align: center;
+            color: white;
+            font-size: 2.5em;
+            margin-bottom: 50px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .heroes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .hero-card {
+            background: white;
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+
+        .hero-card:hover {
+            transform: translateY(-20px) scale(1.03);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .hero-card:hover .hero-image {
+            transform: scale(1.15);
+        }
+
+        .hero-content {
+            padding: 30px;
+            background: linear-gradient(to top, rgba(102, 126, 234, 0.1), transparent);
+        }
+
+        .hero-name {
+            font-size: 2em;
+            font-weight: 800;
+            margin-bottom: 15px;
+            color: #2d3748;
+            text-align: center;
+        }
+
+        .hero-title {
+            text-align: center;
+            color: #667eea;
+            font-weight: 600;
+            font-size: 1.1em;
+            margin-bottom: 20px;
+        }
+
+        .hero-description {
+            color: #666;
+            line-height: 1.8;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 2px solid #f0f0f0;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        .hero-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9em;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Special color schemes for each hero */
+        .hero-card.bmo { border-top: 5px solid #00ff88; }
+        .hero-card.finn { border-top: 5px solid #4a90e2; }
+        .hero-card.ice-king { border-top: 5px solid #87ceeb; }
+        .hero-card.marceline { border-top: 5px solid #c41e3a; }
+        .hero-card.bubblegum { border-top: 5px solid #ff69b4; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .heroes-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .hero-image {
+                height: 300px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Server Status</h1>
+    <!-- Header -->
+    <div class="header">
+        <h1>⚔️ Card Wars Kingdom Heroes</h1>
+        <p>Meet the legendary heroes of the Land of Ooo</p>
+    </div>
+
+    <!-- Navigation -->
     <nav>
-        <a href="/">Home</a> |
-        <a href="/cards">Cards</a> |
-        <a href="/status">Status</a> |
-        <a href="/download">Download</a>
+        <a href="/">🏠 Home</a>
+        <a href="/cards">📖 Creatures</a>
+        <a href="/status">⭐ Heroes</a>
+        <a href="/download">⬇️ Download</a>
     </nav>
-    <div id="status-info">
-        <p>Server is running normally.</p>
+
+    <!-- Heroes Container -->
+    <div class="heroes-container">
+        <h2 class="section-title">The Legendary Five</h2>
+        
+        <div class="heroes-grid">
+            <!-- BMO -->
+            <div class="hero-card bmo">
+                <span class="hero-badge">Tech Master</span>
+                <img class="hero-image" 
+                     src="https://static.wikia.nocookie.net/adventuretimewithfinnandjake/images/8/85/Bmo.png" 
+                     alt="BMO"
+                     onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22400%22%3E%3Crect fill=%22%2300ff88%22 width=%22400%22 height=%22400%22/%3E%3Ctext fill=%22white%22 font-size=%2248%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3EBMO%3C/text%3E%3C/svg%3E'">
+                <div class="hero-content">
+                    <div class="hero-name">BMO</div>
+                    <div class="hero-title">Living Video Game Console</div>
+                    <div class="hero-description">
+                        A sentient video game console who is Finn and Jake's roommate and best friend. 
+                        BMO is known for being charming, creative, and always ready for an adventure in the Land of Ooo.
+                    </div>
+                    <div class="hero-stats">
+                        <div class="stat">
+                            <div class="stat-value">⭐⭐⭐⭐⭐</div>
+                            <div class="stat-label">Cuteness</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">95</div>
+                            <div class="stat-label">Tech Skills</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Finn -->
+            <div class="hero-card finn">
+                <span class="hero-badge">The Hero</span>
+                <img class="hero-image" 
+                     src="https://static.wikia.nocookie.net/adventuretimewithfinnandjake/images/a/aa/Finn.png" 
+                     alt="Finn"
+                     onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22400%22%3E%3Crect fill=%22%234a90e2%22 width=%22400%22 height=%22400%22/%3E%3Ctext fill=%22white%22 font-size=%2248%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3EFinn%3C/text%3E%3C/svg%3E'">
+                <div class="hero-content">
+                    <div class="hero-name">Finn the Human</div>
+                    <div class="hero-title">Last Human Hero</div>
+                    <div class="hero-description">
+                        A fearless adventurer and the last known human in the Land of Ooo. 
+                        With his grass sword and unwavering courage, Finn fights for justice and protects his friends.
+                    </div>
+                    <div class="hero-stats">
+                        <div class="stat">
+                            <div class="stat-value">100</div>
+                            <div class="stat-label">Bravery</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">⚔️⚔️⚔️⚔️⚔️</div>
+                            <div class="stat-label">Combat</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ice King -->
+            <div class="hero-card ice-king">
+                <span class="hero-badge">Ice Wizard</span>
+                <img class="hero-image" 
+                     src="https://static.wikia.nocookie.net/adventuretimewithfinnandjake/images/3/3c/Ice_King.png" 
+                     alt="Ice King"
+                     onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22400%22%3E%3Crect fill=%22%2387ceeb%22 width=%22400%22 height=%22400%22/%3E%3Ctext fill=%22white%22 font-size=%2240%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3EIce King%3C/text%3E%3C/svg%3E'">
+                <div class="hero-content">
+                    <div class="hero-name">Ice King</div>
+                    <div class="hero-title">King of Ice Kingdom</div>
+                    <div class="hero-description">
+                        Once known as Simon Petrikov, the Ice King wields powerful ice magic from his crown. 
+                        Despite his lonely existence, he dreams of finding companionship and writing fan fiction.
+                    </div>
+                    <div class="hero-stats">
+                        <div class="stat">
+                            <div class="stat-value">98</div>
+                            <div class="stat-label">Ice Magic</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">❄️❄️❄️❄️❄️</div>
+                            <div class="stat-label">Cold Power</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Marceline -->
+            <div class="hero-card marceline">
+                <span class="hero-badge">Vampire Queen</span>
+                <img class="hero-image" 
+                     src="https://static.wikia.nocookie.net/adventuretimewithfinnandjake/images/e/ea/Marceline.png" 
+                     alt="Marceline"
+                     onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22400%22%3E%3Crect fill=%22%23c41e3a%22 width=%22400%22 height=%22400%22/%3E%3Ctext fill=%22white%22 font-size=%2236%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3EMarceline%3C/text%3E%3C/svg%3E'">
+                <div class="hero-content">
+                    <div class="hero-name">Marceline</div>
+                    <div class="hero-title">The Vampire Queen</div>
+                    <div class="hero-description">
+                        A thousand-year-old vampire and talented musician. Marceline rocks her bass guitar and 
+                        floats through life with a cool, laid-back attitude while protecting those she cares about.
+                    </div>
+                    <div class="hero-stats">
+                        <div class="stat">
+                            <div class="stat-value">99</div>
+                            <div class="stat-label">Vampire Power</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">🎸🎸🎸🎸🎸</div>
+                            <div class="stat-label">Music Skill</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Princess Bubblegum -->
+            <div class="hero-card bubblegum">
+                <span class="hero-badge">Candy Monarch</span>
+                <img class="hero-image" 
+                     src="https://static.wikia.nocookie.net/adventuretimewithfinnandjake/images/4/4f/PB.png" 
+                     alt="Princess Bubblegum"
+                     onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22400%22%3E%3Crect fill=%22%23ff69b4%22 width=%22400%22 height=%22400%22/%3E%3Ctext fill=%22white%22 font-size=%2236%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3EPrincess Bubblegum%3C/text%3E%3C/svg%3E'">
+                <div class="hero-content">
+                    <div class="hero-name">Princess Bubblegum</div>
+                    <div class="hero-title">Ruler of Candy Kingdom</div>
+                    <div class="hero-description">
+                        A brilliant scientist and benevolent ruler of the Candy Kingdom. Princess Bubblegum combines 
+                        her genius intellect with compassion to protect her candy citizens from any threat.
+                    </div>
+                    <div class="hero-stats">
+                        <div class="stat">
+                            <div class="stat-value">100</div>
+                            <div class="stat-label">Intelligence</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">🔬🔬🔬🔬🔬</div>
+                            <div class="stat-label">Science</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 </html>

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, send_from_directory, request
+from flask import Flask, render_template, jsonify, send_from_directory, request, redirect
 import os
 from datetime import datetime, timedelta
 import requests
@@ -19,13 +19,29 @@ def index():
 
 @app.route('/cards')
 def cards():
-    """Cards collection page"""
-    return render_template('cards.html')
+    """Creature Book page - Professional creature gallery"""
+    return render_template('creatures.html')
 
 @app.route('/status')
 def status():
-    """Server status page"""
-    return render_template('status.html')
+    """Heroes page - redirects to /heroes"""
+    return redirect('/heroes')
+
+@app.route('/heroes')
+def heroes():
+    """Heroes page - Card Wars Kingdom Heroes"""
+    return render_template('heroes.html')
+
+@app.route('/creatures')
+def creatures():
+    """Creature Book page"""
+    return render_template('creatures.html')
+
+@app.route('/creature-book/<path:filename>')
+def serve_creature_book(filename):
+    """Serve files from Creature Book folder"""
+    creature_book_dir = os.path.join(os.path.dirname(__file__), 'Welcome Card Wars Kingdom_files', 'Creature Book')
+    return send_from_directory(creature_book_dir, filename)
 
 @app.route('/download')
 def download():
@@ -103,6 +119,34 @@ def user_heartbeat():
     user_id = request.remote_addr
     online_users[user_id] = datetime.now()
     return jsonify({'status': 'ok'})
+
+@app.route('/api/creatures/list')
+def list_creatures():
+    """Get list of all creatures from Creature Book folder"""
+    try:
+        creature_book_dir = os.path.join(os.path.dirname(__file__), 'Welcome Card Wars Kingdom_files', 'Creature Book')
+        
+        if not os.path.exists(creature_book_dir):
+            return jsonify({'creatures': [], 'error': 'Creature Book folder not found'})
+        
+        creatures = []
+        for filename in os.listdir(creature_book_dir):
+            if filename.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.webp')):
+                creature_name = os.path.splitext(filename)[0].replace('_', ' ').title()
+                creatures.append({
+                    'name': creature_name,
+                    'image': filename
+                })
+        
+        # Ordenar alfabéticamente
+        creatures.sort(key=lambda x: x['name'])
+        
+        return jsonify({
+            'creatures': creatures,
+            'count': len(creatures)
+        })
+    except Exception as e:
+        return jsonify({'error': str(e), 'creatures': []}), 500
 
 # Serve static files from Welcome Card Wars Kingdom_files folder
 @app.route('/Welcome Card Wars Kingdom_files/<path:filename>')
