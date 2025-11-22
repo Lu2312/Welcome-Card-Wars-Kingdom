@@ -37,6 +37,16 @@ def creatures():
     """Creature Book page"""
     return render_template('creatures.html')
 
+@app.route('/cartas-update')
+def cartas_update():
+    """Card Museum page - redirect to maintain compatibility"""
+    return redirect('/card-museum')
+
+@app.route('/card-museum')
+def card_museum():
+    """Card Museum page - Complete database of cards"""
+    return render_template('cartas-update.html')
+
 @app.route('/creature-book/<path:filename>')
 def serve_creature_book(filename):
     """Serve files from Creature Book folder"""
@@ -147,6 +157,23 @@ def list_creatures():
         })
     except Exception as e:
         return jsonify({'error': str(e), 'creatures': []}), 500
+
+@app.route('/api/cards/database')
+def cards_database():
+    """Get cards database from external API"""
+    try:
+        # Fetch data from external API
+        external_api = 'https://cardwarskingdom.pythonanywhere.com/persist/static/Blueprints/db_Creatures.json'
+        response = requests.get(external_api, timeout=10)
+        
+        if response.status_code == 200:
+            cards_data = response.json()
+            return jsonify(cards_data)
+        else:
+            return jsonify({'error': 'Failed to fetch cards database'}), 500
+            
+    except requests.RequestException as e:
+        return jsonify({'error': str(e)}), 500
 
 # Serve static files from Welcome Card Wars Kingdom_files folder
 @app.route('/Welcome Card Wars Kingdom_files/<path:filename>')
