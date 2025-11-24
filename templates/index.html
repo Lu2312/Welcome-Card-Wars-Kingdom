@@ -15,7 +15,6 @@
     <link rel="preload" as="image" href="/Welcome Card Wars Kingdom_files/card-wars-kingdom-icon.png">
     <link rel="preload" as="image" href="/Welcome Card Wars Kingdom_files/Cartoon_Network_2010.svg">
     <link rel="stylesheet" href="/Welcome Card Wars Kingdom_files/a53f14ee4cfcc268.css" data-precedence="next">
-    <link rel="preload" as="image" href="/Welcome Card Wars Kingdom_files/warner-bros-discovery-logo-horizontal-white.svg">
     <link rel="icon" href="https://i.postimg.cc/522JrMVz/AT-Card-Wars2-Logo-Eng-1.png">
     <link rel="preconnect" href="https://fonts.googleapis.com/">
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="anonymous">
@@ -55,6 +54,32 @@
             background: linear-gradient(135deg, rgba(165, 50, 255, 0.1) 0%, rgba(98, 95, 255, 0.1) 100%);
             backdrop-filter: blur(10px);
         }
+        /* Mobile menu: collapsed by default (existing markup uses max-h-0) */
+        .sm\:hidden.bg-\[\#0a0a0af0\] { transition: max-height .28s ease, padding .28s ease; overflow: hidden; }
+        .mobile-menu-open { max-height: 900px !important; padding: 12px 0 !important; }
+        /* Ensure images scale on small screens */
+        @media (max-width:640px) {
+            img { max-width: 100%; height: auto; }
+            .hero-gif-container { padding: 16px; }
+            .shiny-wrap { padding-left: 14px; padding-right:14px; }
+            /* reduce huge headings a mobile friendly size */
+            h1 { font-size: clamp(20px, 6vw, 56px); }
+        }
+
+        /* Ensure header logo scales properly on mobile (fix Android Chrome) */
+        .site-logo {
+            height: 36px;
+            max-height: 40px;
+            width: auto;
+            object-fit: contain;
+            display: block;
+        }
+        @media (min-width: 640px) {
+            .site-logo { height: 54px; max-height: 64px; }
+        }
+        @media (min-width: 1024px) {
+            .site-logo { height: 64px; max-height: 80px; }
+        }
     </style>
 </head>
 <body class="font-[Poppins] antialiased">
@@ -63,7 +88,7 @@
         <nav class="w-full fixed top-0 z-50 backdrop-blur-xl bg-[#00000080] border-b border-white/10 shadow-[0_2px_30px_-8px_rgba(165,50,255,0.4)]">
             <div class="mx-auto max-w-7xl px-4 h-16 flex items-center justify-between">
                 <a class="flex items-center gap-2" href="/">
-                    <img src="/Welcome Card Wars Kingdom_files/Main-Logo.webp" alt="CWK" class="h-6 sm:h-8 w-auto drop-shadow-lg">
+                    <img src="/Welcome Card Wars Kingdom_files/Main-Logo.webp" alt="CWK" class="site-logo drop-shadow-lg">
                 </a>
                 <div class="hidden sm:flex items-center gap-6 font-medium tracking-wide ">
                     <a class="text-white/80 hover:text-white transition" href="/">Home</a>
@@ -71,6 +96,8 @@
                     <a class="text-white/80 hover:text-white transition" href="/heroes">Heroes</a>
                     <a class="text-white/80 hover:text-white transition" href="/card-museum">Museum</a>
                     <a class="text-white/80 hover:text-white transition" href="https://discord.gg/card-wars-revived-1227932764117143642">Support</a>
+                    <!-- Admin link inserted into the main nav links -->
+                    <a href="/admin-login" id="headerAdminLink" class="text-white/80 hover:text-white transition">Admin Login</a>
                 </div>
                 <div class="hidden sm:flex items-center gap-4">
                     <a href="/download" aria-label="Download" class="shiny-wrap relative inline-flex items-center justify-center rounded-md bg-brand-500 px-5 py-3 text-white shadow hover:opacity-95 transition ">
@@ -78,6 +105,10 @@
                             <span class="material-symbols-outlined">download</span>Download
                         </span>
                     </a>
+                    <!-- Desktop admin button -->
+                    <button id="headerAdminBtn" class="hidden sm:inline-flex items-center gap-2 px-3 py-2 rounded-md border border-white/10 text-white" style="background:transparent;margin-left:8px;">
+                        Admin Login
+                    </button>
                     <div class="relative group cursor-pointer">
                         <span class="absolute inset-0 rounded-full bg-green-400 opacity-50 animate-pulseRing"></span>
                         <span class="relative block h-3.5 w-3.5 rounded-full bg-green-500 shadow-[0_0_10px_rgba(0,255,0,0.9)]"></span>
@@ -93,7 +124,7 @@
             <div class="sm:hidden bg-[#0a0a0af0] backdrop-blur-xl transition-all duration-300 overflow-hidden max-h-0">
                 <div class="px-4 py-3 space-y-3 text-center font-semibold">
                     <div class="flex items-center justify-center gap-2 pb-2 border-b border-white/10">
-                        <img src="/Welcome Card Wars Kingdom_files/Main-Logo.webp" alt="CWK" class="h-8 w-auto drop-shadow-lg">
+                        <img src="/Welcome Card Wars Kingdom_files/Main-Logo.webp" alt="CWK" class="site-logo drop-shadow-lg">
                     </div>
                     <a target="_blank" class="block text-white/90 hover:text-white py-2" href="https://discord.gg/card-wars-revived-1227932764117143642">News</a>
                     <a href="/#museum-teleporte" class="block text-white/90 hover:text-white py-2">Museum</a>
@@ -105,6 +136,7 @@
                             <span class="material-symbols-outlined">download</span>Download
                         </span>
                     </a>
+                    <a href="/admin-login" id="mobileAdminLink" aria-label="Admin" class="block text-white/90 hover:text-white py-2">Admin Login</a>
                 </div>
             </div>
         </nav>
@@ -125,7 +157,9 @@
                 <div class="absolute inset-0 grid place-items-center z-[2]">
                     <div class="text-center grid gap-6 px-4 animate-fadeInUp">
                         <p class="text-white/90 text-lg sm:text-xl font-medium tracking-wide">A Cards game for Adventure Time</p>
-                        <h1 class="text-5xl sm:text-6xl lg:text-7xl font-extrabold drop-shadow-[0_0_30px_rgba(165,50,255,0.5)]" style="font-family:'Rubik Doodle Shadow',system-ui">Card Wars Kingdom</h1>
+                        <h1 class="text-5xl sm:text-6xl lg:text-7xl font-extrabold drop-shadow-[0_0_30px_rgba(165,50,255,0.5)]" style="font-family:'Rubik Doodle Shadow',system-ui" data-text-key="index.hero.title">
+                            Card Wars Kingdom
+                        </h1>
                         <div class="mt-4 flex flex-col sm:flex-row gap-4 justify-center">
                             <a href="/download" class="shiny-wrap relative inline-flex items-center justify-center rounded-xl bg-brand-500 px-8 py-4 text-white shadow-2xl hover:opacity-95 hover:scale-105 transition-all duration-300 font-semibold text-lg">
                                 <span class="relative z-[1] flex items-center gap-3">
@@ -151,7 +185,7 @@
                         <h1 class="mb-6 text-[42px] leading-[46px] sm:text-[50px] sm:leading-[54px] lg:text-[100px] lg:leading-[100px] font-extrabold tracking-tight drop-shadow-md">
                             WELCOME TO <br> ADVENTURE TIME:<br><span class="text-brand-500">CARD WARS</span> <span class="text-brand-500">KINGDOM!</span>
                         </h1>
-                        <p class="text-base sm:text-lg leading-relaxed text-gray-800">
+                        <p class="text-base sm:text-lg leading-relaxed text-gray-800" data-text-key="index.hero.desc">
                             <span class="font-bold text-xl">Dive into the fantastical world</span> of Adventure Time with Card Wars Kingdom, where you can battle your way to the top as a champion of the Card Wars! Join your favorite characters from the Land of Ooo in this epic card game, filled with strategic battles, powerful creatures, and exciting adventures.<br><br>
                             Build your ultimate deck, summon unique creatures, and challenge players worldwide in this thrilling, fast-paced card battler. Master your strategy, discover powerful combos, and unleash devastating moves to crush your opponents. Whether you're battling in epic PvP duels or embarking on quests with Finn, Jake, and other iconic heroes, there's always an adventure waiting.<br><br>
                             <span class="font-bold text-brand-500">Are you ready to become the ultimate Card Wars champion? Let the battles begin! ⚔️</span>
@@ -245,7 +279,6 @@
                 </div>
                 <div class="flex items-center gap-8 opacity-70">
                     <img src="/Welcome Card Wars Kingdom_files/Cartoon_Network_2010.svg" class="h-6" alt="CN">
-                    <img src="/Welcome Card Wars Kingdom_files/warner-bros-discovery-logo-horizontal-white.svg" class="h-6" alt="WBD">
                 </div>
                 <p class="text-xs text-white/60 max-w-lg leading-relaxed">
                     © 2025 Card Wars Kingdom Remake • Fan Project<br>
@@ -283,5 +316,171 @@
         sendHeartbeat();
         setInterval(sendHeartbeat, 120000);
     </script>
+    <script>
+        window.__CREATURES__ = [];
+        window.__IS_ADMIN__ = false;
+    </script>
+    <!-- Add small script at end of body to toggle mobile menu -->
+    <script>
+		(function(){
+			const menuBtn = document.querySelector('button[aria-label="Open menu"]');
+			// find the mobile menu panel (the next element with sm:hidden bg..)
+			const mobilePanel = Array.from(document.querySelectorAll('div')).find(d => d.className && d.className.includes('sm:hidden') && d.style.overflow === undefined);
+			if (menuBtn && mobilePanel) {
+				menuBtn.addEventListener('click', () => {
+					if (mobilePanel.classList.contains('mobile-menu-open')) {
+						mobilePanel.classList.remove('mobile-menu-open');
+						mobilePanel.style.maxHeight = '0';
+					} else {
+						mobilePanel.classList.add('mobile-menu-open');
+						mobilePanel.style.maxHeight = '900px';
+					}
+				});
+			}
+		})();
+	</script>
+
+    <!-- Add admin login/logout logic (after existing scripts) -->
+<script>
+		(function(){
+    // admin elements
+    const headerAdminBtn = document.getElementById('headerAdminBtn');
+   const headerAdminLink = document.getElementById('headerAdminLink');
+    const mobileAdminLink = document.getElementById('mobileAdminLink');
+    const loginModal = document.getElementById('loginModal');
+    const loginSubmit = document.getElementById('loginSubmit');
+    const loginCancel = document.getElementById('loginCancel');
+    const loginPwd = document.getElementById('loginPassword');
+    const loginStatus = document.getElementById('loginStatus');
+
+    function updateAdminUI() {
+        if (window.__IS_ADMIN__) {
+            editBtn.style.display = '';
+            adminBtn.textContent = 'Logout';
+            if (headerAdminBtn) headerAdminBtn.textContent = 'Logout';
+            if (mobileAdminLink) mobileAdminLink.textContent = 'Logout';
+        } else {
+            editBtn.style.display = 'none';
+            adminBtn.textContent = 'Admin Login';
+            if (headerAdminBtn) headerAdminBtn.textContent = 'Admin Login';
+            if (mobileAdminLink) mobileAdminLink.textContent = 'Admin Login';
+        }
+    }
+
+    async function adminToggleHandler(e) {
+        if (e) e.preventDefault && e.preventDefault();
+        if (window.__IS_ADMIN__) {
+            await fetch('/logout', { method: 'POST' }).catch(()=>{});
+            window.__IS_ADMIN__ = false;
+            updateAdminUI();
+        } else {
+            loginStatus.textContent = '';
+            loginPwd.value = '';
+            if (loginModal) loginModal.style.display = 'flex';
+            loginPwd && loginPwd.focus();
+        }
+    }
+
+    if (headerAdminBtn) headerAdminBtn.addEventListener('click', adminToggleHandler);
+    if (mobileAdminLink) mobileAdminLink.addEventListener('click', adminToggleHandler);
+
+    loginCancel && loginCancel.addEventListener('click', () => { if (loginModal) loginModal.style.display = 'none'; });
+
+    loginSubmit && loginSubmit.addEventListener('click', async () => {
+        const pwd = (loginPwd && loginPwd.value) || '';
+        if (!pwd) { loginStatus.textContent = 'Enter password'; return; }
+        loginStatus.textContent = 'Signing in...';
+        try {
+            const res = await fetch('/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password: pwd })
+            });
+            if (!res.ok) {
+                const body = await res.json().catch(()=>({}));
+                loginStatus.textContent = body.error || 'Login failed';
+                return;
+            }
+            // --- Comportamiento añadido: igual que en cards.html ---
+            window.__IS_ADMIN__ = true;
+            if (loginModal) loginModal.style.display = 'none';
+            updateAdminUI();
+            // Si la página contiene las funciones de edición/recarga del wiki, llamarlas (mismo comportamiento que cards.html)
+            try {
+                if (typeof window.loadEditableList === 'function') {
+                    await window.loadEditableList();
+                } else if (typeof window.loadAndRenderWiki === 'function') {
+                    await window.loadAndRenderWiki();
+                }
+            } catch (e) {
+                // no bloquear si las funciones no existen o fallan
+                console.error('Post-login action error:', e);
+            }
+            // optionally refresh list endpoint (silent)
+            try { await fetch('/creature-book-list'); } catch(e){/*ignore*/};
+        } catch (err) {
+            console.error(err);
+            loginStatus.textContent = 'Network error';
+        }
+    });
+
+    // init
+    updateAdminUI();
+})();
+	</script>
+
+    <!-- Add Login Modal (desktop + mobile can use it) -->
+<div id="loginModal" style="display:none;position:fixed;inset:0;z-index:120;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;">
+	<div style="background:#0b0b0e;padding:18px;border-radius:10px;max-width:420px;width:92%;color:#fff;">
+		<h3 style="margin:0 0 8px 0">Admin Login</h3>
+		<input id="loginPassword" type="password" placeholder="Password" style="width:100%;padding:8px;margin-bottom:8px;border-radius:6px;border:1px solid #333;background:#071;color:white;">
+		<div style="display:flex;gap:8px;justify-content:flex-end;">
+			<button id="loginCancel" style="background:#333;color:#fff;padding:8px 10px;border-radius:6px;border:none">Cancel</button>
+			<button id="loginSubmit" style="background:#625fff;color:#fff;padding:8px 10px;border-radius:6px;border:none">Login</button>
+		</div>
+		<div id="loginStatus" style="margin-top:8px;color:#f88;font-size:13px;"></div>
+	</div>
+</div>
+<!-- add script near end of body (after existing scripts) to handle editable texts -->
+<script>
+(async function(){
+    async function fetchTexts() {
+        try {
+            const r = await fetch('/api/texts');
+            if (r.ok) return await r.json();
+        } catch(e){console.warn(e);}
+        return {};
+    }
+    async function updateTextServer(key, value) {
+        try {
+            const r = await fetch('/api/texts/update', {
+                method: 'POST',
+                headers: {'Content-Type':'application/json'},
+                body: JSON.stringify({ key, value })
+            });
+            return r.ok;
+        } catch(e){ console.error(e); return false; }
+    }
+
+    const texts = await fetchTexts();
+    document.querySelectorAll('[data-text-key]').forEach(el => {
+        const key = el.getAttribute('data-text-key');
+        if (texts && key in texts) {
+            el.textContent = texts[key];
+        }
+        if (window.__IS_ADMIN__) {
+            el.setAttribute('contenteditable','true');
+            el.style.outline = '1px dashed rgba(255,255,255,0.08)';
+            // save on blur
+            el.addEventListener('blur', async () => {
+                const val = el.textContent || '';
+                const ok = await updateTextServer(key, val);
+                // optional visual feedback
+                if (!ok) { el.style.background = 'rgba(255,0,0,0.06)'; setTimeout(()=>el.style.background='',800); }
+            });
+        }
+    });
+})();
+</script>
 </body>
 </html>
