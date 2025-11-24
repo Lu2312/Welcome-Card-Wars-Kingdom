@@ -1,7 +1,10 @@
-from flask import Flask, render_template, jsonify, send_from_directory, request, redirect
+from flask import Flask, render_template, jsonify, send_from_directory, request, redirect, session, abort  # add abort
 import os
 from datetime import datetime, timedelta
 import requests
+import re
+import json
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 
@@ -12,15 +15,71 @@ app.config['DEBUG'] = os.environ.get('DEBUG', 'False') == 'True'
 # Simple in-memory storage for online users (use Redis in production)
 online_users = {}
 
+# Base directory donde están las subcarpetas de criaturas
+BASE_DIR = os.path.join(os.path.dirname(__file__), 'Welcome Card Wars Kingdom_files', 'Creature Book')
+
+# ensure secret key for sessions (override in env for production)
+app.secret_key = os.environ.get('FLASK_SECRET_KEY', 'dev-secret-key')
+
+# Admin password (as requested)
+ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'admin')
+
+# Directory to store editable texts
+DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
+TEXTS_FILE = os.path.join(DATA_DIR, 'editable_texts.json')
+os.makedirs(DATA_DIR, exist_ok=True)
+
+def load_texts():
+    if os.path.exists(TEXTS_FILE):
+        try:
+            with open(TEXTS_FILE, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except:
+            pass
+    return {}
+
+def save_texts(texts):
+    try:
+        with open(TEXTS_FILE, 'w', encoding='utf-8') as f:
+            json.dump(texts, f, indent=2, ensure_ascii=False)
+        return True
+    except:
+        return False
+
+def is_image(filename):
+    return filename.lower().endswith(('.png', '.jpg', '.jpeg', '.webp', '.gif', '.bmp', '.svg'))
+
+def build_creature_list():
+    creatures = []
+    if not os.path.exists(BASE_DIR):
+        return creatures
+    for entry in sorted(os.listdir(BASE_DIR), key=lambda n: n.lower()):
+        full = os.path.join(BASE_DIR, entry)
+        if os.path.isdir(full):
+            images = sorted([f for f in os.listdir(full) if os.path.isfile(os.path.join(full, f)) and is_image(f)])
+            m = re.match(r'^\s*0*([0-9]+)', entry)
+            num = int(m.group(1)) if m else None
+            name = re.sub(r'^\s*\d+[_\-\s]*', '', entry).replace('_', ' ').replace('-', ' ').strip() or entry
+            creatures.append({'folder': entry, 'name': name, 'number': num, 'images': images})
+        else:
+            if is_image(entry):
+                name = os.path.splitext(entry)[0].replace('_', ' ').replace('-', ' ').strip()
+                creatures.append({'folder': '', 'name': name or entry, 'number': None, 'images': [entry]})
+    def sort_key(c):
+        return (c['number'] if isinstance(c.get('number'), int) else float('inf'), (c.get('name') or '').lower())
+    creatures.sort(key=sort_key)
+    return creatures
+
 @app.route('/')
 def index():
     """Home page"""
     return render_template('index.html')
 
 @app.route('/cards')
-def cards():
+def cards_page():
     """Creature Book page - Professional creature gallery"""
-    return render_template('creatures.html')
+    creatures = build_creature_list()
+    return render_template('cards.html', creatures=creatures, is_admin=bool(session.get('is_admin')))
 
 @app.route('/status')
 def status():
@@ -175,6 +234,131 @@ def cards_database():
     except requests.RequestException as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/creature-book-list')
+def creature_book_list():
+    return jsonify(build_creature_list())
+
+# ---------- new: login / logout endpoints ----------
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.get_json(silent=True) or request.form or {}
+    password = data.get('password') or data.get('pwd')
+    if not password:
+        return jsonify({'error': 'password required'}), 400
+    if password == ADMIN_PASSWORD:
+        session['is_admin'] = True
+        return jsonify({'ok': True})
+    return jsonify({'error': 'invalid credentials'}), 401
+
+@app.route('/logout', methods=['POST', 'GET'])
+def logout():
+    session.pop('is_admin', None)
+    return jsonify({'ok': True})
+
+def require_admin():
+    return bool(session.get('is_admin'))
+
+# ---------- protect rename endpoint ----------
+@app.route('/creature-book-rename', methods=['POST'])
+def creature_book_rename():
+    if not require_admin():
+        return jsonify({'error': 'forbidden'}), 403
+    data = request.get_json(silent=True) or {}
+    folder = data.get('folder')
+    new_name = data.get('newName') or data.get('new_name')
+    if not folder or not new_name:
+        return jsonify({'error': 'folder and newName required'}), 400
+
+    src = os.path.join(BASE_DIR, folder)
+    if not os.path.exists(src):
+        return jsonify({'error': 'source folder not found'}), 404
+
+    # Extraer prefijo numérico si existe
+    m = re.match(r'^(\d+)', folder)
+    if m:
+        prefix = m.group(1)
+        sanitized = re.sub(r'[^A-Za-z0-9 _-]', '', new_name).strip().replace(' ', '_')
+        dst_folder = f"{prefix}_{sanitized}" if sanitized else prefix
+    else:
+        sanitized = re.sub(r'[^A-Za-z0-9 _-]', '', new_name).strip().replace(' ', '_')
+        dst_folder = sanitized or folder
+
+    dst = os.path.join(BASE_DIR, dst_folder)
+    if os.path.exists(dst):
+        return jsonify({'error': 'destination folder already exists'}), 409
+
+    try:
+        os.rename(src, dst)
+        return jsonify({'ok': True, 'folder': dst_folder})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# ---------- protect upload endpoint ----------
+@app.route('/creature-book-upload', methods=['POST'])
+def creature_book_upload():
+    if not require_admin():
+        return jsonify({'error': 'forbidden'}), 403
+
+    folder = request.form.get('folder')
+    file = request.files.get('file')
+    if not folder or not file:
+        return jsonify({'error': 'folder and file required'}), 400
+
+    if not file.filename:
+        return jsonify({'error': 'no filename'}), 400
+    filename = secure_filename(file.filename)
+    if not filename:
+        return jsonify({'error': 'invalid filename'}), 400
+
+    target_dir = os.path.join(BASE_DIR, folder)
+    try:
+        os.makedirs(target_dir, exist_ok=True)
+    except Exception as e:
+        return jsonify({'error': f'cannot create folder: {e}'}), 500
+
+    save_path = os.path.join(target_dir, filename)
+    try:
+        file.save(save_path)
+        return jsonify({'ok': True, 'filename': filename})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# API to get editable texts
+@app.route('/api/texts', methods=['GET'])
+def api_get_texts():
+    texts = load_texts()
+    return jsonify(texts)
+
+# API to update a text entry (admin only)
+@app.route('/api/texts/update', methods=['POST'])
+def api_update_text():
+    if not require_admin():
+        return jsonify({'error': 'forbidden'}), 403
+    data = request.get_json(silent=True) or {}
+    key = data.get('key')
+    value = data.get('value')
+    if not key:
+        return jsonify({'error': 'key required'}), 400
+    texts = load_texts()
+    texts[key] = value
+    ok = save_texts(texts)
+    if not ok:
+        return jsonify({'error': 'failed saving'}), 500
+    return jsonify({'ok': True, 'key': key, 'value': value})
+
+# Servir archivos desde la carpeta "Creature Book" para que las rutas en cards.html funcionen.
+# La URL exacta coincide con la que usa la plantilla: /Welcome Card Wars Kingdom_files/Creature Book/...
+@app.route('/Welcome Card Wars Kingdom_files/Creature Book/<path:filepath>')
+def serve_creature_file(filepath):
+    # Protege que la ruta exista dentro de BASE_DIR
+    target = os.path.normpath(os.path.join(BASE_DIR, filepath))
+    if not target.startswith(os.path.normpath(BASE_DIR) + os.sep) and os.path.normpath(BASE_DIR) != os.path.normpath(target):
+        abort(404)
+    if not os.path.isfile(target):
+        abort(404)
+    directory, filename = os.path.split(target)
+    return send_from_directory(directory, filename)
+
 # Serve static files from Welcome Card Wars Kingdom_files folder
 @app.route('/Welcome Card Wars Kingdom_files/<path:filename>')
 def serve_files(filename):
@@ -191,10 +375,15 @@ def internal_error(error):
     """500 error handler"""
     return "<h1>500 - Internal Server Error</h1>", 500
 
+@app.route('/admin-login')
+def admin_login_page():
+    """Admin login page (separate template)"""
+    return render_template('adminlogin.html', is_admin=bool(session.get('is_admin')))
+
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 8000))
-    print(f"\n🎮 Card Wars Kingdom Server Starting...")
-    print(f"🌐 Open your browser at: http://localhost:{port}")
-    print(f"📁 Make sure your files are in the correct folders!")
-    print(f"\n✨ Press CTRL+C to stop the server\n")
+    print(f"\nCard Wars Kingdom Server Starting...")
+    print(f"Open your browser at: http://localhost:{port}")
+    print(f"Make sure your files are in the correct folders!")
+    print(f"\nPress CTRL+C to stop the server\n")
     app.run(host='0.0.0.0', port=port, debug=True)

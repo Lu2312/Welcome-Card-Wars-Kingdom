@@ -1,0 +1,13 @@
+[
+    {
+        "name": "Dragón",
+        "image": "cwk_wiki/dragon.png",
+        "description": "Una criatura poderosa que escupe fuego."
+    },
+    {
+        "name": "Unicornio",
+        "image": "cwk_wiki/unicornio.png",
+        "description": "Un ser mágico con un cuerno brillante."
+    }
+    // ...agrega más criaturas aquí...
+]

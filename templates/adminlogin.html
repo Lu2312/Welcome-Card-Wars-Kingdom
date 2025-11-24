@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="es">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1"/>
+	<title>Admin Login - Card Wars Kingdom</title>
+	<link rel="stylesheet" href="/Welcome Card Wars Kingdom_files/a53f14ee4cfcc268.css">
+	<style>
+		body { background:#050007;color:#fff;font-family:Inter,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial; padding:36px; }
+		.container{max-width:520px;margin:36px auto;padding:20px;background:#0b0b0e;border-radius:12px;border:1px solid #222;}
+		.input{width:100%;padding:10px;border-radius:8px;border:1px solid #333;background:#071;color:#fff;margin-bottom:10px}
+		.btn{background:#625fff;color:#fff;padding:10px 14px;border-radius:8px;border:none;cursor:pointer}
+		.link{color:#8f8fef;text-decoration:underline;cursor:pointer}
+		.row{display:flex;gap:8px;align-items:center;justify-content:flex-end}
+	</style>
+</head>
+<body>
+	<div class="container" role="main">
+		<h2>Admin Login</h2>
+		<p style="color:#cfcfcf;font-size:14px">Introduce la contraseña de administrador para habilitar edición.</p>
+		<input id="pwd" class="input" type="password" placeholder="Password" aria-label="Admin password">
+		<div class="row">
+			<button id="cancel" class="btn" style="background:#333">Cancel</button>
+			<button id="submit" class="btn">Sign in</button>
+			<button id="logout" class="btn" style="background:#a532ff;display:none;">Salir</button>
+		</div>
+		<div id="status" style="margin-top:10px;color:#f88;font-size:13px"></div>
+		<p style="margin-top:12px;font-size:13px;color:#aab">Once signed in you can access the editor. <a href="/cards" class="link">Open Cards</a></p>
+	</div>
+
+	<script>
+		// safe references (may be null on this page)
+		const editBtn = document.getElementById('editModeBtn') || null;
+		const adminBtn = document.getElementById('adminToggleBtn') || null;
+		const headerAdminBtn = document.getElementById('headerAdminBtn') || null;
+		const mobileAdminLink = document.getElementById('mobileAdminLink') || null;
+
+		// user-provided function (keeps same logic) but guarded to avoid exceptions
+		function updateAdminUI() {
+			try {
+				if (window.__IS_ADMIN__) {
+					if (editBtn) editBtn.style.display = '';
+					if (adminBtn) adminBtn.textContent = 'Logout';
+					if (headerAdminBtn) headerAdminBtn.textContent = 'Logout';
+					if (mobileAdminLink) mobileAdminLink.textContent = 'Logout';
+				} else {
+					if (editBtn) editBtn.style.display = 'none';
+					if (adminBtn) adminBtn.textContent = 'Admin Login';
+					if (headerAdminBtn) headerAdminBtn.textContent = 'Admin Login';
+					if (mobileAdminLink) mobileAdminLink.textContent = 'Admin Login';
+				}
+			} catch (e) {
+				// no-op to avoid breaking page if elements are missing
+				console.warn('updateAdminUI error', e);
+			}
+		}
+
+		// basic login flow (POST to /login)
+		(function(){
+			const pwdInput = document.getElementById('pwd');
+			const submit = document.getElementById('submit');
+			const cancel = document.getElementById('cancel');
+			const status = document.getElementById('status');
+			const logout = document.getElementById('logout');
+			const container = document.querySelector('.container');
+
+			// Si ya está logueado, oculta login y muestra logout
+			function showLoggedInUI() {
+				if (container) {
+					pwdInput.style.display = 'none';
+					submit.style.display = 'none';
+					cancel.style.display = 'none';
+					logout.style.display = '';
+					status.style.color = '#6f6';
+					status.textContent = 'Ya has iniciado sesión como administrador.';
+				}
+			}
+
+			if (window.__IS_ADMIN__) {
+				showLoggedInUI();
+			}
+
+			submit.addEventListener('click', async () => {
+				const pwd = (pwdInput.value || '').trim();
+				if (!pwd) { status.textContent = 'Enter password'; return; }
+				status.textContent = 'Signing in...';
+				try {
+					const res = await fetch('/login', {
+						method: 'POST',
+						headers: {'Content-Type':'application/json'},
+						body: JSON.stringify({ password: pwd })
+					});
+					if (!res.ok) {
+						const body = await res.json().catch(()=>({}));
+						status.textContent = body.error || 'Login failed';
+						return;
+					}
+					window.__IS_ADMIN__ = true;
+					updateAdminUI();
+					status.style.color = '#6f6';
+					status.textContent = 'Signed in. Redirecting...';
+					// redirect to cards editor page
+					setTimeout(()=> window.location.href = '/cards', 600);
+				} catch (err) {
+					console.error(err);
+					status.textContent = 'Network error';
+				}
+			});
+
+			cancel.addEventListener('click', () => { window.location.href = '/'; });
+
+			logout.addEventListener('click', async () => {
+				status.textContent = 'Cerrando sesión...';
+				try {
+					await fetch('/logout', { method: 'POST' });
+				} catch(e){}
+				window.__IS_ADMIN__ = false;
+				location.reload();
+			});
+
+			// initialize UI state
+			updateAdminUI();
+		})();
+	</script>
+</body>
+</html>
