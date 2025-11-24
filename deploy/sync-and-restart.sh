@@ -62,6 +62,11 @@ fi
 echo ""
 
 # 6. Reiniciar servicio
+echo -e "${YELLOW}6. Preparando directorio de logs de Gunicorn...${NC}"
+sudo mkdir -p /var/log/gunicorn
+sudo chown www-data:www-data /var/log/gunicorn
+sudo chmod 755 /var/log/gunicorn
+
 echo -e "${YELLOW}6. Reiniciando servicio...${NC}"
 sudo systemctl daemon-reload
 sudo systemctl restart cardwars-kingdom-net.service
