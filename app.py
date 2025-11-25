@@ -136,43 +136,122 @@ def card_museum():
 def download():
     return render_template('download.html')
 
-# ----------------------------------------------------
-# --- RUTAS ESTÁTICAS MODIFICADAS ---
-# ----------------------------------------------------
-
-# --- Servir archivos de la carpeta principal de assets ---
-# Esta ruta debe capturar:
-# /Welcome Card Wars Kingdom_files/a53f14ee4cfcc268.css
-# /Welcome Card Wars Kingdom_files/card-wars-kingdom-icon.png
-@app.route('/Welcome Card Wars Kingdom_files/<path:filename>')
-def serve_files(filename):
-    """Serve files from the main assets folder (except Creature Book)"""
-    # Usamos ASSETS_DIR que apunta a 'Welcome Card Wars Kingdom_files'
-    return send_from_directory(ASSETS_DIR, filename)
-
-# --- Servir imágenes de criaturas ---
-# Esta ruta debe capturar:
-# /Welcome Card Wars Kingdom_files/Creature Book/001_Giant/image.png
-@app.route('/Welcome Card Wars Kingdom_files/Creature Book/<path:filepath>')
-def serve_creature_file(filepath):
-    """Serve files from the Creature Book folder"""
-    # Protege que la ruta exista dentro de BASE_DIR
-    target = os.path.normpath(os.path.join(BASE_DIR, filepath))
-    
-    # Simple check to prevent path traversal
-    if not target.startswith(os.path.normpath(BASE_DIR) + os.sep) and os.path.normpath(BASE_DIR) != os.path.normpath(target):
-         abort(404)
-         
-    if not os.path.isfile(target):
-        abort(404)
+@app.route('/api/latest-release')
+def latest_release():
+    """Get latest release information from GitHub"""
+    try:
+        # GitHub API endpoint for latest release
+        github_api = 'https://api.github.com/repos/Sgsysysgsgsg/Card-Wars-Kingdom-Revived/releases/latest'
+        response = requests.get(github_api, timeout=10)
         
-    directory, filename = os.path.split(target)
-    return send_from_directory(directory, filename)
+        if response.status_code == 200:
+            release_data = response.json()
+            
+            # Extract relevant information
+            release_info = {
+                'version': release_data.get('tag_name', 'N/A'),
+                'name': release_data.get('name', 'N/A'),
+                'published_at': release_data.get('published_at', 'N/A'),
+                'body': release_data.get('body', ''),
+                'html_url': release_data.get('html_url', ''),
+                'assets': []
+            }
+            
+            # Extract download links for assets
+            for asset in release_data.get('assets', []):
+                release_info['assets'].append({
+                    'name': asset.get('name', ''),
+                    'size': asset.get('size', 0),
+                    'download_url': asset.get('browser_download_url', ''),
+                    'download_count': asset.get('download_count', 0)
+                })
+            
+            return jsonify(release_info)
+        else:
+            return jsonify({'error': 'Failed to fetch release data'}), 500
+            
+    except requests.RequestException as e:
+        return jsonify({'error': str(e)}), 500
 
+@app.route('/api/health')
+def health():
+    """Health check endpoint"""
+    return jsonify({
+        'status': 'healthy',
+        'service': 'Card Wars Kingdom',
+        'version': '1.0.0'
+    })
 
-# ----------------------------------------------------
-# --- ENDPOINTS API Y ADMIN ---
-# ----------------------------------------------------
+@app.route('/api/users/online')
+def users_online():
+    """Get number of users currently online"""
+    # Clean up inactive users (inactive for more than 5 minutes)
+    current_time = datetime.now()
+    active_users = {
+        user_id: last_seen 
+        for user_id, last_seen in online_users.items() 
+        if current_time - last_seen < timedelta(minutes=5)
+    }
+    online_users.clear()
+    online_users.update(active_users)
+    
+    return jsonify({
+        'count': len(online_users),
+        'timestamp': current_time.isoformat()
+    })
+
+@app.route('/api/users/heartbeat')
+def user_heartbeat():
+    """Update user's last seen timestamp"""
+    # In production, use session ID or user token
+    user_id = request.remote_addr
+    online_users[user_id] = datetime.now()
+    return jsonify({'status': 'ok'})
+
+@app.route('/api/creatures/list')
+def list_creatures():
+    """Get list of all creatures from Creature Book folder"""
+    try:
+        creature_book_dir = os.path.join(os.path.dirname(__file__), 'Welcome Card Wars Kingdom_files', 'Creature Book')
+        
+        if not os.path.exists(creature_book_dir):
+            return jsonify({'creatures': [], 'error': 'Creature Book folder not found'})
+        
+        creatures = []
+        for filename in os.listdir(creature_book_dir):
+            if filename.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.webp')):
+                creature_name = os.path.splitext(filename)[0].replace('_', ' ').title()
+                creatures.append({
+                    'name': creature_name,
+                    'image': filename
+                })
+        
+        # Ordenar alfabéticamente
+        creatures.sort(key=lambda x: x['name'])
+        
+        return jsonify({
+            'creatures': creatures,
+            'count': len(creatures)
+        })
+    except Exception as e:
+        return jsonify({'error': str(e), 'creatures': []}), 500
+
+@app.route('/api/cards/database')
+def cards_database():
+    """Get cards database from external API"""
+    try:
+        # Fetch data from external API
+        external_api = 'https://sireagle34.pythonanywhere.com/persist/static/Blueprints/db_Creatures.json'
+        response = requests.get(external_api, timeout=10)
+        
+        if response.status_code == 200:
+            cards_data = response.json()
+            return jsonify(cards_data)
+        else:
+            return jsonify({'error': 'Failed to fetch cards database'}), 500
+            
+    except requests.RequestException as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/creature-book-list')
 def creature_book_list():
@@ -196,9 +275,12 @@ def logout():
 
 # --- PROTECTED ENDPOINTS ---
 
+# ---------- protect rename endpoint ---------- (desactivado)
 @app.route('/creature-book-rename', methods=['POST'])
 @require_admin # Usamos el decorador
 def creature_book_rename():
+    # if not require_admin():
+    #     return jsonify({'error': 'forbidden'}), 403
     data = request.get_json(silent=True) or {}
     folder = data.get('folder')
     new_name = data.get('newName') or data.get('new_name')
@@ -239,9 +321,13 @@ def creature_book_rename():
     except Exception as e:
         return jsonify({'error': f'Renaming failed: {str(e)}'}), 500
 
+# ---------- protect upload endpoint ---------- (desactivado)
 @app.route('/creature-book-upload', methods=['POST'])
 @require_admin # Usamos el decorador
 def creature_book_upload():
+    # if not require_admin():
+    #     return jsonify({'error': 'forbidden'}), 403
+
     folder = request.form.get('folder')
     file = request.files.get('file')
     if not folder or not file:

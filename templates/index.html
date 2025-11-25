@@ -1,3 +1,16 @@
+{% extends "base.html" %}
+{% block additional_preloads %}
+<link rel="preload" as="image" href="/Welcome Card Wars Kingdom_files/home.gif">
+<link rel="preload" as="image" href="/Welcome Card Wars Kingdom_files/map-ice.png">
+<link rel="preload" as="image" href="/Welcome Card Wars Kingdom_files/map-candy2.png">
+<link rel="preload" as="image" href="/Welcome Card Wars Kingdom_files/map-candy.png">
+<link rel="preload" as="image" href="/Welcome Card Wars Kingdom_files/map-badlands.png">
+<link rel="preload" as="image" href="/Welcome Card Wars Kingdom_files/main-characters.png">
+<link rel="preload" as="image" href="/Welcome Card Wars Kingdom_files/main-map.png">
+<link rel="preload" as="image" href="/Welcome Card Wars Kingdom_files/discord-white.png">
+<link rel="preload" as="image" href="/Welcome Card Wars Kingdom_files/Cartoon_Network_2010.svg">
+{% endblock %}
+{% block content %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -183,7 +196,7 @@
                 <div class="flex flex-col lg:flex-row gap-12 items-start justify-between">
                     <div class="lg:max-w-[60%]">
                         <h1 class="mb-6 text-[42px] leading-[46px] sm:text-[50px] sm:leading-[54px] lg:text-[100px] lg:leading-[100px] font-extrabold tracking-tight drop-shadow-md">
-                            WELCOME TO <br> ADVENTURE TIME:<br><span class="text-brand-500">CARD WARS</span> <span class="text-brand-500">KINGDOM!</span>
+                            WELCOME TO <br> ADVENTURE TIME:<br><span class="text-brand-400">CARD WARS</span> <span class="text-brand-400">KINGDOM!</span>
                         </h1>
                         <p class="text-base sm:text-lg leading-relaxed text-gray-800" data-text-key="index.hero.desc">
                             <span class="font-bold text-xl">Dive into the fantastical world</span> of Adventure Time with Card Wars Kingdom, where you can battle your way to the top as a champion of the Card Wars! Join your favorite characters from the Land of Ooo in this epic card game, filled with strategic battles, powerful creatures, and exciting adventures.<br><br>
@@ -354,16 +367,26 @@
     const loginStatus = document.getElementById('loginStatus');
 
     function updateAdminUI() {
-        if (window.__IS_ADMIN__) {
-            editBtn.style.display = '';
-            adminBtn.textContent = 'Logout';
-            if (headerAdminBtn) headerAdminBtn.textContent = 'Logout';
-            if (mobileAdminLink) mobileAdminLink.textContent = 'Logout';
-        } else {
-            editBtn.style.display = 'none';
-            adminBtn.textContent = 'Admin Login';
-            if (headerAdminBtn) headerAdminBtn.textContent = 'Admin Login';
-            if (mobileAdminLink) mobileAdminLink.textContent = 'Admin Login';
+        const isAdmin = !!window.__IS_ADMIN__ || document.documentElement.getAttribute('data-is-admin') === '1';
+        document.documentElement.setAttribute('data-is-admin', isAdmin ? '1' : '0');
+
+        // Show/hide edit buttons
+        const buttons = [
+            document.getElementById('headerEditBtn'),
+            document.getElementById('pageEditBtn'),
+            document.getElementById('editModeBtn'),
+            document.getElementById('mobileEditLink')
+            // Removed undefined editBtn
+        ];
+        buttons.forEach(btn => {
+            if (btn) btn.style.display = isAdmin ? 'inline-flex' : 'none';
+        });
+
+        // Update admin toggle button
+        const adminToggle = document.getElementById('adminToggleBtn');
+        if (adminToggle) {
+            adminToggle.textContent = isAdmin ? 'Logout' : 'Login';
+            adminToggle.onclick = isAdmin ? logoutAdmin : showLoginModal;
         }
     }
 
@@ -431,14 +454,16 @@
 
     <!-- Add Login Modal (desktop + mobile can use it) -->
 <div id="loginModal" style="display:none;position:fixed;inset:0;z-index:120;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;">
-	<div style="background:#0b0b0e;padding:18px;border-radius:10px;max-width:420px;width:92%;color:#fff;">
+	<div class="login-modal-content" style="background:#0b0b0e;color:#fff;">
 		<h3 style="margin:0 0 8px 0">Admin Login</h3>
-		<input id="loginPassword" type="password" placeholder="Password" style="width:100%;padding:8px;margin-bottom:8px;border-radius:6px;border:1px solid #333;background:#071;color:white;">
-		<div style="display:flex;gap:8px;justify-content:flex-end;">
-			<button id="loginCancel" style="background:#333;color:#fff;padding:8px 10px;border-radius:6px;border:none">Cancel</button>
-			<button id="loginSubmit" style="background:#625fff;color:#fff;padding:8px 10px;border-radius:6px;border:none">Login</button>
-		</div>
-		<div id="loginStatus" style="margin-top:8px;color:#f88;font-size:13px;"></div>
+		<form>
+			<input id="loginPassword" type="password" placeholder="Password" style="width:100%;padding:8px;margin-bottom:8px;border-radius:6px;border:1px solid #333;background:#071;color:white;">
+			<div style="display:flex;gap:8px;justify-content:flex-end;">
+				<button id="loginCancel" style="background:#333;color:#fff;padding:8px 10px;border-radius:6px;border:none">Cancel</button>
+				<button id="loginSubmit" style="background:#625fff;color:#fff;padding:8px 10px;border-radius:6px;border:none">Login</button>
+			</div>
+			<div id="loginStatus" style="margin-top:8px;color:#f88;font-size:13px;"></div>
+		</form>
 	</div>
 </div>
 <!-- add script near end of body (after existing scripts) to handle editable texts -->
@@ -482,5 +507,4 @@
     });
 })();
 </script>
-</body>
-</html>
+{% endblock %}
