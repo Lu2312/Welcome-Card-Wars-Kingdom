@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preload" as="image" href="/Welcome Card Wars Kingdom_files/Main-Logo.webp">
+    <link rel="preload" as="image" href="/Welcome Card Wars Kingdom_files/card-wars-kingdom-icon.png">
+    {% block additional_preloads %}{% endblock %}
+    <link rel="stylesheet" href="/Welcome Card Wars Kingdom_files/a53f14ee4cfcc268.css" data-precedence="next">
+    <link rel="icon" href="https://i.postimg.cc/522JrMVz/AT-Card-Wars2-Logo-Eng-1.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com/">
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="anonymous">
+    <title>Welcome Card Wars Kingdom</title>
+    <meta name="description" content="Card Wars Kingdom – Free to Play Online Card Game based on Cartoon Network's Adventure Time.">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Rubik+Doodle+Shadow&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/Welcome Card Wars Kingdom_files/a53f14ee4cfcc268.css">
+    <style>
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(165, 50, 255, 0.5); }
+            50% { box-shadow: 0 0 40px rgba(165, 50, 255, 0.8); }
+        }
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+        .animate-fadeInUp {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+        .hero-gif-container {
+            animation: pulse-glow 2s ease-in-out infinite;
+            background: linear-gradient(135deg, rgba(165, 50, 255, 0.1) 0%, rgba(98, 95, 255, 0.1) 100%);
+            backdrop-filter: blur(10px);
+        }
+        /* Mobile menu: collapsed by default (existing markup uses max-h-0) */
+        .sm\:hidden.bg-\[\#0a0a0af0\] { transition: max-height .28s ease, padding .28s ease; overflow: hidden; }
+        .mobile-menu-open { max-height: 900px !important; padding: 12px 0 !important; }
+        /* Ensure images scale on small screens */
+        @media (max-width:640px) {
+            img { max-width: 100%; height: auto; }
+            .hero-gif-container { padding: 16px; }
+            .shiny-wrap { padding-left: 14px; padding-right:14px; }
+            /* reduce huge headings a mobile friendly size */
+            h1 { font-size: clamp(20px, 6vw, 56px); }
+        }
+
+        /* Ensure header logo scales properly on mobile (fix Android Chrome) */
+        .site-logo {
+            height: 36px;
+            max-height: 40px;
+            width: auto;
+            object-fit: contain;
+            display: block;
+        }
+        @media (min-width: 640px) {
+            .site-logo { height: 54px; max-height: 64px; }
+        }
+        @media (min-width: 1024px) {
+            .site-logo { height: 64px; max-height: 80px; }
+        }
+
+        /* Hide scrollbars */
+        * {
+            scrollbar-width: none; /* Firefox */
+        }
+        ::-webkit-scrollbar {
+            display: none; /* Safari, Chrome, Edge */
+        }
+    </style>
+</head>
+<body class="font-[Poppins] antialiased bg-black text-white">
+    {% block content %}{% endblock %}
+</body>
+</html>

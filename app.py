@@ -222,7 +222,7 @@ def cards_database():
     """Get cards database from external API"""
     try:
         # Fetch data from external API
-        external_api = 'https://cardwarskingdom.pythonanywhere.com/persist/static/Blueprints/db_Creatures.json'
+        external_api = 'https://sireagle34.pythonanywhere.com/persist/static/Blueprints/db_Creatures.json'
         response = requests.get(external_api, timeout=10)
         
         if response.status_code == 200:
@@ -258,11 +258,11 @@ def logout():
 def require_admin():
     return bool(session.get('is_admin'))
 
-# ---------- protect rename endpoint ----------
+# ---------- protect rename endpoint ---------- (desactivado)
 @app.route('/creature-book-rename', methods=['POST'])
 def creature_book_rename():
-    if not require_admin():
-        return jsonify({'error': 'forbidden'}), 403
+    # if not require_admin():
+    #     return jsonify({'error': 'forbidden'}), 403
     data = request.get_json(silent=True) or {}
     folder = data.get('folder')
     new_name = data.get('newName') or data.get('new_name')
@@ -293,11 +293,11 @@ def creature_book_rename():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-# ---------- protect upload endpoint ----------
+# ---------- protect upload endpoint ---------- (desactivado)
 @app.route('/creature-book-upload', methods=['POST'])
 def creature_book_upload():
-    if not require_admin():
-        return jsonify({'error': 'forbidden'}), 403
+    # if not require_admin():
+    #     return jsonify({'error': 'forbidden'}), 403
 
     folder = request.form.get('folder')
     file = request.files.get('file')
