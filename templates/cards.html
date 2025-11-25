@@ -1,145 +1,86 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="preload" as="image" href="/Welcome Card Wars Kingdom_files/Main-Logo.webp">
-    <link rel="preload" as="image" href="/Welcome Card Wars Kingdom_files/card-wars-kingdom-icon.png">
-    <link rel="stylesheet" href="/Welcome Card Wars Kingdom_files/a53f14ee4cfcc268.css" data-precedence="next">
-    <link rel="icon" href="https://i.postimg.cc/522JrMVz/AT-Card-Wars2-Logo-Eng-1.png">
-    <link rel="preconnect" href="https://fonts.googleapis.com/">
-    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="anonymous">
-    <title>Welcome Card Wars Kingdom</title>
-    <meta name="description" content="Card Wars Kingdom – Free to Play Online Card Game based on Cartoon Network's Adventure Time.">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Rubik+Doodle+Shadow&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/Welcome Card Wars Kingdom_files/a53f14ee4cfcc268.css">
-    <style>
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-        }
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
+{% extends "base.html" %}
+{% block content %}
+<!-- Server-injected state -->
+
+
+<script>
+    const data = JSON.parse('{{ creatures | tojson | safe }}');
+    const isAdmin = JSON.parse('{{ is_admin | tojson | safe }}');
+
+    // Define openEditorModal early to avoid "not a function" error
+    window.openEditorModal = async function(e) {
+        console.log('openEditorModal called');
+        e && e.preventDefault && e.preventDefault();
+        const editorModal = document.getElementById('editorModal');
+        if (editorModal) {
+            editorModal.style.display = 'flex';
+            if (typeof window.loadEditableList === 'function') {
+                await window.loadEditableList();
             }
         }
-        @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 0 20px rgba(165, 50, 255, 0.5); }
-            50% { box-shadow: 0 0 40px rgba(165, 50, 255, 0.8); }
-        }
-        .animate-float {
-            animation: float 3s ease-in-out infinite;
-        }
-        .animate-fadeInUp {
-            animation: fadeInUp 0.8s ease-out forwards;
-        }
-        .hero-gif-container {
-            animation: pulse-glow 2s ease-in-out infinite;
-            background: linear-gradient(135deg, rgba(165, 50, 255, 0.1) 0%, rgba(98, 95, 255, 0.1) 100%);
-            backdrop-filter: blur(10px);
-        }
-        /* Mobile menu: collapsed by default (existing markup uses max-h-0) */
-        [class*="sm:hidden"][class*="bg-[#0a0a0af0]"] { transition: max-height .28s ease, padding .28s ease; overflow: hidden; }
-        .mobile-menu-open { max-height: 900px !important; padding: 12px 0 !important; }
-        /* Ensure images scale on small screens */
-        @media (max-width:640px) {
-            img { max-width: 100%; height: auto; }
-            .hero-gif-container { padding: 16px; }
-            .shiny-wrap { padding-left: 14px; padding-right:14px; }
-            /* reduce huge headings a mobile friendly size */
-            h1 { font-size: clamp(20px, 6vw, 56px); }
-        }
+    };
+</script>
 
-        /* Ensure header logo scales properly on mobile (fix Android Chrome) */
-        .site-logo {
-            height: 36px;
-            max-height: 40px;
-            width: auto;
-            object-fit: contain;
-            display: block;
-        }
-        @media (min-width: 640px) {
-            .site-logo { height: 54px; max-height: 64px; }
-        }
-        @media (min-width: 1024px) {
-            .site-logo { height: 64px; max-height: 80px; }
-        }
-    </style>
-</head>
-<body class="font-[Poppins] antialiased bg-black text-white">
-	<!-- Server-injected state -->
-	<script>
-		// Inyectado por Flask: creatures (array) e is_admin (bool)
-		window.__CREATURES__ = {{ creatures|default([]) | tojson | safe }};
-		window.__IS_ADMIN__ = {{ is_admin | default(false) | tojson | safe }};
-	</script>
 
-    <nav class="w-full fixed top-0 z-50 backdrop-blur-xl bg-[#00000080] border-b border-white/10 shadow-[0_2px_30px_-8px_rgba(165,50,255,0.4)] site-header">
-        <div class="mx-auto max-w-7xl px-4 h-16 flex items-center justify-between">
-            <a class="flex items-center gap-2" href="/">
-                <img src="/Welcome Card Wars Kingdom_files/Main-Logo.webp" alt="CWK" class="site-logo drop-shadow-lg">
-            </a>
 
-            <!-- Desktop links -->
-            <div class="hidden sm:flex items-center gap-6 font-medium tracking-wide">
-                <a class="text-white/80 hover:text-white transition" href="/">Home</a>
-                <a class="text-white hover:text-white transition border-b-2 border-brand-500" href="/cards">Cards</a>
-                <a class="text-white/80 hover:text-white transition" href="/status">Status</a>
-                <a class="text-white/80 hover:text-white transition" href="https://discord.gg/card-wars-revived-1227932764117143642">Support</a>
-            </div>
+<nav class="w-full fixed top-0 z-50 backdrop-blur-xl bg-[#00000080] border-b border-white/10 shadow-[0_2px_30px_-8px_rgba(165,50,255,0.4)] site-header">
+    <div class="mx-auto max-w-7xl px-4 h-16 flex items-center justify-between">
+        <a class="flex items-center gap-2" href="/">
+            <img src="/Welcome Card Wars Kingdom_files/Main-Logo.webp" alt="CWK" class="site-logo drop-shadow-lg">
+        </a>
 
-            <!-- Desktop download button -->
-            <a href="/download" class="hidden sm:flex shiny-wrap relative inline-flex items-center justify-center rounded-md bg-brand-500 px-5 py-3 text-white shadow hover:opacity-95 transition">
-                <span class="relative z-[1] flex items-center gap-2">
-                    <span class="material-symbols-outlined">download</span>Download
-                </span>
-            </a>
+        <!-- Desktop links -->s
+        <div class="hidden sm:flex items-center gap-6 font-medium tracking-wide">
+            <a class="text-white/80 hover:text-white transition" href="/">Home</a>
+            <a class="text-white hover:text-white transition border-b-2 border-brand-500" href="/cards">Cards</a>
+            <a class="text-white/80 hover:text-white transition" href="/status">Status</a>
+            <a class="text-white/80 hover:text-white transition" href="https://discord.gg/card-wars-revived-1227932764117143642">Support</a>
+        </div>
 
-            <!-- Desktop edit button (visible to admin) -->
-            <button id="headerEditBtn"
-    class="sm:inline-flex items-center gap-2 px-3 py-2 rounded-md border border-white/10 text-white"
-    style="background:transparent;margin-left:8px;display:block;"
-    title="C: rename cards and add images"
-    onclick="window.openEditorModal(event)">
-    ✎ Edit Creatures
+        <!-- Desktop download button -->
+        <a href="/download" class="hidden sm:flex shiny-wrap relative inline-flex items-center justify-center rounded-md bg-brand-500 px-5 py-3 text-white shadow hover:opacity-95 transition">
+            <span class="relative z-[1] flex items-center gap-2">
+                <span class="material-symbols-outlined">download</span>Download
+            </span>
+        </a>
+
+        <!-- Desktop edit button (visible to admin) -->
+        <button id="headerEditBtn"
+class="sm:inline-flex items-center gap-2 px-3 py-2 rounded-md border border-white/10 text-white"
+style="background:transparent;margin-left:8px;display:block;"
+title="C: rename cards and add images">
+✎ Edit Creatures
 </button>
 
-            <!-- Desktop admin button -->
-            <button id="headerAdminBtn" class="hidden sm:inline-flex items-center gap-2 px-3 py-2 rounded-md border border-white/10 text-white" style="background:transparent;margin-left:8px;">
-                Admin Login
-            </button>
+        <!-- Desktop admin button -->
+        <button id="headerAdminBtn" class="hidden sm:inline-flex items-center gap-2 px-3 py-2 rounded-md border border-white/10 text-white" style="background:transparent;margin-left:8px;">
+            Admin Login
+        </button>
 
-            <!-- Mobile menu button (visible on small screens) -->
-            <button id="mobileMenuBtn" aria-label="Open menu" aria-expanded="false" class="sm:hidden inline-flex h-9 w-9 items-center justify-center rounded-md text-white hover:bg-white/10 transition">
-                <span class="material-symbols-outlined text-xl">menu</span>
-            </button>
+        <!-- Mobile menu button (visible on small screens) -->
+        <button id="mobileMenuBtn" aria-label="Open menu" aria-expanded="false" class="sm:hidden inline-flex h-9 w-9 items-center justify-center rounded-md text-white hover:bg-white/10 transition">
+            <span class="material-symbols-outlined text-xl">menu</span>
+        </button>
+    </div>
+
+    <!-- Mobile panel (collapsible) -->
+    <div id="mobilePanel" class="mobile-panel sm:hidden bg-[#0a0a0af0] backdrop-blur-xl">
+        <div class="px-4 py-2">
+            <a href="/" aria-label="Home">Home</a>
+            <a href="/cards" aria-label="Cards">Cards</a>
+            <a href="/status" aria-label="Status">Status</a>
+            <a href="/download" aria-label="Download">Download</a>
+            <a href="#" id="mobileEditLink" class="block text-white/90 hover:text-white py-2" style="display:block;">Edit Creatures</a>
+            <a href="#" id="mobileAdminLink" aria-label="Admin">Admin Login</a>
+            <a href="https://discord.gg/card-wars-revived-1227932764117143642" target="_blank" rel="noopener">Support</a>
         </div>
+    </div>
+</nav>
 
-        <!-- Mobile panel (collapsible) -->
-        <div id="mobilePanel" class="mobile-panel sm:hidden bg-[#0a0a0af0] backdrop-blur-xl">
-            <div class="px-4 py-2">
-                <a href="/" aria-label="Home">Home</a>
-                <a href="/cards" aria-label="Cards">Cards</a>
-                <a href="/status" aria-label="Status">Status</a>
-                <a href="/download" aria-label="Download">Download</a>
-                <a href="#" id="mobileEditLink" class="block text-white/90 hover:text-white py-2" style="display:block;" onclick="window.openEditorModal(event)">Edit Creatures</a>
-                <a href="#" id="mobileAdminLink" aria-label="Admin">Admin Login</a>
-                <a href="https://discord.gg/card-wars-revived-1227932764117143642" target="_blank" rel="noopener">Support</a>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Add this button near the top of <main> for page editing -->
+<!-- Add this button near the top of <main> for page editing -->
 <main class="pt-16 min-h-screen bg-gradient-to-b from-black via-[#0a0a0d] to-black">
     <div style="position:fixed;left:20px;top:80px;z-index:90;">
-        <button id="pageEditBtn" style="display:block;background:linear-gradient(135deg,#a532ff,#625fff);color:#fff;border:none;padding:12px 16px;border-radius:12px;box-shadow:0 8px 30px rgba(101,37,255,0.25);cursor:pointer;" onclick="window.openEditorModal(event)">
+        <button id="pageEditBtn" style="display:block;background:linear-gradient(135deg,#a532ff,#625fff);color:#fff;border:none;padding:12px 16px;border-radius:12px;box-shadow:0 8px 30px rgba(101,37,255,0.25);cursor:pointer;">
             ✎ Edit Page (Rename & Add Images)
         </button>
     </div>
@@ -236,7 +177,16 @@
         <div id="editorHelp" style="font-size:12px;color:#cfcfcf;margin-bottom:10px;">
             Rename folders or upload images. Backend endpoints expected:
             POST /creature-book-rename { folder, newName } and
-            POST /creature-book-upload (form: folder, file)
+            POST /creature-book-upload (form: folder, file)        
+        
+
+            
+          const res = await fetch('/creature-book-rename', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ folder, newName })
+        });
+
         </div>
 
         <div id="editorList" style="display:flex;flex-direction:column;gap:10px;max-height:60vh;overflow:auto;padding-right:8px;"></div>
@@ -564,10 +514,13 @@ async function loadAndRenderWiki() {
  
 // Define loadEditableList function
 async function loadEditableList() {
+    console.log('loadEditableList called');
     try {
         const resp = await fetch('/creature-book-list');
+        console.log('fetch response:', resp.status);
         if (!resp.ok) throw new Error('Failed to load list');
         const creatures = await resp.json();
+        console.log('creatures received:', creatures.length);
         renderEditableList(creatures);
     } catch (err) {
         console.error('loadEditableList error:', err);
@@ -606,19 +559,18 @@ document.addEventListener('DOMContentLoaded', () => {
         // Esta función abre el modal de edición y carga la lista editable de criaturas.
         // Si la función loadEditableList no existe, muestra un mensaje de depuración.
         async function openEditorModal(e) {
+            console.log('openEditorModal called');
             e && e.preventDefault && e.preventDefault();
-            const isAdmin = !!window.__IS_ADMIN__ || document.documentElement.getAttribute('data-is-admin') === '1';
-            if (!isAdmin) {
-                alert('Debes iniciar sesión como administrador para editar. Haz clic en "Admin Login" para continuar.');
-                return;
-            }
+            console.log('Opening modal');
             if (editorModal) editorModal.style.display = 'flex';
             if (typeof window.loadEditableList === 'function') {
+                console.log('Calling loadEditableList');
                 await window.loadEditableList();
                 // Actualiza el texto de ayuda para dejar claro el propósito
                 const help = document.getElementById('editorHelp');
                 if (help) help.textContent = 'Puedes renombrar las cartas y añadir imágenes a las criaturas. Haz clic en "Rename" para cambiar el nombre de la carta y en "Upload" para añadir una imagen.';
             } else {
+                console.log('loadEditableList not found');
                 reportDebug('No se encontró la función loadEditableList. Verifica que esté definida en tu JS principal.');
                 const dbg = document.getElementById('debugOutput');
                 if (dbg) dbg.textContent = 'No se encontró la función loadEditableList. Revisa tu código JS principal.';
@@ -761,7 +713,7 @@ function updateAdminUI() {
     const isAdmin = !!window.__IS_ADMIN__ || document.documentElement.getAttribute('data-is-admin') === '1';
     document.documentElement.setAttribute('data-is-admin', isAdmin ? '1' : '0');
 
-    // Show/hide edit buttons
+    // Show/hide edit buttons (siempre visibles)
     const buttons = [
         document.getElementById('headerEditBtn'),
         document.getElementById('pageEditBtn'),
@@ -769,7 +721,7 @@ function updateAdminUI() {
         document.getElementById('mobileEditLink')
     ];
     buttons.forEach(btn => {
-        if (btn) btn.style.display = isAdmin ? 'inline-flex' : 'none';
+        if (btn) btn.style.display = 'inline-flex'; // siempre visible
     });
 
     // Update admin toggle button
@@ -857,3 +809,5 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initial UI update
     updateAdminUI();
 });
+{% endblock %}
+
