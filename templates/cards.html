@@ -16,6 +16,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/Welcome Card Wars Kingdom_files/a53f14ee4cfcc268.css">
     <style>
+        /* ... (Tus estilos CSS se mantienen igual) ... */
         @keyframes float {
             0%, 100% { transform: translateY(0px); }
             50% { transform: translateY(-20px); }
@@ -71,15 +72,59 @@
         @media (min-width: 1024px) {
             .site-logo { height: 64px; max-height: 80px; }
         }
+
+        /* --- Estilos para el Modal de Edición --- */
+        .editor-modal-content {
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid #333;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+        .editor-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px;
+            background: #1a1a1e;
+            border-radius: 6px;
+            border: 1px solid #222;
+        }
+        .editor-item input[type="text"] {
+            flex-grow: 1;
+            padding: 6px;
+            border-radius: 4px;
+            border: 1px solid #444;
+            background: #000;
+            color: white;
+        }
+        .editor-item button {
+            padding: 6px 10px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .editor-item .rename-btn {
+            background: #5050ff; /* Azul para renombrar */
+            color: white;
+        }
+        .editor-item .upload-btn {
+            background: #32a532; /* Verde para subir */
+            color: white;
+        }
+        .editor-item input[type="file"] {
+            width: 120px;
+            font-size: 12px;
+            padding: 4px;
+        }
     </style>
 </head>
 <body class="font-[Poppins] antialiased bg-black text-white">
-	<!-- Server-injected state -->
-	<script>
-		// Inyectado por Flask: creatures (array) e is_admin (bool)
-		window.__CREATURES__ = {{ creatures|default([]) | tojson | safe }};
-		window.__IS_ADMIN__ = {{ is_admin | default(false) | tojson | safe }};
-	</script>
+    <script>
+        // Inyectado por Flask: creatures (array) e is_admin (bool)
+        window.__CREATURES__ = {{ creatures|default([]) | tojson | safe }};
+        window.__IS_ADMIN__ = {{ is_admin | default(false) | tojson | safe }};
+    </script>
 
     <nav class="w-full fixed top-0 z-50 backdrop-blur-xl bg-[#00000080] border-b border-white/10 shadow-[0_2px_30px_-8px_rgba(165,50,255,0.4)] site-header">
         <div class="mx-auto max-w-7xl px-4 h-16 flex items-center justify-between">
@@ -87,7 +132,6 @@
                 <img src="/Welcome Card Wars Kingdom_files/Main-Logo.webp" alt="CWK" class="site-logo drop-shadow-lg">
             </a>
 
-            <!-- Desktop links -->
             <div class="hidden sm:flex items-center gap-6 font-medium tracking-wide">
                 <a class="text-white/80 hover:text-white transition" href="/">Home</a>
                 <a class="text-white hover:text-white transition border-b-2 border-brand-500" href="/cards">Cards</a>
@@ -95,62 +139,54 @@
                 <a class="text-white/80 hover:text-white transition" href="https://discord.gg/card-wars-revived-1227932764117143642">Support</a>
             </div>
 
-            <!-- Desktop download button -->
             <a href="/download" class="hidden sm:flex shiny-wrap relative inline-flex items-center justify-center rounded-md bg-brand-500 px-5 py-3 text-white shadow hover:opacity-95 transition">
                 <span class="relative z-[1] flex items-center gap-2">
                     <span class="material-symbols-outlined">download</span>Download
                 </span>
             </a>
 
-            <!-- Desktop edit button (visible to admin) -->
             <button id="headerEditBtn"
     class="sm:inline-flex items-center gap-2 px-3 py-2 rounded-md border border-white/10 text-white"
-    style="background:transparent;margin-left:8px;display:block;"
+    style="background:transparent;margin-left:8px;display:none;"
     title="C: rename cards and add images"
     onclick="window.openEditorModal(event)">
     ✎ Edit Creatures
 </button>
 
-            <!-- Desktop admin button -->
             <button id="headerAdminBtn" class="hidden sm:inline-flex items-center gap-2 px-3 py-2 rounded-md border border-white/10 text-white" style="background:transparent;margin-left:8px;">
                 Admin Login
             </button>
 
-            <!-- Mobile menu button (visible on small screens) -->
             <button id="mobileMenuBtn" aria-label="Open menu" aria-expanded="false" class="sm:hidden inline-flex h-9 w-9 items-center justify-center rounded-md text-white hover:bg-white/10 transition">
                 <span class="material-symbols-outlined text-xl">menu</span>
             </button>
         </div>
 
-        <!-- Mobile panel (collapsible) -->
-        <div id="mobilePanel" class="mobile-panel sm:hidden bg-[#0a0a0af0] backdrop-blur-xl">
-            <div class="px-4 py-2">
-                <a href="/" aria-label="Home">Home</a>
-                <a href="/cards" aria-label="Cards">Cards</a>
-                <a href="/status" aria-label="Status">Status</a>
-                <a href="/download" aria-label="Download">Download</a>
-                <a href="#" id="mobileEditLink" class="block text-white/90 hover:text-white py-2" style="display:block;" onclick="window.openEditorModal(event)">Edit Creatures</a>
-                <a href="#" id="mobileAdminLink" aria-label="Admin">Admin Login</a>
-                <a href="https://discord.gg/card-wars-revived-1227932764117143642" target="_blank" rel="noopener">Support</a>
+        <div id="mobilePanel" class="mobile-panel sm:hidden bg-[#0a0a0af0] backdrop-blur-xl" style="max-height:0;padding:0;">
+            <div class="px-4 py-2 flex flex-col">
+                <a class="text-white/90 hover:text-white py-2" href="/" aria-label="Home">Home</a>
+                <a class="text-white/90 hover:text-white py-2" href="/cards" aria-label="Cards">Cards</a>
+                <a class="text-white/90 hover:text-white py-2" href="/status" aria-label="Status">Status</a>
+                <a class="text-white/90 hover:text-white py-2" href="/download" aria-label="Download">Download</a>
+                <a href="#" id="mobileEditLink" class="block text-white/90 hover:text-white py-2" style="display:none;" onclick="window.openEditorModal(event)">Edit Creatures</a>
+                <a href="#" id="mobileAdminLink" class="block text-white/90 hover:text-white py-2" aria-label="Admin">Admin Login</a>
+                <a href="https://discord.gg/card-wars-revived-1227932764117143642" target="_blank" rel="noopener" class="text-white/90 hover:text-white py-2">Support</a>
             </div>
         </div>
     </nav>
 
-    <!-- Add this button near the top of <main> for page editing -->
-<main class="pt-16 min-h-screen bg-gradient-to-b from-black via-[#0a0a0d] to-black">
+    <main class="pt-16 min-h-screen bg-gradient-to-b from-black via-[#0a0a0d] to-black">
     <div style="position:fixed;left:20px;top:80px;z-index:90;">
-        <button id="pageEditBtn" style="display:block;background:linear-gradient(135deg,#a532ff,#625fff);color:#fff;border:none;padding:12px 16px;border-radius:12px;box-shadow:0 8px 30px rgba(101,37,255,0.25);cursor:pointer;" onclick="window.openEditorModal(event)">
+        <button id="pageEditBtn" style="display:none;background:linear-gradient(135deg,#a532ff,#625fff);color:#fff;border:none;padding:12px 16px;border-radius:12px;box-shadow:0 8px 30px rgba(101,37,255,0.25);cursor:pointer;" onclick="window.openEditorModal(event)">
             ✎ Edit Page (Rename & Add Images)
         </button>
     </div>
 
-        <!-- Hero Section -->
         <section class="relative py-20 overflow-hidden">
             <div class="absolute inset-0 bg-gradient-to-r from-brand-500/20 to-purple-600/20 blur-3xl"></div>
             <div class="max-w-7xl mx-auto px-4 relative z-10">
                 <div class="text-center space-y-4">
-                    <!-- make page title & description editable -->
-<h1 class="text-5xl sm:text-6xl lg:text-7xl font-extrabold drop-shadow-2xl" style="font-family:'Rubik Doodle Shadow',system-ui" data-text-key="cards.hero.title">
+                    <h1 class="text-5xl sm:text-6xl lg:text-7xl font-extrabold drop-shadow-2xl" style="font-family:'Rubik Doodle Shadow',system-ui" data-text-key="cards.hero.title">
     🃏 Card Database
 </h1>
 <p class="text-lg sm:text-xl text-white/80 max-w-2xl mx-auto" data-text-key="cards.hero.desc">
@@ -160,22 +196,18 @@
             </div>
         </section>
 
-        <!-- Filters & Search -->
         <section class="max-w-7xl mx-auto px-4 py-8">
             <div class="bg-white/5 backdrop-blur-lg rounded-2xl p-6 border border-white/10 shadow-2xl">
                 <div class="mt-4 text-center text-sm text-white/60">
                     <span id="cardCount">Showing all cards</span>
                 </div>
 
-                <!-- Lista de carpetas (creatures) -->
                 <div id="creatureFolders" class="mt-4 flex flex-wrap gap-2"></div>
 
-                <!-- Debug output: muestra JSON recibido / errores -->
                 <pre id="debugOutput" class="mt-3 p-3 bg-white/5 text-xs rounded-md overflow-auto max-h-40"></pre>
             </div>
         </section>
 
-        <!-- Cards Grid -->
         <section class="max-w-7xl mx-auto px-4 py-12">
             <div id="cardsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {# Server-side fallback: render cards from injected "creatures" so page shows even if JS fails #}
@@ -198,7 +230,7 @@
                 </article>
                 {% endfor %}
              </div>
-         </section>
+           </section>
     </main>
 
     <footer class="bg-[#0a0a0d] py-10 border-t border-white/10 backdrop-blur-lg mt-20">
@@ -216,18 +248,16 @@
         </div>
     </footer>
 
-    <!-- floating edit button -->
-<button id="editModeBtn" title="Edit creatures" style="position:fixed;right:20px;bottom:20px;z-index:90;display:block;background:linear-gradient(135deg,#a532ff,#625fff);color:#fff;border:none;padding:12px 16px;border-radius:12px;box-shadow:0 8px 30px rgba(101,37,255,0.25);cursor:pointer;" onclick="window.openEditorModal(event)">
+    <button id="editModeBtn" title="Edit creatures" style="position:fixed;right:20px;bottom:20px;z-index:90;display:none;background:linear-gradient(135deg,#a532ff,#625fff);color:#fff;border:none;padding:12px 16px;border-radius:12px;box-shadow:0 8px 30px rgba(101,37,255,0.25);cursor:pointer;" onclick="window.openEditorModal(event)">
     ✎ Edit Creatures
 </button>
 
 <button id="adminToggleBtn" title="Login/Logout" style="display:block;position:fixed;right:20px;bottom:80px;z-index:90;background:#222;color:#fff;border:none;padding:10px 12px;border-radius:10px;cursor:pointer;">
-	<!-- text replaced by JS -->
+    Admin Login
 </button>
 
-<!-- Editor modal (hidden by default) -->
 <div id="editorModal" style="display:none;position:fixed;inset:0;z-index:100;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;padding:24px;overflow:auto;">
-    <div class="editor-modal-content" style="background:#0b0b0e;color:#fff;max-width:1000px;">
+    <div class="editor-modal-content" style="background:#0b0b0e;color:#fff;max-width:1000px;width:100%;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
             <h2 style="margin:0;font-size:18px;">Edit Creature Book</h2>
             <button id="editorClose" style="background:transparent;border:1px solid #333;color:#fff;padding:6px 10px;border-radius:8px;cursor:pointer;">Close</button>
@@ -239,7 +269,9 @@
             POST /creature-book-upload (form: folder, file)
         </div>
 
-        <div id="editorList" style="display:flex;flex-direction:column;gap:10px;max-height:60vh;overflow:auto;padding-right:8px;"></div>
+        <div id="editorList" style="display:flex;flex-direction:column;gap:10px;max-height:60vh;overflow:auto;padding-right:8px;">
+            <div class="text-white/60">Cargando lista...</div>
+        </div>
 
         <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px;">
             <button id="editorRefresh" style="background:#222;color:#fff;padding:8px 12px;border-radius:8px;border:none;cursor:pointer;">Refresh</button>
@@ -248,17 +280,16 @@
     </div>
 </div>
 
-<!-- Add Login Modal (place near editor modal or end of body) -->
 <div id="loginModal" style="display:none;position:fixed;inset:0;z-index:120;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;">
-	<div class="login-modal-content" style="background:#0b0b0e;color:#fff;">
-		<h3 style="margin:0 0 8px 0">Admin Login</h3>
-		<input id="loginPassword" type="password" placeholder="Password" style="width:100%;padding:8px;margin-bottom:8px;border-radius:6px;border:1px solid #333;background:#071;color:white;">
-		<div style="display:flex;gap:8px;justify-content:flex-end;">
-			<button id="loginCancel" style="background:#333;color:#fff;padding:8px 10px;border-radius:6px;border:none">Cancel</button>
-			<button id="loginSubmit" style="background:#625fff;color:#fff;padding:8px 10px;border-radius:6px;border:none">Login</button>
-		</div>
-		<div id="loginStatus" style="margin-top:8px;color:#f88;font-size:13px;"></div>
-	</div>
+    <div class="login-modal-content" style="background:#0b0b0e;color:#fff;padding:20px;border-radius:10px;box-shadow:0 10px 40px rgba(0,0,0,0.5);">
+        <h3 style="margin:0 0 8px 0">Admin Login</h3>
+        <input id="loginPassword" type="password" placeholder="Password" style="width:100%;padding:8px;margin-bottom:8px;border-radius:6px;border:1px solid #333;background:#17171a;color:white;">
+        <div style="display:flex;gap:8px;justify-content:flex-end;">
+            <button id="loginCancel" style="background:#333;color:#fff;padding:8px 10px;border-radius:6px;border:none">Cancel</button>
+            <button id="loginSubmit" style="background:#625fff;color:#fff;padding:8px 10px;border-radius:6px;border:none">Login</button>
+        </div>
+        <div id="loginStatus" style="margin-top:8px;color:#f88;font-size:13px;"></div>
+    </div>
 </div>
 
     <script>
@@ -267,11 +298,21 @@ function reportDebug(msg) {
     try {
         const dbg = document.getElementById('debugOutput');
         if (dbg) {
-            const prefix = new Date().toISOString() + ' › ';
-            dbg.textContent = prefix + String(msg) + '\n\n' + (dbg.textContent || '');
+            const prefix = new Date().toISOString().substring(11, 19) + ' › ';
+            // Limita el historial de debug para que no crezca demasiado
+            const maxLines = 10;
+            const currentContent = dbg.textContent || '';
+            const lines = currentContent.split('\n').filter(line => line.trim() !== '');
+            const newContent = prefix + String(msg) + '\n' + lines.slice(0, maxLines - 1).join('\n');
+            dbg.textContent = newContent;
         }
     } catch (e) { /* ignore */ }
     try { console.log('[cards debug]', msg); } catch(e) {}
+}
+
+// Placeholder data URL for missing images
+function placeholderDataUrl() {
+    return "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect width='100%25' height='100%25' fill='%23333'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='10' fill='white'%3ENo+Image%3C/text%3E%3C/svg%3E";
 }
 
 // Capture global uncaught errors so we can see why rendering stops
@@ -282,12 +323,326 @@ window.addEventListener('unhandledrejection', (ev) => {
     reportDebug('Unhandled promise rejection: ' + (ev.reason && ev.reason.message ? ev.reason.message : JSON.stringify(ev.reason)));
 });
 
+// ----------------------------------------------------------------------
+// --- FUNCIONES DE ADMINISTRACIÓN: LOGIN / LOGOUT / UI SETUP ---
+// ----------------------------------------------------------------------
+
+function updateAdminUI(isAdmin) {
+    // Establece el estado de admin globalmente para que otros scripts lo detecten
+    window.__IS_ADMIN__ = isAdmin;
+    document.documentElement.setAttribute('data-is-admin', isAdmin ? '1' : '0');
+
+    // Actualiza los textos y visibilidad de los botones de admin/edición
+    const adminBtn = document.getElementById('adminToggleBtn');
+    const editBtns = [
+        document.getElementById('editModeBtn'), 
+        document.getElementById('headerEditBtn'),
+        document.getElementById('pageEditBtn'),
+        document.getElementById('mobileEditLink')
+    ].filter(Boolean);
+
+    if (adminBtn) adminBtn.textContent = isAdmin ? 'Admin Logout' : 'Admin Login';
+    editBtns.forEach(btn => btn.style.display = isAdmin ? 'block' : 'none');
+
+    // Esto también disparará enableAdminCardEdit() vía MutationObserver
+}
+
+async function handleLogin() {
+    const passwordInput = document.getElementById('loginPassword');
+    const statusDiv = document.getElementById('loginStatus');
+    const password = passwordInput ? passwordInput.value : '';
+
+    if (!password) {
+        if (statusDiv) statusDiv.textContent = 'Password is required.';
+        return;
+    }
+
+    if (statusDiv) statusDiv.textContent = 'Logging in...';
+
+    try {
+        const resp = await fetch('/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password: password })
+        });
+
+        const data = await resp.json();
+
+        if (resp.ok && data.ok) {
+            updateAdminUI(true);
+            if (statusDiv) statusDiv.textContent = 'Login successful!';
+            document.getElementById('loginModal').style.display = 'none';
+            reportDebug('Admin login successful.');
+            // Recarga la lista para que aparezcan los botones de edición
+            await loadAndRenderWiki(); 
+        } else {
+            if (statusDiv) statusDiv.textContent = data.error || 'Login failed.';
+            updateAdminUI(false);
+        }
+    } catch (error) {
+        if (statusDiv) statusDiv.textContent = 'Network error during login.';
+        console.error('Login error:', error);
+    }
+}
+
+async function handleLogout() {
+    if (!confirm('Are you sure you want to log out?')) return;
+    try {
+        const resp = await fetch('/logout', { method: 'POST' });
+        // No importa si falla, limpiamos la UI de todas formas
+        updateAdminUI(false);
+        alert('Logged out.');
+        reportDebug('Admin logged out.');
+        await loadAndRenderWiki();
+    } catch (error) {
+        updateAdminUI(false);
+        alert('Logged out (network error).');
+    }
+}
+
+function openLoginModal() {
+    const modal = document.getElementById('loginModal');
+    if (modal) {
+        modal.style.display = 'flex';
+        document.getElementById('loginPassword').value = '';
+        document.getElementById('loginStatus').textContent = '';
+    }
+}
+
+function closeLoginModal() {
+    const modal = document.getElementById('loginModal');
+    if (modal) modal.style.display = 'none';
+}
+
+function setupAdminUI() {
+    // 1. Initial UI update based on server-injected state
+    updateAdminUI(!!window.__IS_ADMIN__);
+
+    // 2. Wire the main admin toggle button
+    const adminBtn = document.getElementById('adminToggleBtn');
+    if (adminBtn) {
+        adminBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (window.__IS_ADMIN__) {
+                handleLogout();
+            } else {
+                openLoginModal();
+            }
+        });
+    }
+
+    // 3. Wire login modal buttons
+    document.getElementById('loginSubmit')?.addEventListener('click', handleLogin);
+    document.getElementById('loginCancel')?.addEventListener('click', closeLoginModal);
+    document.getElementById('loginPassword')?.addEventListener('keyup', (e) => {
+        if (e.key === 'Enter') handleLogin();
+    });
+    
+    // 4. Wire header Admin Link (for mobile)
+    document.getElementById('mobileAdminLink')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (window.__IS_ADMIN__) {
+            handleLogout();
+        } else {
+            openLoginModal();
+        }
+        // Cierra el panel móvil después de la acción
+        document.getElementById('mobilePanel').style.maxHeight = '0';
+    });
+
+    // 5. Wire editor modal close buttons
+    document.getElementById('editorClose')?.addEventListener('click', () => {
+        document.getElementById('editorModal').style.display = 'none';
+    });
+    document.getElementById('editorCloseBottom')?.addEventListener('click', () => {
+        document.getElementById('editorModal').style.display = 'none';
+    });
+}
+
+
+// ----------------------------------------------------------------------
+// --- FUNCIONES DE ADMINISTRACIÓN: RENAME / UPLOAD (INTERACCIÓN CON FLASK) ---
+// ----------------------------------------------------------------------
+
+async function renameFolder(folder, newName, listItemElement) {
+    if (!folder || !newName || !window.__IS_ADMIN__) {
+        alert("Admin required, folder and new name are necessary.");
+        return;
+    }
+
+    const newNameClean = newName.trim();
+    if (newNameClean.length === 0) {
+        alert("New name cannot be empty.");
+        return;
+    }
+
+    if (!confirm(`Renombrar la carpeta '${folder}' a un nombre basado en '${newNameClean}'? Esto afectará a todas las rutas de imágenes.`)) {
+        return;
+    }
+    
+    // Muestra estado de "Loading" en el item
+    if (listItemElement) listItemElement.style.opacity = '0.5';
+
+    try {
+        const resp = await fetch('/creature-book-rename', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ folder: folder, newName: newNameClean })
+        });
+
+        const data = await resp.json();
+
+        if (resp.ok && data.ok) {
+            alert(`¡Renombrado exitoso! Nueva carpeta: ${data.folder}`);
+            // Recarga la lista en el modal y la lista principal
+            await loadEditableList();
+            await loadAndRenderWiki();
+        } else {
+            alert(`Error al renombrar: ${data.error}`);
+        }
+    } catch (error) {
+        alert('Error de red al renombrar: ' + error.message);
+        console.error('Rename error:', error);
+    } finally {
+        if (listItemElement) listItemElement.style.opacity = '1';
+    }
+}
+
+async function uploadImage(folder, fileInput, listItemElement) {
+    const file = fileInput.files[0];
+    if (!folder || !file || !window.__IS_ADMIN__) {
+        alert("Admin required, folder and file are necessary.");
+        return;
+    }
+
+    if (!confirm(`Subir la imagen '${file.name}' a la carpeta '${folder}'?`)) {
+        return;
+    }
+
+    // Muestra estado de "Loading" en el item
+    if (listItemElement) listItemElement.style.opacity = '0.5';
+
+    try {
+        const formData = new FormData();
+        formData.append('folder', folder);
+        formData.append('file', file);
+
+        const resp = await fetch('/creature-book-upload', {
+            method: 'POST',
+            body: formData,
+        });
+
+        const data = await resp.json();
+
+        if (resp.ok && data.ok) {
+            alert(`¡Subida exitosa! Archivo: ${data.filename}`);
+            fileInput.value = ''; // Limpiar el campo de archivo
+            // Recarga la lista en el modal y la lista principal
+            await loadEditableList();
+            await loadAndRenderWiki();
+        } else {
+            alert(`Error al subir imagen: ${data.error}`);
+        }
+    } catch (error) {
+        alert('Error de red al subir la imagen: ' + error.message);
+        console.error('Upload error:', error);
+    } finally {
+        if (listItemElement) listItemElement.style.opacity = '1';
+    }
+}
+
+// ----------------------------------------------------------------------
+// --- FUNCIONES DE RENDERING DE LISTA EDITABLE ---
+// ----------------------------------------------------------------------
+
+function renderEditableList(creatures) {
+    const container = document.getElementById('editorList');
+    if (!container) return;
+
+    container.innerHTML = ''; // Limpiar contenido anterior
+    
+    // Normalizar y ordenar la lista
+    const normalized = creatures.map(it => {
+        if (typeof it === 'string') return { folder: it, name: it, images: [] };
+        return { folder: it.folder || it.name || '', name: it.name || it.folder || '', images: it.images || it.files || [] };
+    }).sort((a,b) => {
+        const na = parseNumberFromFolder(a.folder || a.name);
+        const nb = parseNumberFromFolder(b.folder || b.name);
+        if (na !== nb) return na - nb;
+        return (a.name || '').localeCompare(b.name || '');
+    });
+
+    if (normalized.length === 0) {
+        container.innerHTML = '<div class="text-white/60">No se encontraron criaturas para editar.</div>';
+        return;
+    }
+
+    // Crea un item editable por cada criatura/carpeta
+    normalized.forEach(c => {
+        const item = document.createElement('div');
+        item.className = 'editor-item';
+
+        const folderSpan = document.createElement('span');
+        folderSpan.textContent = c.folder;
+        folderSpan.title = 'Current Folder Name';
+        folderSpan.style.width = '120px'; // Fijo para consistencia
+        folderSpan.style.overflow = 'hidden';
+        folderSpan.style.textOverflow = 'ellipsis';
+        folderSpan.style.whiteSpace = 'nowrap';
+
+        const nameInput = document.createElement('input');
+        nameInput.type = 'text';
+        nameInput.placeholder = 'New Name (e.g. 001 New Card Name)';
+        nameInput.value = c.name; // Usar el nombre actual como sugerencia de cambio
+
+        const renameBtn = document.createElement('button');
+        renameBtn.className = 'rename-btn';
+        renameBtn.textContent = 'Rename';
+        renameBtn.onclick = () => renameFolder(c.folder, nameInput.value, item);
+
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = 'image/*';
+        fileInput.title = 'Select an image to upload';
+
+        const uploadBtn = document.createElement('button');
+        uploadBtn.className = 'upload-btn';
+        uploadBtn.textContent = 'Upload';
+        uploadBtn.onclick = () => uploadImage(c.folder, fileInput, item);
+
+        item.appendChild(folderSpan);
+        item.appendChild(nameInput);
+        item.appendChild(renameBtn);
+        item.appendChild(fileInput);
+        item.appendChild(uploadBtn);
+
+        container.appendChild(item);
+    });
+
+    // Desplazar al item que fue clicado si existe
+    if (window.__targetEditorFolder) {
+        const targetItem = Array.from(container.children).find(el => {
+            const span = el.querySelector('span');
+            return span && span.textContent === window.__targetEditorFolder;
+        });
+        if (targetItem) {
+            targetItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            targetItem.style.boxShadow = '0 0 10px 2px #625fff';
+            setTimeout(() => targetItem.style.boxShadow = 'none', 3000); // Resalta por un momento
+        }
+        delete window.__targetEditorFolder;
+    }
+}
+
+// ----------------------------------------------------------------------
+// --- FUNCIONES DE RENDERING DE WIKI (Se mantienen, pero se simplifican) ---
+// ----------------------------------------------------------------------
+
 async function fetchCreatureBookList() {
     // 1) Prefer server-injected data
     if (Array.isArray(window.__CREATURES__) && window.__CREATURES__.length) {
         return window.__CREATURES__;
     }
-
     // 2) Try the expected endpoint
     try {
         const resp = await fetch('/creature-book-list', { method: 'GET' });
@@ -296,25 +651,10 @@ async function fetchCreatureBookList() {
             if (Array.isArray(data)) return data;
         }
     } catch (err) {
-        console.warn('/creature-book-list failed:', err);
+        console.warn('/creature-book-list failed, trying fallback:', err);
     }
-
-    // 3) Fallback to alternate API that returns simple list (if present)
-    try {
-        const resp2 = await fetch('/api/creatures/list', { method: 'GET' });
-        if (resp2.ok) {
-            const j = await resp2.json();
-            if (j && Array.isArray(j.creatures)) {
-                // normalize to the structure expected by the renderer
-                return j.creatures.map(c => ({ folder: '', name: c.name || c.image || '', images: c.image ? [c.image] : [] }));
-            }
-        }
-    } catch (err) {
-        console.warn('/api/creatures/list fallback failed:', err);
-    }
-
-    // 4) last resort: return empty array (caller will show "No creatures")
-    return [];
+    // Retorna vacío si falla, la lógica de fallback se eliminó para simplificar
+    return []; 
 }
 
 function parseNumberFromFolder(name) {
@@ -330,19 +670,19 @@ function makeImageUrl(folder, filename) {
 }
 
 function createWikiCard(item) {
-	// item: { folder, name, images: [...] } or string (folder)
-    const folder = (typeof item === 'string') ? item : (item.folder || '');
-    const name = (typeof item === 'string') ? item : (item.name || folder);
-    const imgs = (typeof item === 'string') ? [] : (item.images || item.files || []);
+    // item: { folder, name, images: [...] }
+    const folder = item.folder || '';
+    const name = item.name || folder;
+    const imgs = item.images || item.files || [];
     const number = parseNumberFromFolder(folder || name);
     const first = imgs && imgs.length ? imgs[0] : null;
-    const imgSrc = first ? makeImageUrl(folder, first) : '';
+    const imgSrc = first ? makeImageUrl(folder, first) : placeholderDataUrl();
 
     const card = document.createElement('article');
     card.className = 'card-item border-2 rounded-xl p-4 bg-white/5 rarity-common flex flex-col items-center text-center';
     card.style.minHeight = '220px';
-    // expose folder for admin actions
-    card.dataset.folder = folder || '';
+    card.style.position = 'relative'; // Necesario para el botón de edición
+    card.dataset.folder = folder;
 
     const imgWrap = document.createElement('div');
     imgWrap.style.width = '100%';
@@ -360,12 +700,8 @@ function createWikiCard(item) {
     img.style.objectFit = 'contain';
     img.alt = name;
     img.loading = 'lazy';
-    if (imgSrc) {
-        img.src = imgSrc;
-        img.onerror = () => { img.src = placeholderDataUrl(); };
-    } else {
-        img.src = placeholderDataUrl();
-    }
+    img.src = imgSrc;
+    if (first) img.onerror = () => { img.src = placeholderDataUrl(); };
     imgWrap.appendChild(img);
 
     const title = document.createElement('h3');
@@ -380,30 +716,22 @@ function createWikiCard(item) {
     card.appendChild(title);
     card.appendChild(meta);
 
-    // opcional: abrir modal con la primera imagen si existe
-    if (imgSrc) {
-        card.style.cursor = 'pointer';
-        card.addEventListener('click', () => openImageModal(imgSrc, name));
-    }
-
     return card;
 }
 
 // Add edit buttons to cards when admin is active
 function enableAdminCardEdit() {
     try {
-        // prefer DOM attribute (set by updateAdminUI) for reliable cross-scope detection
-        const domFlag = document.documentElement.getAttribute('data-is-admin');
-        const isAdmin = (domFlag === '1') || !!window.__IS_ADMIN__;
+        const isAdmin = document.documentElement.getAttribute('data-is-admin') === '1';
          document.querySelectorAll('#cardsGrid .card-item').forEach(card => {
              const existing = card.querySelector('.card-edit-btn');
              if (existing) existing.remove();
              if (!isAdmin) return;
+             
              const btn = document.createElement('button');
              btn.type = 'button';
              btn.className = 'card-edit-btn';
              btn.textContent = 'Edit';
-             // inline lightweight styles (avoid touching CSS files)
              btn.style.position = 'absolute';
              btn.style.top = '8px';
              btn.style.right = '8px';
@@ -418,13 +746,9 @@ function enableAdminCardEdit() {
              btn.title = folder || 'Edit item';
              btn.addEventListener('click', async (e) => {
                  e.stopPropagation();
-                 // focus editor on this folder
                  window.__targetEditorFolder = folder;
-                 const editorModal = document.getElementById('editorModal');
-                 if (editorModal) editorModal.style.display = 'flex';
-                 await loadEditableList();
+                 window.openEditorModal(e);
              });
-             card.style.position = card.style.position || 'relative';
              card.appendChild(btn);
          });
      } catch (err) {
@@ -432,68 +756,19 @@ function enableAdminCardEdit() {
      }
 }
 
-function renderFolderList(items) {
-    const container = document.getElementById('creatureFolders');
-    const debug = document.getElementById('debugOutput');
-    container.innerHTML = '';
-    if (!items || items.length === 0) {
-        container.innerHTML = '<div class="text-white/60">No folders found.</div>';
-        if (debug) debug.textContent = 'No items returned from /creature-book-list';
-        return;
-    }
-
-    // Normalizar: items pueden ser strings o objetos {folder,name,...}
-    const folders = items.map(it => {
-        if (typeof it === 'string') return { folder: it, name: it };
-        return { folder: it.folder || it.name || '', name: it.name || it.folder || it.folder };
-    });
-
-    // Ordenar por número extraído del nombre (si existe), luego por nombre
-    folders.sort((a, b) => {
-        const na = parseNumberFromFolder(a.folder);
-        const nb = parseNumberFromFolder(b.folder);
-        if (na !== nb) return na - nb;
-        return (a.name || '').localeCompare(b.name || '');
-    });
-
-    // Crear botón / elemento por carpeta
-    folders.forEach(f => {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'filter-btn px-3 py-1 rounded-md bg-white/5 text-sm';
-        btn.textContent = f.name;
-        btn.title = f.folder;
-        btn.addEventListener('click', () => {
-            Array.from(container.children).forEach(c => c.classList.remove('filter-active'));
-            btn.classList.add('filter-active');
-            const dbg = document.getElementById('debugOutput');
-            if (dbg) dbg.textContent = `Selected folder: ${f.folder}`;
-        });
-        container.appendChild(btn);
-    });
-
-    // Mostrar resumen en vez de todo el JSON
-    if (debug) debug.textContent = `${folders.length} folders loaded.`;
-}
-
 function renderWiki(items) {
     const grid = document.getElementById('cardsGrid');
-    const debug = document.getElementById('debugOutput');
     grid.innerHTML = '';
     if (!items || items.length === 0) {
         grid.innerHTML = '<div class="col-span-full text-center text-white/60">No creatures found.</div>';
-        if (debug) debug.textContent = 'No items to render';
+        document.getElementById('cardCount').textContent = `Showing 0 creatures`;
         return;
     }
 
-    // Normalizar items a objetos {folder,name,images[]}
     const normalized = items.map(it => {
         if (typeof it === 'string') return { folder: it, name: it, images: [] };
         return { folder: it.folder || it.name || '', name: it.name || it.folder || '', images: it.images || it.files || [] };
-    });
-
-    // ordenar por número
-    normalized.sort((a,b) => {
+    }).sort((a,b) => {
         const na = parseNumberFromFolder(a.folder || a.name);
         const nb = parseNumberFromFolder(b.folder || b.name);
         if (na !== nb) return na - nb;
@@ -505,86 +780,85 @@ function renderWiki(items) {
         grid.appendChild(card);
     });
 
-    // Mostrar resumen en lugar del JSON completo
-    if (debug) debug.textContent = `${normalized.length} creatures loaded.`;
     document.getElementById('cardCount').textContent = `Showing ${normalized.length} creatures`;
-    // ensure admin edit buttons are present/removed according to current admin state
     enableAdminCardEdit();
 }
 
 /* verify endpoint and load */
 async function verifyCreatureEndpoint() {
-    const debug = document.getElementById('debugOutput');
     if (Array.isArray(window.__CREATURES__) && window.__CREATURES__.length) {
-        if (debug) debug.textContent = 'Using injected window.__CREATURES__ data.';
         return true;
     }
     try {
         const res = await fetch('/creature-book-list', { method: 'GET' });
-        if (res.ok) {
-            if (debug) debug.textContent = `/creature-book-list reachable (status ${res.status}).`;
-            return true;
-        } else {
-            if (debug) debug.textContent = `/creature-book-list returned status ${res.status}.`;
-            return false;
-        }
+        return res.ok;
     } catch (err) {
-        if (debug) debug.textContent = `Error contacting /creature-book-list: ${err.message}\n\nAsegúrate de que el backend esté ejecutándose. Ejemplo: python app.py y prueba: curl http://127.0.0.1:5000/creature-book-list`;
-        console.error(err);
+        reportDebug(`Error contacting /creature-book-list. Check backend: ${err.message}`);
         return false;
     }
 }
 
 async function loadAndRenderWiki() {
-     const debug = document.getElementById('debugOutput');
-    reportDebug('Verifying /creature-book-list ...');
-    try {
-        const ok = await verifyCreatureEndpoint();
-        if (!ok) {
-            const container = document.getElementById('cardsGrid');
-            container.innerHTML = '<div class="text-white/60">Endpoint /creature-book-list no disponible. Revisa backend.</div>';
-            reportDebug('Endpoint not reachable, aborted render.');
-            return;
-        }
-        reportDebug('Fetching creature list ...');
-        const list = await fetchCreatureBookList();
-        reportDebug('Creature list received (' + (Array.isArray(list) ? list.length : typeof list) + ')');
-        // normalize if server returned object { creatures: [...] }
-        let normalizedList = list;
-        if (list && !Array.isArray(list) && Array.isArray(list.creatures)) normalizedList = list.creatures;
-        if (!Array.isArray(normalizedList)) normalizedList = [];
-        renderWiki(normalizedList);
-         } catch (err) {
-             const container = document.getElementById('cardsGrid');
-             container.innerHTML = '<div class="text-white/60">Error loading creatures.</div>';
-        reportDebug('Error loading creatures: ' + (err && err.message ? err.message : String(err)));
-        console.error(err);
+     try {
+         const ok = await verifyCreatureEndpoint();
+         if (!ok) {
+             document.getElementById('cardsGrid').innerHTML = '<div class="col-span-full text-center text-white/60">Endpoint /creature-book-list no disponible. Revisa backend.</div>';
+             return;
+         }
+         reportDebug('Fetching creature list ...');
+         const list = await fetchCreatureBookList();
+         renderWiki(Array.isArray(list) ? list : (list && Array.isArray(list.creatures) ? list.creatures : []));
+     } catch (err) {
+         document.getElementById('cardsGrid').innerHTML = '<div class="col-span-full text-center text-white/60">Error loading creatures.</div>';
+         reportDebug('Error loading creatures: ' + (err && err.message ? err.message : String(err)));
      }
- }
+}
  
-// Define loadEditableList function
+// Define loadEditableList function (Ahora carga y renderiza la lista en el modal)
 async function loadEditableList() {
     try {
         const resp = await fetch('/creature-book-list');
-        if (!resp.ok) throw new Error('Failed to load list');
+        if (!resp.ok) throw new Error('Failed to load creature list from backend.');
         const creatures = await resp.json();
         renderEditableList(creatures);
     } catch (err) {
         console.error('loadEditableList error:', err);
         alert('Error loading creature list: ' + err.message);
+        document.getElementById('editorList').innerHTML = `<div style="color:red;">Error: ${err.message}</div>`;
     }
 }
 
+
+// Explicación de openEditorModal (La misma que la anterior, pero ahora llama a la función loadEditableList)
+async function openEditorModal(e) {
+    e && e.preventDefault && e.preventDefault();
+    const isAdmin = !!window.__IS_ADMIN__ || document.documentElement.getAttribute('data-is-admin') === '1';
+    
+    if (!isAdmin) {
+        alert('Debes iniciar sesión como administrador para editar. Haz clic en "Admin Login" para continuar.');
+        openLoginModal();
+        return;
+    }
+
+    const editorModal = document.getElementById('editorModal');
+    if (editorModal) editorModal.style.display = 'flex';
+    
+    const help = document.getElementById('editorHelp');
+    if (help) help.textContent = 'Cambiando el nombre en el campo de texto y haciendo clic en "Rename" se actualizará la carpeta. Selecciona un archivo y haz clic en "Upload" para añadir una imagen.';
+    
+    await loadEditableList();
+}
+
+
 document.addEventListener('DOMContentLoaded', () => {
     try {
-        // limpiar listado de botones/antiguo
-        const folders = document.getElementById('creatureFolders');
-        if (folders) folders.innerHTML = '';
-        // cargar y mostrar wiki cards
+        // Carga y muestra wiki cards
         loadAndRenderWiki().catch(e => reportDebug('initial loadAndRenderWiki failed: ' + (e && e.message ? e.message : e)));
-        // enable edit buttons for server-rendered cards immediately if admin
-        try { enableAdminCardEdit(); } catch(e) { /* ignore */ }
-        // observe data-is-admin changes so edit buttons update automatically on login/logout
+        
+        // Configura la UI de administración (login/logout/botones)
+        setupAdminUI();
+
+        // Observa data-is-admin para actualizar los botones de edición de las tarjetas
         try {
             const mo = new MutationObserver((mutations) => {
                 for (const m of mutations) {
@@ -596,264 +870,26 @@ document.addEventListener('DOMContentLoaded', () => {
             mo.observe(document.documentElement, { attributes: true, attributeFilter: ['data-is-admin'] });
         } catch(e) { console.warn('MutationObserver unavailable', e); }
 
-        // wire header/mobile edit controls
-        const headerEditBtn = document.getElementById('headerEditBtn');
-        const mobileEditLink = document.getElementById('mobileEditLink');
-        const pageEditBtn = document.getElementById('pageEditBtn');
-        const editModeBtn = document.getElementById('editModeBtn');
-        const editorModal = document.getElementById('editorModal');
-        // Explicación:
-        // Esta función abre el modal de edición y carga la lista editable de criaturas.
-        // Si la función loadEditableList no existe, muestra un mensaje de depuración.
-        async function openEditorModal(e) {
-            e && e.preventDefault && e.preventDefault();
-            const isAdmin = !!window.__IS_ADMIN__ || document.documentElement.getAttribute('data-is-admin') === '1';
-            if (!isAdmin) {
-                alert('Debes iniciar sesión como administrador para editar. Haz clic en "Admin Login" para continuar.');
-                return;
-            }
-            if (editorModal) editorModal.style.display = 'flex';
-            if (typeof window.loadEditableList === 'function') {
-                await window.loadEditableList();
-                // Actualiza el texto de ayuda para dejar claro el propósito
-                const help = document.getElementById('editorHelp');
-                if (help) help.textContent = 'Puedes renombrar las cartas y añadir imágenes a las criaturas. Haz clic en "Rename" para cambiar el nombre de la carta y en "Upload" para añadir una imagen.';
-            } else {
-                reportDebug('No se encontró la función loadEditableList. Verifica que esté definida en tu JS principal.');
-                const dbg = document.getElementById('debugOutput');
-                if (dbg) dbg.textContent = 'No se encontró la función loadEditableList. Revisa tu código JS principal.';
-            }
-        }
-
-        // Make it global
+        // Asigna la función globalmente y conecta el botón de refrescar
         window.openEditorModal = openEditorModal;
-        // Asigna el evento click a los botones de edición
-        if (headerEditBtn) headerEditBtn.addEventListener('click', openEditorModal);
-        if (mobileEditLink) mobileEditLink.addEventListener('click', openEditorModal);
-        if (pageEditBtn) pageEditBtn.addEventListener('click', openEditorModal);
-        if (editModeBtn) editModeBtn.addEventListener('click', openEditorModal);
+        document.getElementById('editorRefresh')?.addEventListener('click', loadEditableList);
+
+        // Mobile menu toggle logic
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobilePanel = document.getElementById('mobilePanel');
+        if (mobileMenuBtn && mobilePanel) {
+            mobileMenuBtn.addEventListener('click', () => {
+                const isOpen = mobilePanel.style.maxHeight !== '0px';
+                mobilePanel.style.maxHeight = isOpen ? '0' : '900px';
+                mobilePanel.style.padding = isOpen ? '0' : '12px 0';
+                mobileMenuBtn.setAttribute('aria-expanded', !isOpen);
+            });
+        }
+        
     } catch (e) {
-        reportDebug('DOMContentLoaded handler error: ' + (e && e.message ? e.message : e));
+        reportDebug('DOM Content Loaded error: ' + (e && e.message ? e.message : e));
     }
 });
-
-function renderEditableList(creatures) {
-    const container = document.getElementById('editorList');
-    container.innerHTML = '';
-    if (!creatures || creatures.length === 0) {
-        container.innerHTML = '<div style="color:#aaa;text-align:center;padding:20px;">No creatures found.</div>';
-        return;
-    }
-    creatures.forEach(c => {
-        const item = document.createElement('div');
-        item.style.border = '1px solid #333';
-        item.style.borderRadius = '8px';
-        item.style.padding = '12px';
-        item.style.marginBottom = '10px';
-        item.style.background = '#111';
-
-        const title = document.createElement('h4');
-        title.textContent = c.name || c.folder;
-        title.style.margin = '0 0 8px 0';
-        title.style.color = '#fff';
-        item.appendChild(title);
-
-        // Rename input
-        const renameDiv = document.createElement('div');
-        renameDiv.style.display = 'flex';
-        renameDiv.style.gap = '8px';
-        renameDiv.style.marginBottom = '8px';
-
-        const renameInput = document.createElement('input');
-        renameInput.type = 'text';
-        renameInput.value = c.name || '';
-        renameInput.placeholder = 'New name';
-        renameInput.style.flex = '1';
-        renameInput.style.padding = '6px';
-        renameInput.style.borderRadius = '4px';
-        renameInput.style.border = '1px solid #555';
-        renameInput.style.background = '#222';
-        renameInput.style.color = '#fff';
-
-        const renameBtn = document.createElement('button');
-        renameBtn.textContent = 'Rename';
-        renameBtn.style.padding = '6px 12px';
-        renameBtn.style.borderRadius = '4px';
-        renameBtn.style.border = 'none';
-        renameBtn.style.background = '#625fff';
-        renameBtn.style.color = '#fff';
-        renameBtn.style.cursor = 'pointer';
-        renameBtn.addEventListener('click', async () => {
-            const newName = renameInput.value.trim();
-            if (!newName) return alert('Name cannot be empty');
-            try {
-                const resp = await fetch('/creature-book-rename', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ folder: c.folder, newName })
-                });
-                const data = await resp.json();
-                if (data.ok) {
-                    alert('Renamed successfully');
-                    await loadEditableList(); // refresh
-                } else {
-                    alert('Error: ' + (data.error || 'Unknown'));
-                }
-            } catch (err) {
-                alert('Rename failed: ' + err.message);
-            }
-        });
-
-        renameDiv.appendChild(renameInput);
-        renameDiv.appendChild(renameBtn);
-        item.appendChild(renameDiv);
-
-        // Upload input
-        const uploadDiv = document.createElement('div');
-        uploadDiv.style.display = 'flex';
-        uploadDiv.style.gap = '8px';
-
-        const uploadInput = document.createElement('input');
-        uploadInput.type = 'file';
-        uploadInput.accept = 'image/*';
-        uploadInput.style.flex = '1';
-
-        const uploadBtn = document.createElement('button');
-        uploadBtn.textContent = 'Upload Image';
-        uploadBtn.style.padding = '6px 12px';
-        uploadBtn.style.borderRadius = '4px';
-        uploadBtn.style.border = 'none';
-        uploadBtn.style.background = '#00ff88';
-        uploadBtn.style.color = '#000';
-        uploadBtn.style.cursor = 'pointer';
-        uploadBtn.addEventListener('click', async () => {
-            const file = uploadInput.files[0];
-            if (!file) return alert('Select a file first');
-            const formData = new FormData();
-            formData.append('folder', c.folder);
-            formData.append('file', file);
-            try {
-                const resp = await fetch('/creature-book-upload', {
-                    method: 'POST',
-                    body: formData
-                });
-                const data = await resp.json();
-                if (data.ok) {
-                    alert('Uploaded successfully');
-                    await loadEditableList(); // refresh
-                } else {
-                    alert('Error: ' + (data.error || 'Unknown'));
-                }
-            } catch (err) {
-                alert('Upload failed: ' + err.message);
-            }
-        });
-
-        uploadDiv.appendChild(uploadInput);
-        uploadDiv.appendChild(uploadBtn);
-        item.appendChild(uploadDiv);
-
-        container.appendChild(item);
-    });
-}
-
-function updateAdminUI() {
-    const isAdmin = !!window.__IS_ADMIN__ || document.documentElement.getAttribute('data-is-admin') === '1';
-    document.documentElement.setAttribute('data-is-admin', isAdmin ? '1' : '0');
-
-    // Show/hide edit buttons
-    const buttons = [
-        document.getElementById('headerEditBtn'),
-        document.getElementById('pageEditBtn'),
-        document.getElementById('editModeBtn'),
-        document.getElementById('mobileEditLink')
-    ];
-    buttons.forEach(btn => {
-        if (btn) btn.style.display = isAdmin ? 'inline-flex' : 'none';
-    });
-
-    // Update admin toggle button
-    const adminToggle = document.getElementById('adminToggleBtn');
-    if (adminToggle) {
-        adminToggle.textContent = isAdmin ? 'Logout' : 'Login';
-        adminToggle.onclick = isAdmin ? logoutAdmin : showLoginModal;
-    }
-}
-
-async function logoutAdmin() {
-    try {
-        await fetch('/logout', { method: 'POST' });
-        window.__IS_ADMIN__ = false;
-        updateAdminUI();
-        location.reload(); // refresh to hide admin features
-    } catch (err) {
-        console.error('Logout error:', err);
-    }
-}
-
-function showLoginModal() {
-    const modal = document.getElementById('loginModal');
-    if (modal) modal.style.display = 'flex';
-}
-
-// Wire login modal events
-document.addEventListener('DOMContentLoaded', () => {
-    const loginModal = document.getElementById('loginModal');
-    const loginSubmit = document.getElementById('loginSubmit');
-    const loginCancel = document.getElementById('loginCancel');
-    const loginPassword = document.getElementById('loginPassword');
-    const loginStatus = document.getElementById('loginStatus');
-
-    if (loginSubmit) {
-        loginSubmit.addEventListener('click', async () => {
-            const pwd = loginPassword.value;
-            try {
-                const resp = await fetch('/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ password: pwd })
-                });
-                const data = await resp.json();
-                if (data.ok) {
-                    window.__IS_ADMIN__ = true;
-                    updateAdminUI();
-                    if (loginModal) loginModal.style.display = 'none';
-                    location.reload(); // refresh to show admin features
-                } else {
-                    if (loginStatus) loginStatus.textContent = data.error || 'Login failed';
-                }
-            } catch (err) {
-                if (loginStatus) loginStatus.textContent = 'Error: ' + err.message;
-            }
-        });
-    }
-
-    if (loginCancel) {
-        loginCancel.addEventListener('click', () => {
-            if (loginModal) loginModal.style.display = 'none';
-        });
-    }
-
-    // Wire editor modal close
-    const editorClose = document.getElementById('editorClose');
-    const editorCloseBottom = document.getElementById('editorCloseBottom');
-    const editorRefresh = document.getElementById('editorRefresh');
-    const editorModal = document.getElementById('editorModal');
-
-    if (editorClose) {
-        editorClose.addEventListener('click', () => {
-            if (editorModal) editorModal.style.display = 'none';
-        });
-    }
-    if (editorCloseBottom) {
-        editorCloseBottom.addEventListener('click', () => {
-            if (editorModal) editorModal.style.display = 'none';
-        });
-    }
-    if (editorRefresh) {
-        editorRefresh.addEventListener('click', loadEditableList);
-    }
-
-    // Initial UI update
-    updateAdminUI();
-});
+</script>
+</body>
+</html>
