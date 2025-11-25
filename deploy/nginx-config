@@ -17,8 +17,14 @@ server {
         proxy_redirect off;
     }
 
-    location /static {
-        alias /var/www/cardwars-kingdom/static;
+    location /static/ {
+        alias /var/www/cardwars-kingdom/static/;
+        expires 30d;
+        add_header Cache-Control "public, immutable";
+    }
+
+    location /Welcome\ Card\ Wars\ Kingdom_files/ {
+        alias /var/www/cardwars-kingdom/Welcome Card Wars Kingdom_files/;
         expires 30d;
         add_header Cache-Control "public, immutable";
     }
@@ -62,8 +68,14 @@ server {
         proxy_redirect off;
     }
 
-    location /static {
-        alias /var/www/cardwars-kingdom/static;
+    location /static/ {
+        alias /var/www/cardwars-kingdom/static/;
+        expires 30d;
+        add_header Cache-Control "public, immutable";
+    }
+
+    location /Welcome\ Card\ Wars\ Kingdom_files/ {
+        alias /var/www/cardwars-kingdom/Welcome Card Wars Kingdom_files/;
         expires 30d;
         add_header Cache-Control "public, immutable";
     }
