@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -29,35 +30,32 @@
             to {
                 opacity: 1;
                 transform: translateY(0);
+=======
+{% extends "base.html" %}
+{% block content %}
+<!-- Server-injected state -->
+
+
+<script>
+    const data = JSON.parse('{{ creatures | tojson | safe }}');
+    const isAdmin = JSON.parse('{{ is_admin | tojson | safe }}');
+
+    // Define openEditorModal early to avoid "not a function" error
+    window.openEditorModal = async function(e) {
+        console.log('openEditorModal called');
+        e && e.preventDefault && e.preventDefault();
+        const editorModal = document.getElementById('editorModal');
+        if (editorModal) {
+            editorModal.style.display = 'flex';
+            if (typeof window.loadEditableList === 'function') {
+                await window.loadEditableList();
+>>>>>>> f3b320b4e1d4e67710a76aa4dfd22f864d7baf81
             }
         }
-        @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 0 20px rgba(165, 50, 255, 0.5); }
-            50% { box-shadow: 0 0 40px rgba(165, 50, 255, 0.8); }
-        }
-        .animate-float {
-            animation: float 3s ease-in-out infinite;
-        }
-        .animate-fadeInUp {
-            animation: fadeInUp 0.8s ease-out forwards;
-        }
-        .hero-gif-container {
-            animation: pulse-glow 2s ease-in-out infinite;
-            background: linear-gradient(135deg, rgba(165, 50, 255, 0.1) 0%, rgba(98, 95, 255, 0.1) 100%);
-            backdrop-filter: blur(10px);
-        }
-        /* Mobile menu: collapsed by default (existing markup uses max-h-0) */
-        [class*="sm:hidden"][class*="bg-[#0a0a0af0]"] { transition: max-height .28s ease, padding .28s ease; overflow: hidden; }
-        .mobile-menu-open { max-height: 900px !important; padding: 12px 0 !important; }
-        /* Ensure images scale on small screens */
-        @media (max-width:640px) {
-            img { max-width: 100%; height: auto; }
-            .hero-gif-container { padding: 16px; }
-            .shiny-wrap { padding-left: 14px; padding-right:14px; }
-            /* reduce huge headings a mobile friendly size */
-            h1 { font-size: clamp(20px, 6vw, 56px); }
-        }
+    };
+</script>
 
+<<<<<<< HEAD
         /* Ensure header logo scales properly on mobile (fix Android Chrome) */
         .site-logo {
             height: 36px;
@@ -125,13 +123,11 @@
         window.__CREATURES__ = {{ creatures|default([]) | tojson | safe }};
         window.__IS_ADMIN__ = {{ is_admin | default(false) | tojson | safe }};
     </script>
+=======
+>>>>>>> f3b320b4e1d4e67710a76aa4dfd22f864d7baf81
 
-    <nav class="w-full fixed top-0 z-50 backdrop-blur-xl bg-[#00000080] border-b border-white/10 shadow-[0_2px_30px_-8px_rgba(165,50,255,0.4)] site-header">
-        <div class="mx-auto max-w-7xl px-4 h-16 flex items-center justify-between">
-            <a class="flex items-center gap-2" href="/">
-                <img src="/Welcome Card Wars Kingdom_files/Main-Logo.webp" alt="CWK" class="site-logo drop-shadow-lg">
-            </a>
 
+<<<<<<< HEAD
             <div class="hidden sm:flex items-center gap-6 font-medium tracking-wide">
                 <a class="text-white/80 hover:text-white transition" href="/">Home</a>
                 <a class="text-white hover:text-white transition border-b-2 border-brand-500" href="/cards">Cards</a>
@@ -160,8 +156,63 @@
             <button id="mobileMenuBtn" aria-label="Open menu" aria-expanded="false" class="sm:hidden inline-flex h-9 w-9 items-center justify-center rounded-md text-white hover:bg-white/10 transition">
                 <span class="material-symbols-outlined text-xl">menu</span>
             </button>
+=======
+<nav class="w-full fixed top-0 z-50 backdrop-blur-xl bg-[#00000080] border-b border-white/10 shadow-[0_2px_30px_-8px_rgba(165,50,255,0.4)] site-header">
+    <div class="mx-auto max-w-7xl px-4 h-16 flex items-center justify-between">
+        <a class="flex items-center gap-2" href="/">
+            <img src="/Welcome Card Wars Kingdom_files/Main-Logo.webp" alt="CWK" class="site-logo drop-shadow-lg">
+        </a>
+
+        <!-- Desktop links -->s
+        <div class="hidden sm:flex items-center gap-6 font-medium tracking-wide">
+            <a class="text-white/80 hover:text-white transition" href="/">Home</a>
+            <a class="text-white hover:text-white transition border-b-2 border-brand-500" href="/cards">Cards</a>
+            <a class="text-white/80 hover:text-white transition" href="/status">Status</a>
+            <a class="text-white/80 hover:text-white transition" href="https://discord.gg/card-wars-revived-1227932764117143642">Support</a>
         </div>
 
+        <!-- Desktop download button -->
+        <a href="/download" class="hidden sm:flex shiny-wrap relative inline-flex items-center justify-center rounded-md bg-brand-500 px-5 py-3 text-white shadow hover:opacity-95 transition">
+            <span class="relative z-[1] flex items-center gap-2">
+                <span class="material-symbols-outlined">download</span>Download
+            </span>
+        </a>
+
+        <!-- Desktop edit button (visible to admin) -->
+        <button id="headerEditBtn"
+class="sm:inline-flex items-center gap-2 px-3 py-2 rounded-md border border-white/10 text-white"
+style="background:transparent;margin-left:8px;display:block;"
+title="C: rename cards and add images">
+✎ Edit Creatures
+</button>
+
+        <!-- Desktop admin button -->
+        <button id="headerAdminBtn" class="hidden sm:inline-flex items-center gap-2 px-3 py-2 rounded-md border border-white/10 text-white" style="background:transparent;margin-left:8px;">
+            Admin Login
+        </button>
+
+        <!-- Mobile menu button (visible on small screens) -->
+        <button id="mobileMenuBtn" aria-label="Open menu" aria-expanded="false" class="sm:hidden inline-flex h-9 w-9 items-center justify-center rounded-md text-white hover:bg-white/10 transition">
+            <span class="material-symbols-outlined text-xl">menu</span>
+        </button>
+    </div>
+
+    <!-- Mobile panel (collapsible) -->
+    <div id="mobilePanel" class="mobile-panel sm:hidden bg-[#0a0a0af0] backdrop-blur-xl">
+        <div class="px-4 py-2">
+            <a href="/" aria-label="Home">Home</a>
+            <a href="/cards" aria-label="Cards">Cards</a>
+            <a href="/status" aria-label="Status">Status</a>
+            <a href="/download" aria-label="Download">Download</a>
+            <a href="#" id="mobileEditLink" class="block text-white/90 hover:text-white py-2" style="display:block;">Edit Creatures</a>
+            <a href="#" id="mobileAdminLink" aria-label="Admin">Admin Login</a>
+            <a href="https://discord.gg/card-wars-revived-1227932764117143642" target="_blank" rel="noopener">Support</a>
+>>>>>>> f3b320b4e1d4e67710a76aa4dfd22f864d7baf81
+        </div>
+    </div>
+</nav>
+
+<<<<<<< HEAD
         <div id="mobilePanel" class="mobile-panel sm:hidden bg-[#0a0a0af0] backdrop-blur-xl" style="max-height:0;padding:0;">
             <div class="px-4 py-2 flex flex-col">
                 <a class="text-white/90 hover:text-white py-2" href="/" aria-label="Home">Home</a>
@@ -178,6 +229,12 @@
     <main class="pt-16 min-h-screen bg-gradient-to-b from-black via-[#0a0a0d] to-black">
     <div style="position:fixed;left:20px;top:80px;z-index:90;">
         <button id="pageEditBtn" style="display:none;background:linear-gradient(135deg,#a532ff,#625fff);color:#fff;border:none;padding:12px 16px;border-radius:12px;box-shadow:0 8px 30px rgba(101,37,255,0.25);cursor:pointer;" onclick="window.openEditorModal(event)">
+=======
+<!-- Add this button near the top of <main> for page editing -->
+<main class="pt-16 min-h-screen bg-gradient-to-b from-black via-[#0a0a0d] to-black">
+    <div style="position:fixed;left:20px;top:80px;z-index:90;">
+        <button id="pageEditBtn" style="display:block;background:linear-gradient(135deg,#a532ff,#625fff);color:#fff;border:none;padding:12px 16px;border-radius:12px;box-shadow:0 8px 30px rgba(101,37,255,0.25);cursor:pointer;">
+>>>>>>> f3b320b4e1d4e67710a76aa4dfd22f864d7baf81
             ✎ Edit Page (Rename & Add Images)
         </button>
     </div>
@@ -266,7 +323,16 @@
         <div id="editorHelp" style="font-size:12px;color:#cfcfcf;margin-bottom:10px;">
             Rename folders or upload images. Backend endpoints expected:
             POST /creature-book-rename { folder, newName } and
-            POST /creature-book-upload (form: folder, file)
+            POST /creature-book-upload (form: folder, file)        
+        
+
+            
+          const res = await fetch('/creature-book-rename', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ folder, newName })
+        });
+
         </div>
 
         <div id="editorList" style="display:flex;flex-direction:column;gap:10px;max-height:60vh;overflow:auto;padding-right:8px;">
@@ -816,10 +882,17 @@ async function loadAndRenderWiki() {
  
 // Define loadEditableList function (Ahora carga y renderiza la lista en el modal)
 async function loadEditableList() {
+    console.log('loadEditableList called');
     try {
         const resp = await fetch('/creature-book-list');
+<<<<<<< HEAD
         if (!resp.ok) throw new Error('Failed to load creature list from backend.');
+=======
+        console.log('fetch response:', resp.status);
+        if (!resp.ok) throw new Error('Failed to load list');
+>>>>>>> f3b320b4e1d4e67710a76aa4dfd22f864d7baf81
         const creatures = await resp.json();
+        console.log('creatures received:', creatures.length);
         renderEditableList(creatures);
     } catch (err) {
         console.error('loadEditableList error:', err);
@@ -870,7 +943,39 @@ document.addEventListener('DOMContentLoaded', () => {
             mo.observe(document.documentElement, { attributes: true, attributeFilter: ['data-is-admin'] });
         } catch(e) { console.warn('MutationObserver unavailable', e); }
 
+<<<<<<< HEAD
         // Asigna la función globalmente y conecta el botón de refrescar
+=======
+        // wire header/mobile edit controls
+        const headerEditBtn = document.getElementById('headerEditBtn');
+        const mobileEditLink = document.getElementById('mobileEditLink');
+        const pageEditBtn = document.getElementById('pageEditBtn');
+        const editModeBtn = document.getElementById('editModeBtn');
+        const editorModal = document.getElementById('editorModal');
+        // Explicación:
+        // Esta función abre el modal de edición y carga la lista editable de criaturas.
+        // Si la función loadEditableList no existe, muestra un mensaje de depuración.
+        async function openEditorModal(e) {
+            console.log('openEditorModal called');
+            e && e.preventDefault && e.preventDefault();
+            console.log('Opening modal');
+            if (editorModal) editorModal.style.display = 'flex';
+            if (typeof window.loadEditableList === 'function') {
+                console.log('Calling loadEditableList');
+                await window.loadEditableList();
+                // Actualiza el texto de ayuda para dejar claro el propósito
+                const help = document.getElementById('editorHelp');
+                if (help) help.textContent = 'Puedes renombrar las cartas y añadir imágenes a las criaturas. Haz clic en "Rename" para cambiar el nombre de la carta y en "Upload" para añadir una imagen.';
+            } else {
+                console.log('loadEditableList not found');
+                reportDebug('No se encontró la función loadEditableList. Verifica que esté definida en tu JS principal.');
+                const dbg = document.getElementById('debugOutput');
+                if (dbg) dbg.textContent = 'No se encontró la función loadEditableList. Revisa tu código JS principal.';
+            }
+        }
+
+        // Make it global
+>>>>>>> f3b320b4e1d4e67710a76aa4dfd22f864d7baf81
         window.openEditorModal = openEditorModal;
         document.getElementById('editorRefresh')?.addEventListener('click', loadEditableList);
 
@@ -890,6 +995,232 @@ document.addEventListener('DOMContentLoaded', () => {
         reportDebug('DOM Content Loaded error: ' + (e && e.message ? e.message : e));
     }
 });
+<<<<<<< HEAD
 </script>
 </body>
 </html>
+=======
+
+function renderEditableList(creatures) {
+    const container = document.getElementById('editorList');
+    container.innerHTML = '';
+    if (!creatures || creatures.length === 0) {
+        container.innerHTML = '<div style="color:#aaa;text-align:center;padding:20px;">No creatures found.</div>';
+        return;
+    }
+    creatures.forEach(c => {
+        const item = document.createElement('div');
+        item.style.border = '1px solid #333';
+        item.style.borderRadius = '8px';
+        item.style.padding = '12px';
+        item.style.marginBottom = '10px';
+        item.style.background = '#111';
+
+        const title = document.createElement('h4');
+        title.textContent = c.name || c.folder;
+        title.style.margin = '0 0 8px 0';
+        title.style.color = '#fff';
+        item.appendChild(title);
+
+        // Rename input
+        const renameDiv = document.createElement('div');
+        renameDiv.style.display = 'flex';
+        renameDiv.style.gap = '8px';
+        renameDiv.style.marginBottom = '8px';
+
+        const renameInput = document.createElement('input');
+        renameInput.type = 'text';
+        renameInput.value = c.name || '';
+        renameInput.placeholder = 'New name';
+        renameInput.style.flex = '1';
+        renameInput.style.padding = '6px';
+        renameInput.style.borderRadius = '4px';
+        renameInput.style.border = '1px solid #555';
+        renameInput.style.background = '#222';
+        renameInput.style.color = '#fff';
+
+        const renameBtn = document.createElement('button');
+        renameBtn.textContent = 'Rename';
+        renameBtn.style.padding = '6px 12px';
+        renameBtn.style.borderRadius = '4px';
+        renameBtn.style.border = 'none';
+        renameBtn.style.background = '#625fff';
+        renameBtn.style.color = '#fff';
+        renameBtn.style.cursor = 'pointer';
+        renameBtn.addEventListener('click', async () => {
+            const newName = renameInput.value.trim();
+            if (!newName) return alert('Name cannot be empty');
+            try {
+                const resp = await fetch('/creature-book-rename', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ folder: c.folder, newName })
+                });
+                const data = await resp.json();
+                if (data.ok) {
+                    alert('Renamed successfully');
+                    await loadEditableList(); // refresh
+                } else {
+                    alert('Error: ' + (data.error || 'Unknown'));
+                }
+            } catch (err) {
+                alert('Rename failed: ' + err.message);
+            }
+        });
+
+        renameDiv.appendChild(renameInput);
+        renameDiv.appendChild(renameBtn);
+        item.appendChild(renameDiv);
+
+        // Upload input
+        const uploadDiv = document.createElement('div');
+        uploadDiv.style.display = 'flex';
+        uploadDiv.style.gap = '8px';
+
+        const uploadInput = document.createElement('input');
+        uploadInput.type = 'file';
+        uploadInput.accept = 'image/*';
+        uploadInput.style.flex = '1';
+
+        const uploadBtn = document.createElement('button');
+        uploadBtn.textContent = 'Upload Image';
+        uploadBtn.style.padding = '6px 12px';
+        uploadBtn.style.borderRadius = '4px';
+        uploadBtn.style.border = 'none';
+        uploadBtn.style.background = '#00ff88';
+        uploadBtn.style.color = '#000';
+        uploadBtn.style.cursor = 'pointer';
+        uploadBtn.addEventListener('click', async () => {
+            const file = uploadInput.files[0];
+            if (!file) return alert('Select a file first');
+            const formData = new FormData();
+            formData.append('folder', c.folder);
+            formData.append('file', file);
+            try {
+                const resp = await fetch('/creature-book-upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await resp.json();
+                if (data.ok) {
+                    alert('Uploaded successfully');
+                    await loadEditableList(); // refresh
+                } else {
+                    alert('Error: ' + (data.error || 'Unknown'));
+                }
+            } catch (err) {
+                alert('Upload failed: ' + err.message);
+            }
+        });
+
+        uploadDiv.appendChild(uploadInput);
+        uploadDiv.appendChild(uploadBtn);
+        item.appendChild(uploadDiv);
+
+        container.appendChild(item);
+    });
+}
+
+function updateAdminUI() {
+    const isAdmin = !!window.__IS_ADMIN__ || document.documentElement.getAttribute('data-is-admin') === '1';
+    document.documentElement.setAttribute('data-is-admin', isAdmin ? '1' : '0');
+
+    // Show/hide edit buttons (siempre visibles)
+    const buttons = [
+        document.getElementById('headerEditBtn'),
+        document.getElementById('pageEditBtn'),
+        document.getElementById('editModeBtn'),
+        document.getElementById('mobileEditLink')
+    ];
+    buttons.forEach(btn => {
+        if (btn) btn.style.display = 'inline-flex'; // siempre visible
+    });
+
+    // Update admin toggle button
+    const adminToggle = document.getElementById('adminToggleBtn');
+    if (adminToggle) {
+        adminToggle.textContent = isAdmin ? 'Logout' : 'Login';
+        adminToggle.onclick = isAdmin ? logoutAdmin : showLoginModal;
+    }
+}
+
+async function logoutAdmin() {
+    try {
+        await fetch('/logout', { method: 'POST' });
+        window.__IS_ADMIN__ = false;
+        updateAdminUI();
+        location.reload(); // refresh to hide admin features
+    } catch (err) {
+        console.error('Logout error:', err);
+    }
+}
+
+function showLoginModal() {
+    const modal = document.getElementById('loginModal');
+    if (modal) modal.style.display = 'flex';
+}
+
+// Wire login modal events
+document.addEventListener('DOMContentLoaded', () => {
+    const loginModal = document.getElementById('loginModal');
+    const loginSubmit = document.getElementById('loginSubmit');
+    const loginCancel = document.getElementById('loginCancel');
+    const loginPassword = document.getElementById('loginPassword');
+    const loginStatus = document.getElementById('loginStatus');
+
+    if (loginSubmit) {
+        loginSubmit.addEventListener('click', async () => {
+            const pwd = loginPassword.value;
+            try {
+                const resp = await fetch('/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password: pwd })
+                });
+                const data = await resp.json();
+                if (data.ok) {
+                    window.__IS_ADMIN__ = true;
+                    updateAdminUI();
+                    if (loginModal) loginModal.style.display = 'none';
+                    location.reload(); // refresh to show admin features
+                } else {
+                    if (loginStatus) loginStatus.textContent = data.error || 'Login failed';
+                }
+            } catch (err) {
+                if (loginStatus) loginStatus.textContent = 'Error: ' + err.message;
+            }
+        });
+    }
+
+    if (loginCancel) {
+        loginCancel.addEventListener('click', () => {
+            if (loginModal) loginModal.style.display = 'none';
+        });
+    }
+
+    // Wire editor modal close
+    const editorClose = document.getElementById('editorClose');
+    const editorCloseBottom = document.getElementById('editorCloseBottom');
+    const editorRefresh = document.getElementById('editorRefresh');
+    const editorModal = document.getElementById('editorModal');
+
+    if (editorClose) {
+        editorClose.addEventListener('click', () => {
+            if (editorModal) editorModal.style.display = 'none';
+        });
+    }
+    if (editorCloseBottom) {
+        editorCloseBottom.addEventListener('click', () => {
+            if (editorModal) editorModal.style.display = 'none';
+        });
+    }
+    if (editorRefresh) {
+        editorRefresh.addEventListener('click', loadEditableList);
+    }
+
+    // Initial UI update
+    updateAdminUI();
+});
+{% endblock %}
+
+>>>>>>> f3b320b4e1d4e67710a76aa4dfd22f864d7baf81
