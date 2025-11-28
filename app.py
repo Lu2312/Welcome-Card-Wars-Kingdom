@@ -16,7 +16,7 @@ app.config['DEBUG'] = os.environ.get('DEBUG', 'False') == 'True'
 online_users = {}
 
 # Base directory donde están las subcarpetas de criaturas
-BASE_DIR = os.path.join(os.path.dirname(__file__), 'Welcome Card Wars Kingdom_files', 'Creature Book')
+BASE_DIR = os.path.join(os.path.dirname(__file__), 'resources', 'Creature Book')
 
 # ensure secret key for sessions (override in env for production)
 app.secret_key = os.environ.get('FLASK_SECRET_KEY', 'dev-secret-key')
@@ -81,20 +81,7 @@ def cards_page():
     creatures = build_creature_list()
     return render_template('cards.html', creatures=creatures, is_admin=bool(session.get('is_admin')))
 
-@app.route('/status')
-def status():
-    """Heroes page - redirects to /heroes"""
-    return redirect('/heroes')
 
-@app.route('/heroes')
-def heroes():
-    """Heroes page - Card Wars Kingdom Heroes"""
-    return render_template('heroes.html')
-
-@app.route('/creatures')
-def creatures():
-    """Creature Book page"""
-    return render_template('creatures.html')
 
 @app.route('/cartas-update')
 def cartas_update():
@@ -109,7 +96,7 @@ def card_museum():
 @app.route('/creature-book/<path:filename>')
 def serve_creature_book(filename):
     """Serve files from Creature Book folder"""
-    creature_book_dir = os.path.join(os.path.dirname(__file__), 'Welcome Card Wars Kingdom_files', 'Creature Book')
+    creature_book_dir = os.path.join(os.path.dirname(__file__), 'resources', 'Creature Book')
     return send_from_directory(creature_book_dir, filename)
 
 @app.route('/download')
@@ -193,7 +180,7 @@ def user_heartbeat():
 def list_creatures():
     """Get list of all creatures from Creature Book folder"""
     try:
-        creature_book_dir = os.path.join(os.path.dirname(__file__), 'Welcome Card Wars Kingdom_files', 'Creature Book')
+        creature_book_dir = os.path.join(os.path.dirname(__file__), 'resources', 'Creature Book')
 
         if not os.path.exists(creature_book_dir):
             return jsonify({'creatures': [], 'error': 'Creature Book folder not found'})
@@ -346,8 +333,8 @@ def api_update_text():
     return jsonify({'ok': True, 'key': key, 'value': value})
 
 # Servir archivos desde la carpeta "Creature Book" para que las rutas en cards.html funcionen.
-# La URL exacta coincide con la que usa la plantilla: /Welcome Card Wars Kingdom_files/Creature Book/...
-@app.route('/Welcome Card Wars Kingdom_files/Creature Book/<path:filepath>')
+# La URL exacta coincide con la que usa la plantilla: /resources/Creature Book/...
+@app.route('/resources/Creature Book/<path:filepath>')
 def serve_creature_file(filepath):
     # Protege que la ruta exista dentro de BASE_DIR
     target = os.path.normpath(os.path.join(BASE_DIR, filepath))
@@ -358,10 +345,10 @@ def serve_creature_file(filepath):
     directory, filename = os.path.split(target)
     return send_from_directory(directory, filename)
 
-# Serve static files from Welcome Card Wars Kingdom_files folder
-@app.route('/Welcome Card Wars Kingdom_files/<path:filename>')
+# Serve static files from resources folder
+@app.route('/resources/<path:filename>')
 def serve_files(filename):
-    files_dir = os.path.join(os.path.dirname(__file__), 'Welcome Card Wars Kingdom_files')
+    files_dir = os.path.join(os.path.dirname(__file__), 'resources')
     return send_from_directory(files_dir, filename)
 
 @app.errorhandler(404)
@@ -378,6 +365,73 @@ def internal_error(error):
 def admin_login_page():
     """Admin login page (separate template)"""
     return render_template('adminlogin.html', is_admin=bool(session.get('is_admin')))
+
+
+
+# 1. Heroes
+@app.route('/heroes')
+def heroes():
+    """Muestra la página de Héroes."""
+    return render_template('heroes.html')
+
+# 2. Creatures
+@app.route('/creatures')
+def creatures():
+    """Creature Book page."""
+    return render_template('creatures.html')
+
+# 3. Spells
+@app.route('/spells')
+def spells():
+    """Muestra la página de Hechizos."""
+    return render_template('spells.html')
+
+# 4. Multiplayer (PvP)
+@app.route('/multiplayer-pvp')
+def multiplayer_pvp():
+    """Muestra la página de Multijugador (PvP)."""
+    # Usamos 'multiplayer_pvp' como nombre de la función y del archivo HTML
+    # La URL utiliza un guion para ser más amigable: /multiplayer-pvp
+    return render_template('multiplayer_pvp.html')
+
+# 5. Dungeons
+@app.route('/dungeons')
+def dungeons():
+    """Muestra la página de Mazmorras."""
+    return render_template('dungeons.html')
+
+# 6. Treasure Chest Cave
+@app.route('/treasure-chest-cave')
+def treasure_chest_cave():
+    """Muestra la página de la Cueva del Cofre del Tesoro."""
+    # Usamos guiones bajos en el nombre de la función para seguir las convenciones de Python (PEP 8)
+    return render_template('treasure_chest_cave.html')
+
+# 7. Store
+@app.route('/store')
+def store():
+    """Muestra la página de la Tienda."""
+    return render_template('store.html')
+
+# 8. Status Effects
+@app.route('/status-effects')
+def status_effects():
+    """Muestra la página de Efectos de Estado."""
+    return render_template('status_effects.html')
+
+# 9. Lab's
+@app.route('/labs')
+def labs():
+    """Muestra la página de Laboratorios."""
+    return render_template('labs.html')
+
+# 10. Specials
+@app.route('/specials')
+def specials():
+    """Muestra la página de Especiales."""
+    return render_template('specials.html')
+
+
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 8000))

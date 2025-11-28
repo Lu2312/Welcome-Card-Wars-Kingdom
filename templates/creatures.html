@@ -461,7 +461,7 @@
                             name: it.name || (it.folder || '').replace(/^\d+[_-\s]*/,'') || 'Unknown',
                             folder: it.folder || '',
                             images: [it.image],
-                            imageUrl: it.image.startsWith('/') ? it.image : `/Welcome Card Wars Kingdom_files/Creature Book/${it.image}`
+                            imageUrl: it.image.startsWith('/') ? it.image : `/resources/Creature Book/${it.image}`
                         };
                     }
                     // If backend returned folder/name/images[]
@@ -469,7 +469,7 @@
                     const imgs = Array.isArray(it.images) ? it.images : (it.files || []);
                     const first = imgs && imgs.length ? imgs[0] : null;
                     const imageUrl = first
-                        ? (folder ? `/Welcome Card Wars Kingdom_files/Creature Book/${folder}/${first}` : `/Welcome Card Wars Kingdom_files/Creature Book/${first}`)
+                        ? (folder ? `/resources/Creature Book/${folder}/${first}` : `/resources/Creature Book/${first}`)
                         : '';
                     return {
                         name: it.name || folder.replace(/^\d+[_-\s]*/,'') || (first ? first.replace(/\.[^/.]+$/,'') : 'Unknown'),
@@ -521,8 +521,8 @@
             
             const src = creature.imageUrl || (creature.images && creature.images[0] ? (
                 creature.folder
-                    ? `/Welcome Card Wars Kingdom_files/Creature Book/${creature.folder}/${creature.images[0]}`
-                    : `/Welcome Card Wars Kingdom_files/Creature Book/${creature.images[0]}`
+                    ? `/resources/Creature Book/${creature.folder}/${creature.images[0]}`
+                    : `/resources/Creature Book/${creature.images[0]}`
             ) : '');
 
             card.innerHTML = `
@@ -607,8 +607,8 @@
             // Show first available image (imageUrl if normalized)
             const src = creature.imageUrl || (creature.images && creature.images[0] ? (
                 creature.folder
-                    ? `/Welcome Card Wars Kingdom_files/Creature Book/${creature.folder}/${creature.images[0]}`
-                    : `/Welcome Card Wars Kingdom_files/Creature Book/${creature.images[0]}`
+                    ? `/resources/Creature Book/${creature.folder}/${creature.images[0]}`
+                    : `/resources/Creature Book/${creature.images[0]}`
             ) : '');
             modalImg.src = src;
         }

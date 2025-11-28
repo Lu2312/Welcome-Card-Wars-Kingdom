@@ -3,10 +3,10 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="preload" as="image" href="/Welcome Card Wars Kingdom_files/Main-Logo.webp">
-    <link rel="preload" as="image" href="/Welcome Card Wars Kingdom_files/card-wars-kingdom-icon.png">
+    <link rel="preload" as="image" href="/resources/Main-Logo.webp">
+    <link rel="preload" as="image" href="/resources/card-wars-kingdom-icon.png">
     {% block additional_preloads %}{% endblock %}
-    <link rel="stylesheet" href="/Welcome Card Wars Kingdom_files/a53f14ee4cfcc268.css" data-precedence="next">
+    <link rel="stylesheet" href="/resources/a53f14ee4cfcc268.css" data-precedence="next">
     <link rel="icon" href="https://i.postimg.cc/522JrMVz/AT-Card-Wars2-Logo-Eng-1.png">
     <link rel="preconnect" href="https://fonts.googleapis.com/">
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="anonymous">
@@ -15,7 +15,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Rubik+Doodle+Shadow&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/Welcome Card Wars Kingdom_files/a53f14ee4cfcc268.css">
+    <link rel="stylesheet" href="/resources/a53f14ee4cfcc268.css">
     <style>
         @keyframes float {
             0%, 100% { transform: translateY(0px); }
@@ -73,16 +73,81 @@
             .site-logo { height: 64px; max-height: 80px; }
         }
 
-        /* Hide scrollbars */
+        /* Custom scrollbar */
         * {
-            scrollbar-width: none; /* Firefox */
+            scrollbar-width: auto;
+            scrollbar-color: #a532ff #000;
         }
         ::-webkit-scrollbar {
-            display: none; /* Safari, Chrome, Edge */
+            width: 12px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #000;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #a532ff, #625fff);
+            border-radius: 6px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #8a2be2, #4b0082);
         }
     </style>
 </head>
 <body class="font-[Poppins] antialiased bg-black text-white">
+    <nav class="w-full fixed top-0 z-50 backdrop-blur-xl bg-[#00000080] border-b border-white/10 shadow-[0_2px_30px_-8px_rgba(165,50,255,0.4)]">
+        <div class="mx-auto max-w-7xl px-4 h-16 flex items-center justify-between">
+            <a class="flex items-center gap-2" href="/">
+                <img src="/resources/Main-Logo.webp" alt="CWK" class="site-logo drop-shadow-lg">
+            </a>
+            <div class="hidden sm:flex items-center gap-6 font-medium tracking-wide ">
+                <a class="text-white/80 hover:text-white transition" href="/">Home</a>
+                <a class="text-white/80 hover:text-white transition" href="/cards">Cards</a>
+                <a class="text-white/80 hover:text-white transition" href="/heroes">Heroes</a>
+                <a class="text-white/80 hover:text-white transition" href="https://discord.gg/card-wars-revived-1227932764117143642">Support</a>
+                <!-- Admin link inserted into the main nav links -->
+                <a href="/admin-login" id="headerAdminLink" class="text-white/80 hover:text-white transition">Admin Login</a>
+            </div>
+            <div class="hidden sm:flex items-center gap-4">
+                <a href="/download" aria-label="Download" class="shiny-wrap relative inline-flex items-center justify-center rounded-md bg-brand-500 px-5 py-3 text-white shadow hover:opacity-95 transition ">
+                    <span class="relative z-[1] flex items-center gap-2">
+                        <span class="material-symbols-outlined">download</span>Download
+                    </span>
+                </a>
+                <!-- Desktop admin button -->
+                <button id="headerAdminBtn" class="hidden sm:inline-flex items-center gap-2 px-3 py-2 rounded-md border border-white/10 text-white" style="background:transparent;margin-left:8px;">
+                    Admin Login
+                </button>
+                <div class="relative group cursor-pointer">
+                    <span class="absolute inset-0 rounded-full bg-green-400 opacity-50 animate-pulseRing"></span>
+                    <span class="relative block h-3.5 w-3.5 rounded-full bg-green-500 shadow-[0_0_10px_rgba(0,255,0,0.9)]"></span>
+                    <div class="absolute top-6 left-1/2 -translate-x-1/2 bg-black/90 text-white text-xs px-3 py-1 rounded-lg opacity-0 pointer-events-none group-hover:opacity-100 group-hover:translate-y-2 transition shadow-xl whitespace-nowrap z-[100]">
+                        <span id="online-count">31</span> Online
+                    </div>
+                </div>
+            </div>
+            <button aria-label="Open menu" class="sm:hidden inline-flex h-9 w-9 items-center justify-center rounded-md text-white hover:bg-white/10 transition">
+                <span class="material-symbols-outlined text-xl">menu</span>
+            </button>
+        </div>
+        <div class="sm:hidden bg-[#0a0a0af0] backdrop-blur-xl transition-all duration-300 overflow-hidden max-h-0">
+            <div class="px-4 py-3 space-y-3 text-center font-semibold">
+                <div class="flex items-center justify-center gap-2 pb-2 border-b border-white/10">
+                    <img src="/resources/Main-Logo.webp" alt="CWK" class="site-logo drop-shadow-lg">
+                </div>
+                <a target="_blank" class="block text-white/90 hover:text-white py-2" href="https://discord.gg/card-wars-revived-1227932764117143642">News</a>
+                <a href="/#museum-teleporte" class="block text-white/90 hover:text-white py-2">Museum</a>
+                <a target="_blank" class="block text-white/90 hover:text-white py-2" href="https://discord.gg/card-wars-revived-1227932764117143642">Support</a>
+                <a class="block text-white/90 hover:text-white py-2" href="/heroes">Heroes</a>
+                <a class="block text-white/90 hover:text-white py-2" href="/card-museum">Card Museum</a>
+                <a href="/download" class="shiny-wrap relative inline-flex items-center justify-center rounded-md bg-brand-500 px-5 py-3 text-white shadow hover:opacity-95 transition w-full mt-2">
+                    <span class="relative z-[1] flex items-center gap-2">
+                        <span class="material-symbols-outlined">download</span>Download
+                    </span>
+                </a>
+                <a href="/admin-login" id="mobileAdminLink" aria-label="Admin" class="block text-white/90 hover:text-white py-2">Admin Login</a>
+            </div>
+        </div>
+    </nav>
     {% block content %}{% endblock %}
 </body>
 </html>
