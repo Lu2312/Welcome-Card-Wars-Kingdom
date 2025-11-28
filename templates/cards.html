@@ -1,125 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="preload" as="image" href="/Welcome Card Wars Kingdom_files/Main-Logo.webp">
-    <link rel="preload" as="image" href="/Welcome Card Wars Kingdom_files/card-wars-kingdom-icon.png">
-    <link rel="stylesheet" href="/Welcome Card Wars Kingdom_files/a53f14ee4cfcc268.css" data-precedence="next">
-    <link rel="icon" href="https://i.postimg.cc/522JrMVz/AT-Card-Wars2-Logo-Eng-1.png">
-    <link rel="preconnect" href="https://fonts.googleapis.com/">
-    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="anonymous">
-    <title>Welcome Card Wars Kingdom</title>
-    <meta name="description" content="Card Wars Kingdom – Free to Play Online Card Game based on Cartoon Network's Adventure Time.">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Rubik+Doodle+Shadow&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/Welcome Card Wars Kingdom_files/a53f14ee4cfcc268.css">
-    <style>
-        /* ... (Tus estilos CSS se mantienen igual) ... */
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-        }
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 0 20px rgba(165, 50, 255, 0.5); }
-            50% { box-shadow: 0 0 40px rgba(165, 50, 255, 0.8); }
-        }
-        .animate-float {
-            animation: float 3s ease-in-out infinite;
-        }
-        .animate-fadeInUp {
-            animation: fadeInUp 0.8s ease-out forwards;
-        }
-        .hero-gif-container {
-            animation: pulse-glow 2s ease-in-out infinite;
-            background: linear-gradient(135deg, rgba(165, 50, 255, 0.1) 0%, rgba(98, 95, 255, 0.1) 100%);
-            backdrop-filter: blur(10px);
-        }
-        /* Mobile menu: collapsed by default (existing markup uses max-h-0) */
-        [class*="sm:hidden"][class*="bg-[#0a0a0af0]"] { transition: max-height .28s ease, padding .28s ease; overflow: hidden; }
-        .mobile-menu-open { max-height: 900px !important; padding: 12px 0 !important; }
-        /* Ensure images scale on small screens */
-        @media (max-width:640px) {
-            img { max-width: 100%; height: auto; }
-            .hero-gif-container { padding: 16px; }
-            .shiny-wrap { padding-left: 14px; padding-right:14px; }
-            /* reduce huge headings a mobile friendly size */
-            h1 { font-size: clamp(20px, 6vw, 56px); }
-        }
-
-        /* Ensure header logo scales properly on mobile (fix Android Chrome) */
-        .site-logo {
-            height: 36px;
-            max-height: 40px;
-            width: auto;
-            object-fit: contain;
-            display: block;
-        }
-        @media (min-width: 640px) {
-            .site-logo { height: 54px; max-height: 64px; }
-        }
-        @media (min-width: 1024px) {
-            .site-logo { height: 64px; max-height: 80px; }
-        }
-
-        /* --- Estilos para el Modal de Edición --- */
-        .editor-modal-content {
-            padding: 24px;
-            border-radius: 12px;
-            border: 1px solid #333;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-        }
-        .editor-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 8px;
-            background: #1a1a1e;
-            border-radius: 6px;
-            border: 1px solid #222;
-        }
-        .editor-item input[type="text"] {
-            flex-grow: 1;
-            padding: 6px;
-            border-radius: 4px;
-            border: 1px solid #444;
-            background: #000;
-            color: white;
-        }
-        .editor-item button {
-            padding: 6px 10px;
-            border-radius: 6px;
-            border: none;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .editor-item .rename-btn {
-            background: #5050ff; /* Azul para renombrar */
-            color: white;
-        }
-        .editor-item .upload-btn {
-            background: #32a532; /* Verde para subir */
-            color: white;
-        }
-        .editor-item input[type="file"] {
-            width: 120px;
-            font-size: 12px;
-            padding: 4px;
-        }
-    </style>
-</head>
-<body class="font-[Poppins] antialiased bg-black text-white">
+{% extends "base.html" %}
+{% block additional_preloads %}
+<link rel="preload" as="image" href="/resources/home.gif">
+<link rel="preload" as="image" href="/resources/map-ice.png">
+<link rel="preload" as="image" href="/resources/map-candy2.png">
+<link rel="preload" as="image" href="/resources/map-candy.png">
+<link rel="preload" as="image" href="/resources/map-badlands.png">
+<link rel="preload" as="image" href="/resources/main-characters.png">
+<link rel="preload" as="image" href="/resources/main-map.png">
+<link rel="preload" as="image" href="/resources/discord-white.png">
+<link rel="preload" as="image" href="/resources/Cartoon_Network_2010.svg">
+{% endblock %}
+{% block content %}
     <script>
         // Inyectado por Flask: creatures (array) e is_admin (bool)
         window.__CREATURES__ = {{ creatures|default([]) | tojson | safe }};
@@ -127,54 +18,7 @@
         window.__IS_ADMIN__ = {{ is_admin | default(false) | tojson | safe }};
     </script>
 
-    <nav class="w-full fixed top-0 z-50 backdrop-blur-xl bg-[#00000080] border-b border-white/10 shadow-[0_2px_30px_-8px_rgba(165,50,255,0.4)] site-header">
-        <div class="mx-auto max-w-7xl px-4 h-16 flex items-center justify-between">
-            <a class="flex items-center gap-2" href="/">
-                <img src="/Welcome Card Wars Kingdom_files/Main-Logo.webp" alt="CWK" class="site-logo drop-shadow-lg">
-            </a>
 
-            <div class="hidden sm:flex items-center gap-6 font-medium tracking-wide">
-                <a class="text-white/80 hover:text-white transition" href="/">Home</a>
-                <a class="text-white hover:text-white transition border-b-2 border-brand-500" href="/cards">Cards</a>
-                <a class="text-white/80 hover:text-white transition" href="/status">Status</a>
-                <a class="text-white/80 hover:text-white transition" href="https://discord.gg/card-wars-revived-1227932764117143642">Support</a>
-            </div>
-
-            <a href="/download" class="hidden sm:flex shiny-wrap relative inline-flex items-center justify-center rounded-md bg-brand-500 px-5 py-3 text-white shadow hover:opacity-95 transition">
-                <span class="relative z-[1] flex items-center gap-2">
-                    <span class="material-symbols-outlined">download</span>Download
-                </span>
-            </a>
-
-            <button id="headerEditBtn"
-    class="sm:inline-flex items-center gap-2 px-3 py-2 rounded-md border border-white/10 text-white"
-    style="background:transparent;margin-left:8px;display:none;"
-    title="C: rename cards and add images"
-    onclick="window.openEditorModal(event)">
-    ✎ Edit Creatures
-</button>
-
-            <button id="headerAdminBtn" class="hidden sm:inline-flex items-center gap-2 px-3 py-2 rounded-md border border-white/10 text-white" style="background:transparent;margin-left:8px;">
-                Admin Login
-            </button>
-
-            <button id="mobileMenuBtn" aria-label="Open menu" aria-expanded="false" class="sm:hidden inline-flex h-9 w-9 items-center justify-center rounded-md text-white hover:bg-white/10 transition">
-                <span class="material-symbols-outlined text-xl">menu</span>
-            </button>
-        </div>
-
-        <div id="mobilePanel" class="mobile-panel sm:hidden bg-[#0a0a0af0] backdrop-blur-xl" style="max-height:0;padding:0;">
-            <div class="px-4 py-2 flex flex-col">
-                <a class="text-white/90 hover:text-white py-2" href="/" aria-label="Home">Home</a>
-                <a class="text-white/90 hover:text-white py-2" href="/cards" aria-label="Cards">Cards</a>
-                <a class="text-white/90 hover:text-white py-2" href="/status" aria-label="Status">Status</a>
-                <a class="text-white/90 hover:text-white py-2" href="/download" aria-label="Download">Download</a>
-                <a href="#" id="mobileEditLink" class="block text-white/90 hover:text-white py-2" style="display:none;" onclick="window.openEditorModal(event)">Edit Creatures</a>
-                <a href="#" id="mobileAdminLink" class="block text-white/90 hover:text-white py-2" aria-label="Admin">Admin Login</a>
-                <a href="https://discord.gg/card-wars-revived-1227932764117143642" target="_blank" rel="noopener" class="text-white/90 hover:text-white py-2">Support</a>
-            </div>
-        </div>
-    </nav>
 
     <main class="pt-16 min-h-screen bg-gradient-to-b from-black via-[#0a0a0d] to-black">
     <div style="position:fixed;left:20px;top:80px;z-index:90;">
@@ -218,9 +62,9 @@
                         {% set img = (c.images[0] if c.images|length > 0 else '') %}
                         {% if img %}
                             {% if c.folder %}
-                                <img src="/Welcome Card Wars Kingdom_files/Creature Book/{{ c.folder }}/{{ img }}" alt="{{ c.name }}" style="max-width:100%;max-height:100%;object-fit:contain;">
+                                <img src="/resources/Creature Book/{{ c.folder }}/{{ img }}" alt="{{ c.name }}" style="max-width:100%;max-height:100%;object-fit:contain;">
                             {% else %}
-                                <img src="/Welcome Card Wars Kingdom_files/Creature Book/{{ img }}" alt="{{ c.name }}" style="max-width:100%;max-height:100%;object-fit:contain;">
+                                <img src="/resources/Creature Book/{{ img }}" alt="{{ c.name }}" style="max-width:100%;max-height:100%;object-fit:contain;">
                             {% endif %}
                         {% else %}
                             <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect width='100%25' height='100%25' fill='%23667eea'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='20' fill='white'%3ENo+Image%3C/text%3E%3C/svg%3E" alt="No image" style="max-width:100%;max-height:100%;object-fit:contain;">
@@ -236,7 +80,7 @@
 
     <footer class="bg-[#0a0a0d] py-10 border-t border-white/10 backdrop-blur-lg mt-20">
         <div class="max-w-7xl mx-auto px-4 flex flex-col items-center text-center space-y-6">
-            <img src="/Welcome Card Wars Kingdom_files/card-wars-kingdom-icon.png" alt="Card Wars Icon" class="w-16 h-16 drop-shadow-xl">
+            <img src="/resources/card-wars-kingdom-icon.png" alt="Card Wars Icon" class="w-16 h-16 drop-shadow-xl">
             <div class="flex flex-col sm:flex-row gap-4 text-sm font-semibold">
                 <a href="/download" class="text-white/90 hover:text-white hover:underline">FREE DOWNLOAD</a>
                 <a href="https://discord.gg/card-wars-revived-1227932764117143642" target="_blank" class="text-white/90 hover:text-white hover:underline">DISCORD SERVER</a>
@@ -670,8 +514,8 @@ function parseNumberFromFolder(name) {
 function makeImageUrl(folder, filename) {
     if (!filename) return '';
     return folder
-        ? `/Welcome Card Wars Kingdom_files/Creature Book/${folder}/${filename}`
-        : `/Welcome Card Wars Kingdom_files/Creature Book/${filename}`;
+        ? `/resources/Creature Book/${folder}/${filename}`
+        : `/resources/Creature Book/${filename}`;
 }
 
 function createWikiCard(item) {
@@ -896,5 +740,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 </script>
-</body>
-</html>
+{% endblock %}
