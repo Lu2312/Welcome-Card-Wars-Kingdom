@@ -65,3 +65,701 @@ body {
     color: transparent;
     font-weight: 900;
 }
+
+/* Estilos personalizados para index.html */
+
+/* Estilo para el contenedor principal main: fondo negro y texto blanco */
+.main-style {
+    background-color: black;
+    color: white;
+}
+
+/* Estilo para la primera sección hero: gradiente de fondo, padding, centrado de contenido y min-height para colocar debajo del header */
+.section-hero {
+    position: relative;
+    background: linear-gradient(to bottom, black, #0a0a0d, black);
+    padding-top: 0.25rem;
+    display: flex; /* Usa flexbox para centrar el contenido */
+    align-items: center; /* Centra verticalmente */
+    justify-content: center; /* Centra horizontalmente */
+    min-height: 60vh; /* Altura mínima para colocar la imagen debajo del header */
+}
+
+/* Estilo para el contenedor del GIF hero: centrado, padding y borde */
+.hero-gif-container {
+    border-radius: 0.75rem;
+    padding: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+/* Estilo para la imagen del GIF: tamaño responsivo y sombra */
+.hero-gif {
+    height: 3rem;
+    width: auto;
+}
+
+@media (min-width: 640px) {
+    .hero-gif {
+        height: 4.5rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .hero-gif {
+        height: 6rem;
+    }
+}
+
+.hero-gif {
+    filter: drop-shadow(0 25px 25px rgba(0, 0, 0, 0.5));
+    margin: 0 auto;
+}
+
+/* Estilo para el contenedor de flex centrado */
+.flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/* Estilo para el gradiente absoluto */
+.gradient-overlay {
+    position: absolute;
+    inset: 0 1rem 2rem 1rem;
+    background: linear-gradient(to top, black, transparent, transparent);
+    z-index: 1;
+}
+
+/* Estilo para el grid centrado */
+.grid-center {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    z-index: 2;
+}
+
+/* Estilo para el texto centrado con animación */
+.text-center-animated {
+    text-align: center;
+    display: grid;
+    gap: 1.5rem;
+    padding: 0 1rem;
+    animation: fadeInUp 1s ease-out;
+}
+
+/* Estilo para el enlace de descarga: apariencia de botón */
+.download-link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.75rem;
+    background-color: var(--brand-500);
+    padding: 2rem 2rem;
+    color: white;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    transition: opacity 0.3s, transform 0.3s;
+    font-weight: 600;
+    font-size: 1.125rem;
+}
+
+.download-link:hover {
+    opacity: 0.95;
+    transform: scale(1.05);
+}
+
+/* Estilo para el span dentro del enlace */
+.link-span {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+/* Estilo para la segunda sección: fondo blanco, texto negro, imagen de fondo */
+.section-welcome {
+    background-color: white;
+    color: black;
+    background-image: url('https://i.postimg.cc/J0TRZ6md/Design-sans-titre1.png');
+    background-size: cover;
+    position: relative;
+}
+
+/* Estilo para el overlay de gradiente */
+.gradient-overlay-welcome {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.5));
+}
+
+/* Estilo para el contenedor principal de la sección */
+.container-welcome {
+    max-width: 100%;
+    padding: 0 1.5rem 5rem 1.5rem;
+    position: relative;
+    z-index: 10;
+}
+
+/* Estilo para el flex layout de la sección */
+.flex-welcome {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+@media (min-width: 1024px) {
+    .flex-welcome {
+        flex-direction: row;
+    }
+}
+
+/* Estilo para el contenedor de navegación */
+.nav-container {
+    max-width: 100%;
+}
+
+@media (min-width: 1024px) {
+    .nav-container {
+        max-width: 80%;
+    }
+}
+
+/* Estilo para el párrafo de descripción */
+.description-p {
+    font-size: 1rem;
+    line-height: 1.75rem;
+    color: #374151;
+}
+
+@media (min-width: 640px) {
+    .description-p {
+        font-size: 1.125rem;
+    }
+}
+
+/* Estilo para el span en negrita */
+.bold-span {
+    font-weight: 700;
+    font-size: 1.25rem;
+}
+
+/* Estilo para el span de marca */
+.brand-span {
+    font-weight: 700;
+    color: var(--brand-500);
+}
+
+/* Estilo para la navegación main: sin estilos específicos, mantener como está */
+
+/* Estilo para el contenedor de grid de imágenes */
+.grid-images {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    width: 100%;
+    margin-top: 1rem;
+}
+
+/* Estilo para las imágenes de mapas */
+.map-image {
+    width: 100%;
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s;
+}
+
+.map-image:hover {
+    transform: scale(1.05);
+}
+
+/* Estilo para la tercera sección: fondo de marca */
+.section-heroes {
+    background-color: var(--brand-500);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Estilo para el gradiente de fondo de la sección heroes */
+.gradient-heroes {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--brand-500), #7c3aed, #3b82f6);
+}
+
+/* Estilo para el contenedor de heroes */
+.container-heroes {
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: 0 1.5rem 5rem 1.5rem;
+    position: relative;
+    z-index: 10;
+}
+
+/* Estilo para el flex de heroes */
+.flex-heroes {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4rem;
+}
+
+@media (min-width: 1024px) {
+    .flex-heroes {
+        flex-direction: row;
+    }
+}
+
+/* Estilo para la imagen oculta en lg */
+.hidden-lg {
+    display: none;
+}
+
+@media (min-width: 1024px) {
+    .hidden-lg {
+        display: block;
+        max-width: 50%;
+        animation: fadeInUp 1s ease-out;
+    }
+}
+
+/* Estilo para la imagen de personajes */
+.heroes-image {
+    width: 100%;
+    max-width: 100%;
+    filter: drop-shadow(0 25px 25px rgba(0, 0, 0, 0.5));
+    transition: transform 0.5s;
+}
+
+.heroes-image:hover {
+    transform: scale(1.05);
+}
+
+/* Estilo para el contenedor de grid de texto de heroes */
+.grid-heroes-text {
+    max-width: 50%;
+    display: grid;
+    gap: 1.5rem;
+}
+
+/* Estilo para el título de heroes */
+.heroes-title {
+    font-size: 4rem;
+    line-height: 4rem;
+    font-weight: 800;
+    filter: drop-shadow(0 25px 25px rgba(0, 0, 0, 0.5));
+}
+
+@media (min-width: 640px) {
+    .heroes-title {
+        font-size: 5rem;
+        line-height: 5rem;
+    }
+}
+
+/* Estilo para el span amarillo en el título */
+.yellow-span {
+    color: #fbbf24;
+}
+
+/* Estilo para el subtítulo de heroes */
+.heroes-subtitle {
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+@media (min-width: 640px) {
+    .heroes-subtitle {
+        font-size: 1.125rem;
+    }
+}
+
+/* Estilo para el párrafo de heroes */
+.heroes-p {
+    font-size: 0.875rem;
+    line-height: 1.75rem;
+    color: rgba(255, 255, 255, 0.95);
+}
+
+@media (min-width: 640px) {
+    .heroes-p {
+        font-size: 1rem;
+    }
+}
+
+/* Estilo para el enlace de heroes */
+.heroes-link {
+    width: max-content;
+    padding: 1rem 2rem;
+    background-color: black;
+    color: white;
+    transition: all 0.3s;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.heroes-link:hover {
+    background-color: #fbbf24;
+    color: black;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    transform: scale(1.05);
+}
+
+/* Estilo para la cuarta sección: gradiente beige */
+.section-maps {
+    background: linear-gradient(135deg, #ece8e1, #d4cfc4);
+    color: black;
+    position: relative;
+}
+
+/* Estilo para el contenedor de maps */
+.container-maps {
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: 0 1.5rem 5rem 1.5rem;
+}
+
+/* Estilo para el flex de maps */
+.flex-maps {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4rem;
+}
+
+@media (min-width: 1024px) {
+    .flex-maps {
+        flex-direction: row;
+    }
+}
+
+/* Estilo para el grid de texto de maps */
+.grid-maps-text {
+    display: grid;
+    gap: 1.5rem;
+    max-width: 60%;
+}
+
+/* Estilo para el título de maps */
+.maps-title {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: var(--brand-500);
+    filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.1));
+}
+
+@media (min-width: 640px) {
+    .maps-title {
+        font-size: 3rem;
+    }
+}
+
+/* Estilo para el subtítulo de maps */
+.maps-subtitle {
+    font-size: 1rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    color: #374151;
+}
+
+@media (min-width: 640px) {
+    .maps-subtitle {
+        font-size: 1.125rem;
+    }
+}
+
+/* Estilo para el párrafo de maps */
+.maps-p {
+    font-size: 0.875rem;
+    line-height: 2rem;
+    color: #374151;
+}
+
+@media (min-width: 640px) {
+    .maps-p {
+        font-size: 1rem;
+    }
+}
+
+/* Estilo para el enlace de maps */
+.maps-link {
+    width: max-content;
+    padding: 1rem 2rem;
+    background-color: var(--brand-500);
+    color: white;
+    transition: all 0.3s;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.maps-link:hover {
+    background-color: #4f46e5;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    transform: scale(1.05);
+}
+
+/* Estilo para el contenedor de imagen de maps */
+.maps-image-container {
+    max-width: 40%;
+    position: relative;
+    display: grid;
+    place-items: center;
+}
+
+/* Estilo para el gradiente de la imagen de maps */
+.gradient-maps {
+    position: absolute;
+    inset: -1rem;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--brand-500), #7c3aed);
+    filter: blur(2rem);
+    opacity: 0.5;
+    z-index: 1;
+}
+
+.gradient-maps:hover {
+    opacity: 0.75;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 0.5;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+.gradient-maps {
+    animation: pulse 2s infinite;
+}
+
+/* Estilo para la imagen de maps */
+.maps-image {
+    position: relative;
+    width: 20rem;
+    max-width: 100%;
+    margin: 0 auto;
+    border-radius: 50%;
+    border: 2rem solid white;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    transition: transform 0.5s;
+    z-index: 2;
+}
+
+.maps-image:hover {
+    transform: scale(1.05);
+}
+
+/* Estilo para la quinta sección: fondo de imagen */
+.section-adventure {
+    position: relative;
+    background-image: url('/resources/bananas-on-ship.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+/* Estilo para el overlay negro */
+.overlay-adventure {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+/* Estilo para el contenedor de texto de adventure */
+.container-adventure {
+    position: relative;
+    max-width: 56rem;
+    margin: 0 auto;
+    padding: 0 1.5rem 7rem 1.5rem;
+    text-align: center;
+    color: white;
+}
+
+/* Estilo para el título grande de adventure */
+.adventure-title {
+    font-size: 4.5rem;
+    line-height: 1;
+    margin-bottom: 1rem;
+    pointer-events: none;
+    user-select: none;
+}
+
+@media (min-width: 640px) {
+    .adventure-title {
+        font-size: 6rem;
+    }
+}
+
+/* Estilo para el h3 de adventure */
+.adventure-h3 {
+    font-size: 1.125rem;
+}
+
+/* Estilo para el h2 de adventure */
+.adventure-h2 {
+    font-size: 1.875rem;
+    font-weight: 700;
+}
+
+@media (min-width: 640px) {
+    .adventure-h2 {
+        font-size: 2.25rem;
+    }
+}
+
+/* Estilo para el párrafo de adventure */
+.adventure-p {
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+@media (min-width: 640px) {
+    .adventure-p {
+        font-size: 1rem;
+    }
+}
+
+/* Estilo para el contenedor de flex de enlace */
+.flex-center-link {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+}
+
+/* Estilo para el enlace de source code */
+.source-link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.375rem;
+    background-color: var(--brand-500);
+    padding: 0.625rem 1.25rem;
+    color: white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: opacity 0.3s;
+}
+
+.source-link:hover {
+    opacity: 0.95;
+}
+
+/* Estilo para el span de source */
+.source-span {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Estilo para la sexta sección: fondo gris */
+.section-community {
+    background-color: #292929;
+}
+
+/* Estilo para el contenedor de community */
+.container-community {
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: 0 1rem 2rem 1rem;
+}
+
+/* Estilo para el flex de community */
+.flex-community {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    color: white;
+    text-align: center;
+}
+
+/* Estilo para el h1 de community */
+.community-h1 {
+    font-size: 1rem;
+}
+
+@media (min-width: 640px) {
+    .community-h1 {
+        font-size: 1.125rem;
+    }
+}
+
+/* Estilo para el enlace de discord */
+.discord-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Estilo para la imagen de discord */
+.discord-image {
+    height: 2rem;
+    width: 2rem;
+    object-fit: contain;
+    transition: transform 0.3s;
+}
+
+@media (min-width: 640px) {
+    .discord-image {
+        height: 3rem;
+        width: 3rem;
+    }
+}
+
+.discord-image:hover {
+    transform: scale(1.1);
+}
+
+/* Animación fadeInUp */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Estilo para el menú de navegación: lista sin viñetas, con enlaces estilizados como botones */
+.menu-nav {
+    list-style: none; /* Quita las viñetas de la lista */
+    padding: 0; /* Sin padding interno */
+    margin: 20px 0; /* Margen vertical para separación */
+    display: flex; /* Hace la lista horizontal */
+    flex-direction: column; /* Opcional: vertical si prefieres */
+    gap: 10px; /* Espacio entre elementos */
+}
+
+.menu-nav a {
+    text-decoration: none; /* Quita el subrayado de los enlaces */
+    color: #333; /* Color de texto oscuro */
+    padding: 12px 20px; /* Padding interno para hacerlos botones */
+    background-color: #e0e0e0; /* Fondo gris claro */
+    border-radius: 8px; /* Bordes redondeados */
+    display: inline-block; /* Comportamiento de bloque inline */
+    transition: background-color 0.3s, color 0.3s; /* Transición suave para hover */
+    font-weight: bold; /* Texto en negrita */
+    text-align: center; /* Centra el texto */
+}
+
+.menu-nav a:hover {
+    background-color: var(--brand-500); /* Cambia a color de marca en hover */
+    color: white; /* Texto blanco en hover */
+}
