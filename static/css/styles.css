@@ -935,7 +935,6 @@ body {
 .menu-nav {
     list-style: none; /* Quita las viñetas de la lista */
     padding: 0; /* Sin padding interno */
-    margin: 2rem 0; /* Margen vertical para separación */
     display: flex; /* Hace la lista horizontal */
     flex-direction: column; /* Opcional: vertical si prefieres */
     gap: 0.75rem; /* Espacio entre elementos */

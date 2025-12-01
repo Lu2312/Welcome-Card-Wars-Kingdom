@@ -12,174 +12,364 @@
 {% endblock %}
 {% block content %}
 
-    /* Special color schemes for each hero */
-    .hero-card.bmo { border-top: 5px solid #00ff88; }
-    .hero-card.finn { border-top: 5px solid #4a90e2; }
-    .hero-card.ice-king { border-top: 5px solid #87ceeb; }
-    .hero-card.marceline { border-top: 5px solid #c41e3a; }
-    .hero-card.bubblegum { border-top: 5px solid #ff69b4; }
+<h2 class="table-title">Heroes</h2>
 
-    /* Responsive */
-    @media (max-width: 768px) {
-        .header h1 {
-            font-size: 2em;
+    <style>
+        /* Estilos CSS (sin cambios en las reglas de tabla y celdas) */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
         }
 
-        .heroes-grid {
-            grid-template-columns: 1fr;
-            gap: 30px;
+        h2.table-title {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.8em;
         }
 
-        .hero-image {
-            height: 300px;
+        table {
+            border-collapse: collapse;
+            width: 90%; 
+            margin: 20px auto;
+            border: 1px solid #ccc;
+            background-color: #fff;
         }
-    }
-</style>
-    <!-- Header -->
-    <div class="header">
-        <h1>⚔️ Card Wars Kingdom Heroes</h1>
-        <p>Meet the legendary heroes of the Land of Ooo</p>
-    </div>
 
-    <!-- Heroes Container -->
-    <div class="heroes-container">
-        <h2 class="section-title">The Legendary Five</h2>
-        
-        <div class="heroes-grid">
-            <!-- BMO -->
-            <div class="hero-card bmo">
-                <span class="hero-badge">Tech Master</span>
-                <img class="hero-image" 
-                     src="https://static.wikia.nocookie.net/adventuretimewithfinnandjake/images/8/85/Bmo.png" 
-                     alt="BMO"
-                     onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22400%22%3E%3Crect fill=%22%2300ff88%22 width=%22400%22 height=%22400%22/%3E%3Ctext fill=%22white%22 font-size=%2248%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3EBMO%3C/text%3E%3C/svg%3E'">
-                <div class="hero-content">
-                    <div class="hero-name">BMO</div>
-                    <div class="hero-title">Living Video Game Console</div>
-                    <div class="hero-description">
-                        A sentient video game console who is Finn and Jake's roommate and best friend. 
-                        BMO is known for being charming, creative, and always ready for an adventure in the Land of Ooo.
-                    </div>
-                    <div class="hero-stats">
-                        <div class="stat">
-                            <div class="stat-value">⭐⭐⭐⭐⭐</div>
-                            <div class="stat-label">Cuteness</div>
-                        </div>
-                        <div class="stat">
-                            <div class="stat-value">95</div>
-                            <div class="stat-label">Tech Skills</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
+            vertical-align: middle;
+        }
 
-            <!-- Finn -->
-            <div class="hero-card finn">
-                <span class="hero-badge">The Hero</span>
-                <img class="hero-image" 
-                     src="https://static.wikia.nocookie.net/adventuretimewithfinnandjake/images/a/aa/Finn.png" 
-                     alt="Finn"
-                     onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22400%22%3E%3Crect fill=%22%234a90e2%22 width=%22400%22 height=%22400%22/%3E%3Ctext fill=%22white%22 font-size=%2248%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3EFinn%3C/text%3E%3C/svg%3E'">
-                <div class="hero-content">
-                    <div class="hero-name">Finn the Human</div>
-                    <div class="hero-title">Last Human Hero</div>
-                    <div class="hero-description">
-                        A fearless adventurer and the last known human in the Land of Ooo. 
-                        With his grass sword and unwavering courage, Finn fights for justice and protects his friends.
-                    </div>
-                    <div class="hero-stats">
-                        <div class="stat">
-                            <div class="stat-value">100</div>
-                            <div class="stat-label">Bravery</div>
-                        </div>
-                        <div class="stat">
-                            <div class="stat-value">⚔️⚔️⚔️⚔️⚔️</div>
-                            <div class="stat-label">Combat</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        thead th {
+            background-color: #eee;
+            font-weight: bold;
+            font-size: 1.1em;
+            white-space: nowrap; 
+        }
 
-            <!-- Ice King -->
-            <div class="hero-card ice-king">
-                <span class="hero-badge">Ice Wizard</span>
-                <img class="hero-image" 
-                     src="https://static.wikia.nocookie.net/adventuretimewithfinnandjake/images/3/3c/Ice_King.png" 
-                     alt="Ice King"
-                     onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22400%22%3E%3Crect fill=%22%2387ceeb%22 width=%22400%22 height=%22400%22/%3E%3Ctext fill=%22white%22 font-size=%2240%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3EIce King%3C/text%3E%3C/svg%3E'">
-                <div class="hero-content">
-                    <div class="hero-name">Ice King</div>
-                    <div class="hero-title">King of Ice Kingdom</div>
-                    <div class="hero-description">
-                        Once known as Simon Petrikov, the Ice King wields powerful ice magic from his crown. 
-                        Despite his lonely existence, he dreams of finding companionship and writing fan fiction.
-                    </div>
-                    <div class="hero-stats">
-                        <div class="stat">
-                            <div class="stat-value">98</div>
-                            <div class="stat-label">Ice Magic</div>
-                        </div>
-                        <div class="stat">
-                            <div class="stat-value">❄️❄️❄️❄️❄️</div>
-                            <div class="stat-label">Cold Power</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        .icon-cell {
+            width: 100px;
+        }
 
-            <!-- Marceline -->
-            <div class="hero-card marceline">
-                <span class="hero-badge">Vampire Queen</span>
-                <img class="hero-image" 
-                     src="https://static.wikia.nocookie.net/adventuretimewithfinnandjake/images/e/ea/Marceline.png" 
-                     alt="Marceline"
-                     onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22400%22%3E%3Crect fill=%22%23c41e3a%22 width=%22400%22 height=%22400%22/%3E%3Ctext fill=%22white%22 font-size=%2236%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3EMarceline%3C/text%3E%3C/svg%3E'">
-                <div class="hero-content">
-                    <div class="hero-name">Marceline</div>
-                    <div class="hero-title">The Vampire Queen</div>
-                    <div class="hero-description">
-                        A thousand-year-old vampire and talented musician. Marceline rocks her bass guitar and 
-                        floats through life with a cool, laid-back attitude while protecting those she cares about.
-                    </div>
-                    <div class="hero-stats">
-                        <div class="stat">
-                            <div class="stat-value">99</div>
-                            <div class="stat-label">Vampire Power</div>
-                        </div>
-                        <div class="stat">
-                            <div class="stat-value">🎸🎸🎸🎸🎸</div>
-                            <div class="stat-label">Music Skill</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        .icon-cell img, .floops-cell img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+            margin: 0 auto;
+        }
 
-            <!-- Princess Bubblegum -->
-            <div class="hero-card bubblegum">
-                <span class="hero-badge">Candy Monarch</span>
-                <img class="hero-image" 
-                     src="https://static.wikia.nocookie.net/adventuretimewithfinnandjake/images/4/4f/PB.png" 
-                     alt="Princess Bubblegum"
-                     onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22400%22%3E%3Crect fill=%22%23ff69b4%22 width=%22400%22 height=%22400%22/%3E%3Ctext fill=%22white%22 font-size=%2236%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3EPrincess Bubblegum%3C/text%3E%3C/svg%3E'">
-                <div class="hero-content">
-                    <div class="hero-name">Princess Bubblegum</div>
-                    <div class="hero-title">Ruler of Candy Kingdom</div>
-                    <div class="hero-description">
-                        A brilliant scientist and benevolent ruler of the Candy Kingdom. Princess Bubblegum combines 
-                        her genius intellect with compassion to protect her candy citizens from any threat.
-                    </div>
-                    <div class="hero-stats">
-                        <div class="stat">
-                            <div class="stat-value">100</div>
-                            <div class="stat-label">Intelligence</div>
-                        </div>
-                        <div class="stat">
-                            <div class="stat-value">🔬🔬🔬🔬🔬</div>
-                            <div class="stat-label">Science</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+        .floops-cell {
+            padding: 2px;
+            width: 250px;
+        }
+
+        .floops-cell img {
+            max-width: 100%;
+            height: auto;
+            margin: 0;
+        }
+
+        .cupcake-name {
+            font-size: 0.9em;
+            display: block;
+            color: #666;
+            margin-top: 2px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2 class="table-title">Heroes</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th></th>
+            <th class="icon-cell">Icon</th>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Height</th>
+            <th>Weight</th>
+            <th>Species</th>
+            <th class="floops-cell">Floop's</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>1.</td>
+            <td class="icon-cell">
+                <img src="REEMPLAZAR_RUTA/finn_icon.png" alt="Icono de Finn">
+            </td>
+            <td>Finn</td>
+            <td>Angsty Teen</td>
+            <td>Average</td>
+            <td>Scrawny</td>
+            <td>Human</td>
+            <td class="floops-cell">
+                <img src="REEMPLAZAR_RUTA/finn_floops.png" alt="Floop's de Finn">
+            </td>
+        </tr>
+        <tr>
+            <td>2.</td>
+            <td class="icon-cell">
+                <img src="REEMPLAZAR_RUTA/jake_icon.png" alt="Icono de Jake">
+            </td>
+            <td>Jake</td>
+            <td>Almost 40</td>
+            <td>It depends</td>
+            <td>A little pudgy</td>
+            <td>Dog</td>
+            <td class="floops-cell">
+                <img src="REEMPLAZAR_RUTA/jake_floops.png" alt="Floop's de Jake">
+            </td>
+        </tr>
+        <tr>
+            <td>3.</td>
+            <td class="icon-cell">
+                <img src="REEMPLAZAR_RUTA/flame_princess_icon.png" alt="Icono de Flame Princess">
+            </td>
+            <td>Flame Princess</td>
+            <td>Teen</td>
+            <td>Average</td>
+            <td>Just right</td>
+            <td>Fire Elemmtal</td>
+            <td class="floops-cell">
+                <img src="REEMPLAZAR_RUTA/fp_floops.png" alt="Floop's de Flame Princess">
+            </td>
+        </tr>
+        <tr>
+            <td>4.</td>
+            <td class="icon-cell">
+                <img src="REEMPLAZAR_RUTA/ice_king_icon.png" alt="Icono de Ice King">
+            </td>
+            <td>Ice King</td>
+            <td>1000+</td>
+            <td>6' with crown</td>
+            <td>Skin and bones</td>
+            <td>Wizard</td>
+            <td class="floops-cell">
+                <img src="REEMPLAZAR_RUTA/ik_floops.png" alt="Floop's de Ice King">
+            </td>
+        </tr>
+        <tr>
+            <td>5.</td>
+            <td class="icon-cell">
+                <img src="REEMPLAZAR_RUTA/lumpy_space_princess_icon.png" alt="Icono de Lumpy Space Princess">
+            </td>
+            <td>Lumpy Space Princess</td>
+            <td>Teen</td>
+            <td>Indeterminate</td>
+            <td>None of your business</td>
+            <td>Lumpy Space Person</td>
+            <td class="floops-cell">
+                <img src="REEMPLAZAR_RUTA/lsp_floops.png" alt="Floop's de Lumpy Space Princess">
+            </td>
+        </tr>
+        <tr>
+            <td>6.</td>
+            <td class="icon-cell">
+                <img src="REEMPLAZAR_RUTA/marceline_icon.png" alt="Icono de Marceline">
+            </td>
+            <td>Marceline</td>
+            <td>1000+</td>
+            <td>Tall-ish</td>
+            <td>Who knows</td>
+            <td>Vampire</td>
+            <td class="floops-cell">
+                <img src="REEMPLAZAR_RUTA/marceline_floops.png" alt="Floop's de Marceline">
+            </td>
+        </tr>
+        <tr>
+            <td>7.</td>
+            <td class="icon-cell">
+                <img src="REEMPLAZAR_RUTA/princess_bubblegum_icon.png" alt="Icono de Princess Bubblegum">
+            </td>
+            <td>Princess Bubblegum</td>
+            <td>Older Than She Looks</td>
+            <td>24 Candy apples tall</td>
+            <td>37 Units</td>
+            <td>Candy Elemental</td>
+            <td class="floops-cell">
+                <img src="REEMPLAZAR_RUTA/pb_floops.png" alt="Floop's de Princess Bubblegum">
+            </td>
+        </tr>
+        <tr>
+            <td>8.</td>
+            <td class="icon-cell">
+                <img src="REEMPLAZAR_RUTA/grand_prixe_icon.png" alt="Icono de Grand Prixe">
+            </td>
+            <td>Grand Prixe</td>
+            <td>Adult</td>
+            <td>Huge</td>
+            <td>Full figured</td>
+            <td>Cat Person</td>
+            <td class="floops-cell">
+                <img src="REEMPLAZAR_RUTA/gp_floops.png" alt="Floop's de Grand Prixe">
+            </td>
+        </tr>
+        <tr>
+            <td>9.</td>
+            <td class="icon-cell">
+                <img src="REEMPLAZAR_RUTA/bmo_icon.png" alt="Icono de BMO">
+            </td>
+            <td>BMO</td>
+            <td>Youngish</td>
+            <td>Short</td>
+            <td>Portable</td>
+            <td>Robot</td>
+            <td class="floops-cell">
+                <img src="REEMPLAZAR_RUTA/bmo_floops.png" alt="Floop's de BMO">
+            </td>
+        </tr>
+        <tr>
+            <td>10.</td>
+            <td class="icon-cell">
+                <img src="REEMPLAZAR_RUTA/lemongrab_icon.png" alt="Icono de Earl of Lemongrab">
+            </td>
+            <td>Earl of Lemongrab</td>
+            <td>Too Old</td>
+            <td>Tall</td>
+            <td>182 Lemons</td>
+            <td>Candy Person</td>
+            <td class="floops-cell">
+                <img src="REEMPLAZAR_RUTA/lg_floops.png" alt="Floop's de Earl of Lemongrab">
+            </td>
+        </tr>
+        <tr>
+            <td>11.</td>
+            <td class="icon-cell">
+                <img src="REEMPLAZAR_RUTA/peppermint_butler_icon.png" alt="Icono de Peppermint Butler">
+            </td>
+            <td>Peppermint Butler</td>
+            <td>300+</td>
+            <td>15 candy apples tall</td>
+            <td>27 Units</td>
+            <td>Candy Person</td>
+            <td class="floops-cell">
+                <img src="REEMPLAZAR_RUTA/pb_butler_floops.png" alt="Floop's de Peppermint Butler">
+            </td>
+        </tr>
+        <tr>
+            <td>12.</td>
+            <td class="icon-cell">
+                <img src="REEMPLAZAR_RUTA/lady_rainicorn_icon.png" alt="Icono de Lady Rainicorn">
+            </td>
+            <td>Lady Rainicorn</td>
+            <td>30</td>
+            <td>Pretty Long</td>
+            <td>Unknown</td>
+            <td>Rainicorn</td>
+            <td class="floops-cell">
+                <img src="REEMPLAZAR_RUTA/lr_floops.png" alt="Floop's de Lady Rainicorn">
+            </td>
+        </tr>
+        <tr>
+            <td>13.</td>
+            <td class="icon-cell">
+                <img src="REEMPLAZAR_RUTA/hunson_abadeer_icon.png" alt="Icono de Hunson Abadeer">
+            </td>
+            <td>Hunson Abadeer</td>
+            <td>Older Than Time</td>
+            <td>Heavily Depends</td>
+            <td>Unknown</td>
+            <td>Demon</td>
+            <td class="floops-cell">
+                <img src="REEMPLAZAR_RUTA/ha_floops.png" alt="Floop's de Hunson Abadeer">
+            </td>
+        </tr>
+        <tr>
+            <td>14.</td>
+            <td class="icon-cell">
+                <img src="REEMPLAZAR_RUTA/banana_guard_icon.png" alt="Icono de Banana Guard">
+            </td>
+            <td>Banana Guard</td>
+            <td>Adult</td>
+            <td>Tall</td>
+            <td>31 Units</td>
+            <td>Banana</td>
+            <td class="floops-cell">
+                <img src="REEMPLAZAR_RUTA/bg_floops.png" alt="Floop's de Banana Guard">
+            </td>
+        </tr>
+        <tr>
+            <td>15.</td>
+            <td class="icon-cell">
+                <img src="REEMPLAZAR_RUTA/gunter_icon.png" alt="Icono de Gunter">
+            </td>
+            <td>Gunter</td>
+            <td>Unknown</td>
+            <td>Small</td>
+            <td>Tiny</td>
+            <td>Penguin</td>
+            <td class="floops-cell">
+                <img src="REEMPLAZAR_RUTA/gunter_floops.png" alt="Floop's de Gunter">
+            </td>
+        </tr>
+        <tr>
+            <td>16.</td>
+            <td class="icon-cell">
+                <img src="REEMPLAZAR_RUTA/ash_the_wizard_icon.png" alt="Icono de Ash The wizard">
+            </td>
+            <td>Ash The wizard</td>
+            <td>1200+</td>
+            <td>Tall-ish</td>
+            <td>Who knows</td>
+            <td>Wizard</td>
+            <td class="floops-cell">
+                <img src="REEMPLAZAR_RUTA/aw_floops.png" alt="Floop's de Ash The wizard">
+            </td>
+        </tr>
+        <tr>
+            <td>17.</td>
+            <td class="icon-cell">
+                <img src="REEMPLAZAR_RUTA/cinnamon_bun_icon.png" alt="Icono de Cinnamon Bun">
+            </td>
+            <td>Cinnamon Bun</td>
+            <td>700+</td>
+            <td>41 Cinnamon rolls Tall</td>
+            <td>46 Units</td>
+            <td>Candy Person</td>
+            <td class="floops-cell">
+                <img src="REEMPLAZAR_RUTA/cb_floops.png" alt="Floop's de Cinnamon Bun">
+            </td>
+        </tr>
+        <tr>
+            <td>18.</td>
+            <td class="icon-cell">
+                <img src="REEMPLAZAR_RUTA/treasure_cat_icon.png" alt="Icono de Treasure Cat">
+            </td>
+            <td>Treasure Cat (Special)</td>
+            <td>45</td>
+            <td>Tall</td>
+            <td>Narrow-Chest</td>
+            <td>Cat</td>
+            <td class="floops-cell">
+                <img src="REEMPLAZAR_RUTA/tc_floops.png" alt="Floop's de Treasure Cat">
+            </td>
+        </tr>
+        <tr>
+            <td>19.</td>
+            <td class="icon-cell">
+                <img src="REEMPLAZAR_RUTA/mrcupcake_icon.png" alt="Icono de Mr. Cupcake">
+            </td>
+            <td>
+                Mr. Cupcake
+                <span class="cupcake-name">(Only has Staff Member's)</span>
+            </td>
+            <td>53-57</td>
+            <td>Cream</td>
+            <td>Cake</td>
+            <td>Muffin</td>
+            <td class="floops-cell">
+                <img src="REEMPLAZAR_RUTA/mc_floops.png" alt="Floop's de Mr. Cupcake">
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+</body>
 {% endblock %}
