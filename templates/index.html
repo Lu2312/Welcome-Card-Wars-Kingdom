@@ -14,7 +14,7 @@
 <div hidden=""></div>
 <main class="main-style">
 
-        <section class="relative bg-gradient-to-b from-black via-[#0a0a0d] to-black pt-1">
+        <section class="section-hero relative bg-gradient-to-b from-black via-[#0a0a0d] to-black pt-1">
             <div class="mx-auto max-w-7xl px-4 pt-4 pb-4">
                 <div class="hero-gif-container rounded-2xl p-8 border border-white/10 shadow-1xl">
                     <img src="/resources/home.gif" alt="Card Wars Kingdom" class="h-20 sm:h-28 lg:h-32 w-auto drop-shadow-2xl mx-auto ">
@@ -25,8 +25,7 @@
                 <div class="absolute inset-x-8 inset-y-16 bg-gradient-to-t from-black via-transparent to-transparent z-[1]"></div>
                             <div class="absolute inset-0 grid place-items-center z-[2]">
                     <div class="text-center grid gap-6 px-4 animate-fadeInUp">
-                        <p class="text-white/90 text-lg sm:text-xl font-medium tracking-wide">Cardwars Kingdom Revived</p>
-                            <a href="/download" class="shiny-wrap relative inline-flex items-center justify-center rounded-xl bg-brand-500 px-8 py-4 text-white shadow-2xl hover:opacity-95 hover:scale-105 transition-all duration-300 font-semibold text-lg">
+                                    <a href="/download" class="shiny-wrap relative inline-flex items-center justify-center rounded-xl bg-brand-500 px-8 py-4 text-white shadow-2xl hover:opacity-95 hover:scale-105 transition-all duration-300 font-semibold text-lg">
                                 <span class="relative z-[1] flex items-center gap-3">
                                             </span>
                             </a>       <span class="flex items-center gap-3">
@@ -51,109 +50,49 @@
     <br><br>
 </h1>
 
-        <title>Tabla de Facciones</title>
-    <style>
-        /* Incluir el CSS a continuación */
-        table {
-            border-collapse: collapse;
-            width: 80%;
-            margin: 20px auto; /* Centra la tabla en la página */
-            border: 3px solid #000;
-            font-family: Arial, sans-serif;
-        }
+    <table class="factions-table">
+        <thead>
+            <tr class="main-header">
+                <th colspan="6">Factions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="faction-header">
+                <th class="blue-plains">Blue Plains</th>
+                <th class="cornfields">Cornfields</th>
+                <th class="nicelands">Nicelands</th>
+            </tr>
+            <tr>
+                <td class="image-cell">
+                    <img src="resources\Faction\Spell_BluePlains_BluePlains.png" alt="Blue Plains">
+                </td>
+                <td class="image-cell">
+                    <img src="resources\Faction\Spell_Corn_Cornlands.png" alt="Cornfields">
+                </td>
+                <td class="image-cell">
+                    <img src="resources\Faction\Spell_Nicelands_Nicelands.png" alt="Nicelands">
+                </td>
+            </tr>
+            <tr class="faction-header">
+                <th class="sandylands">Sandylands</th>
+                <th class="useless-swamp">Useless Swamp</th>
+                <th class="rainbow">Rainbow</th>
+            </tr>
+            <tr>
+                <td class="image-cell">
+                    <img src="resources\Faction\Spell_Sands_Sandylands.png" alt="Sandylands">
+                </td>
+                <td class="image-cell">
+                    <img src="resources\Faction\Spell_UselessSwamp.png" alt="Useless Swamp">
+                </td>
+                <td class="image-cell">
+                    <img src="resources\Faction\Rainbow.png" alt="Rainbow">
+                </td>
+            </tr>
+        </tbody>
+    </table>
 
-        /* Fila de encabezado principal (Factions) */
-        .main-header th {
-            background-color: #000;
-            color: #fff;
-            padding: 10px;
-            font-size: 1.5em;
-            border: none;
-        }
-
-        /* Estilos generales de las celdas */
-        th, td {
-            border: 1px solid #000;
-            padding: 0; /* Quitamos el padding para controlar el espacio con las imágenes y los encabezados de columna */
-            text-align: center;
-        }
-
-        /* Estilo para los encabezados de las facciones (primera fila de colores) */
-        .faction-header th {
-            padding: 5px;
-            font-weight: bold;
-            font-size: 1.1em;
-            color: #000;
-        }
-
-        /* Colores específicos para los encabezados de facciones */
-        .blue-plains { background-color: #7997ea; } /* Azul */
-        .cornfields { background-color: #ffff80; } /* Amarillo */
-        .nicelands { background-color: #ff99cc; } /* Rosa */
-        .sandylands { background-color: #f7e6c4; } /* Beige/Naranja claro */
-        .useless-swamp { background-color: #4a5d30; color: #fff; } /* Verde Oscuro */
-        .rainbow { background-color: #9933cc; color: #fff; } /* Púrpura */
-
-        /* Estilo para las celdas que contienen las imágenes */
-        .image-cell {
-            background-color: #d1f7d1; /* Verde muy claro para el fondo de las celdas de imagen */
-        }
-
-        /* Estilo para asegurar que las imágenes se ajusten a la celda */
-        .image-cell img {
-            display: block;
-            width: 100%;
-            height: auto;
-            max-width: 250px; /* Tamaño máximo para las imágenes */
-            margin: 0 auto; /* Centra la imagen si la celda es más ancha */
-        }
-    </style>
-</head>
-<body>
-
-<table>
-    <thead>
-        <tr class="main-header">
-            <th colspan="6">Factions</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr class="faction-header">
-            <th class="blue-plains">Blue Plains</th>
-            <th class="cornfields">Cornfields</th>
-            <th class="nicelands">Nicelands</th>
-        </tr>
-        <tr>
-            <td class="image-cell">
-                <img src="resources\Faction\Spell_BluePlains_BluePlains.png" alt="Blue Plains">
-            </td>
-            <td class="image-cell">
-                <img src="resources\Faction\Spell_Corn_Cornlands.png" alt="Cornfields">
-            </td>
-            <td class="image-cell">
-                <img src="resources\Faction\Spell_Nicelands_Nicelands.png" alt="Nicelands">
-            </td>
-        </tr>
-        <tr class="faction-header">
-            <th class="sandylands">Sandylands</th>
-            <th class="useless-swamp">Useless Swamp</th>
-            <th class="rainbow">Rainbow</th>
-        </tr>
-        <tr>
-            <td class="image-cell">
-                <img src="resources\Faction\Spell_Sands_Sandylands.png" alt="Sandylands">
-            </td>
-            <td class="image-cell">
-                <img src="resources\Faction\Spell_UselessSwamp.png" alt="Useless Swamp">
-            </td>
-            <td class="image-cell">
-                <img src="resources\Faction\Rainbow.png" alt="Rainbow">
-            </td>
-        </tr>
-    </tbody>
-</table>
-
-<h1>
+    <h1>
     Menu
 </h1>
         <ul class="menu-nav">
@@ -184,25 +123,8 @@
                     <div class="lg:max-w-[40%] grid gap-6 place-items-center">
                         <div class="relative group">
                             <div class="absolute -inset-1 bg-gradient-to-r from-brand-500 to-indigo-600 rounded-2xl blur opacity-25 group-hover:opacity-75 transition duration-1000"></div>
-<<<<<<< Updated upstream
-=======
-                            <video class="relative w-full h-auto object-cover rounded-xl shadow-2xl ring-1 ring-white/20" autoplay muted loop playsinline src="/resources/trailer.mp4"></video>
->>>>>>> Stashed changes
                         </div>
 
-
-
-
-                        <div class="grid grid-cols-2 gap-4 mt-4 w-full">
-                            <img src="resources\Faction\Spell_BluePlains_BluePlains.png" class="w-full rounded-lg shadow-lg hover:scale-105 transition-transform duration-300" alt="map ice">
-                            <img src="resources\Faction\Spell_Corn_Cornlands.png" class="w-full rounded-lg shadow-lg hover:scale-105 transition-transform duration-300" alt="map candy 2">
-                            <img src="resources\Faction\Spell_Nicelands_Nicelands.png" class="w-full rounded-lg shadow-lg hover:scale-105 transition-transform duration-300" alt="map candy">
-                            <img src="resources\Faction\Spell_Sands_Sandylands.png" class="w-full rounded-lg shadow-lg hover:scale-105 transition-transform duration-300" alt="map badlands">
-                            <img src="resources\Faction\Spell_UselessSwamp.png" class="w-full rounded-lg shadow-lg hover:scale-105 transition-transform duration-300" alt="map badlands">
-                            <img src="resources\Faction\Rainbow.png" class="w-full rounded-lg shadow-lg hover:scale-105 transition-transform duration-300" alt="map badlands">
-
-                       
-                        </div>
                     </div>
                 </div>
             </div>
@@ -219,7 +141,6 @@
                         <h1 class="heroes-title">YOUR <br><span class="yellow-span">HEROES</span></h1>
                         <h2 class="heroes-subtitle">✨ IMAGINATION IS YOUR STRONGEST SPELL.</h2>
                         <p class="heroes-p">In Card Wars Kingdom, you'll summon an army of powerful creatures, each with unique abilities and skills that give you the edge in battle. From fiery spells to strategic gameplay, your heroes wield an array of magic that no other deck can match. No two creatures fight alike, and no two battles ever play out the same way.</p>
-                        <a href="/cards" class="heroes-link">VIEW ALL HEROES →</a>
                     </div>
                 </div>
             </div>
@@ -229,30 +150,8 @@
             <div class="container-maps">
                 <div class="flex-maps">
                     <div class="grid-maps-text">
-                        <h1 class="maps-title">🗺️ YOUR MAPS</h1>
                         <h2 class="maps-subtitle">FIGHT AROUND THE ADVENTURE TIME WORLDS</h2>
                         <p class="maps-p">Embark on a thrilling journey through the Adventure Time universe in Card Wars Kingdom! Battle your way through iconic locations like the Grasslands, Ice Kingdom, and the Fire Kingdom. Assemble your team of powerful creatures, unleash magical spells, and take on epic challenges across diverse maps. Discover hidden secrets, collect rare cards, and conquer every battlefield in your quest to become the ultimate Card Wars champion!</p>
-                        <a href="/cards" class="maps-link">EXPLORE ALL MAPS →</a>
-                    </div>
-                    <div class="maps-image-container">
-                        <div class="gradient-maps"></div>
-                        <img src="/resources/main-map.png" alt="Main Map" class="maps-image">
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="section-adventure">
-            <div class="overlay-adventure"></div>
-            <div class="container-adventure">
-                <div class="adventure-title">ADVENTURE</div>
-                <h3 class="adventure-h3">Get your</h3>
-                <h2 class="adventure-h2">Game and rest assured</h2>
-                <p class="adventure-p">Our game is open source, meaning anyone can access, review, and contribute to its code. This transparency ensures that the software is secure and free from hidden threats. By allowing the community to inspect and improve the code, we enhance its safety and reliability for all users.</p>
-                <div class="flex-center-link">
-                    <a href="https://github.com/Sgsysysgsgsg/Card-Wars-Kingdom-Revived" target="_blank" class="source-link">
-                        <span class="source-span">VIEW SOURCE CODE</span>
-                    </a>
                 </div>
             </div>
         </section>
@@ -267,24 +166,6 @@
                 </div>
             </div>
         </section>
-
-        <footer class="bg-[#0a0a0d] py-10 border-t border-white/10 backdrop-blur-lg">
-            <div class="max-w-7xl mx-auto px-4 flex flex-col items-center text-center space-y-6">
-                <img src="/resources/card-wars-kingdom-icon.png" alt="Card Wars Icon" class="w-16 h-16 drop-shadow-xl">
-                <div class="flex flex-col sm:flex-row gap-4 text-sm font-semibold">
-                    <a href="/download" class="text-white/90 hover:text-white hover:underline">FREE DOWNLOAD</a>
-                    <a href="https://discord.gg/card-wars-revived-1227932764117143642" target="_blank" class="text-white/90 hover:text-white hover:underline">DISCORD SERVER</a>
-                    <a href="/heroes" class="text-white/90 hover:text-white hover:underline">HEROES PAGE</a>
-                </div>
-                <div class="flex items-center gap-8 opacity-70">
-                    <img src="/resources/Cartoon_Network_2010.svg" class="h-6" alt="CN">
-                </div>
-                <p class="text-xs text-white/60 max-w-lg leading-relaxed">
-                    © 2025 Card Wars Kingdom Remake • Fan Project<br>
-                    Cartoon Network™ &amp; Warner Bros. Discovery own all original rights. No monetization involved.
-                </p>
-            </div>
-        </footer>
     </main>
     <script>
         // Update online users count
