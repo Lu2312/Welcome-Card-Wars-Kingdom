@@ -378,7 +378,16 @@ def heroes():
 @app.route('/creatures')
 def creatures():
     """Creature Book page."""
-    return render_template('creatures.html')
+    # Scan resources/Creature-Book for files matching NN_CREATURE.png
+    creature_dir = os.path.join(os.path.dirname(__file__), 'resources', 'Creature-Book')
+    creature_numbers = set()
+    if os.path.exists(creature_dir):
+        for fname in os.listdir(creature_dir):
+            m = re.match(r'^(\d{2})_CREATURE\.png$', fname)
+            if m:
+                creature_numbers.add(int(m.group(1)))
+    creature_numbers = sorted(creature_numbers)
+    return render_template('creatures.html', creature_numbers=creature_numbers)
 
 # 3. Spells
 @app.route('/spells')
