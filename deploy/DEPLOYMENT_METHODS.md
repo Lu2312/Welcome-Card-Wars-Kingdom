@@ -1,64 +1,64 @@
-# Card Wars Kingdom - Metodología de Actualización en el Servidor
+
+# Card Wars Kingdom - Métodos de Actualización en el Servidor
 
 ## Opción 1: Actualizar usando GitHub (Recomendado)
 
-### 1. Sube tus cambios locales a GitHubual](#-solución-inmediata-para-conflicto-actual)ritten by merge" al hacer `git pull`, ejecuta esto en tu servidor:
-- [Opción 1: Actualizar usando GitHub](#opción-1-actualizar-usando-github-recomendado)
-En tu PC local (Windows):vos manualmente con SCP](#opción-2-copiar-archivos-manualmente-con-scp)
-- [Nota sobre saltos de línea](#nota-sobre-saltos-de-línea-crlflf)cd /var/www/cardwars-kingdom
-```bashejos para principiantes](#consejos-para-principiantes) resources/
-cd "c:\Users\Luis Flores\Documents\GITHUB\Welcome-Card-Wars-Kingdom"
-git add .eshooting](#-troubleshooting)origin main
-git commit -m "Describe tus cambios aquí"#-resolución-manual-si-el-script-falla)
-git push origin mains](#-resumen-de-cambios)
-```Consejos Finales](#-consejos-finales)
-Esto debería resolver el problema y actualizar tu servidor.
-### 2. Conéctate a tu VPS
----
-```bashción Inmediata para Conflicto Actual
-ssh root@TU_IP_DEL_SERVIDOR
-```enfrentas un conflicto como este:
 ### 1. Sube tus cambios locales a GitHub
-### 3. Actualiza el repositorio temporal en la VPS
-error: Your local changes to the following files would be overwritten by merge:En tu PC local (Windows):
-```bash deploy/test-vps.sh
-cd /tmp/Welcome-Card-Wars-Kingdomash them before you can merge.
-git pull origin maints\GITHUB\Welcome-Card-Wars-Kingdom"
-``` add .
-(Si no existe, clónalo: `git clone https://github.com/Lu2312/Welcome-Card-Wars-Kingdom.git /tmp/Welcome-Card-Wars-Kingdom`)
-Ejecuta estos comandos:git push origin main
-### 4. Sincroniza y reinicia el servidor
+
+En tu PC local (Windows):
 ```bash
-```bash deploy/test-vps.shConéctate a tu VPS
-sudo bash /var/www/cardwars-kingdom/deploy/sync-and-restart.sh
-``` pull origin mainbash
-```ssh root@TU_IP_DEL_SERVIDOR
----:** El script `sync-and-restart.sh` ahora maneja automáticamente archivos untracked, agregándolos al repositorio antes de sincronizar para evitar conflictos.ota:** El script ahora maneja automáticamente archivos untracked agregándolos al repositorio antes de sincronizar.
----
-## Opción 2: Copiar archivos manualmente con SCP
-## Opción 1: Actualizar usando GitHub (Recomendado)
-### 1. Abre una terminal en tu PC local
-### 1. Sube tus cambios locales a GitHubcd /tmp/Welcome-Card-Wars-Kingdom
-### 2. Copia los archivos al servidor usando SCP
-En tu PC local (Windows):```
-```bash clónalo: `git clone https://github.com/Lu2312/Welcome-Card-Wars-Kingdom.git /tmp/Welcome-Card-Wars-Kingdom`)Copia los archivos al servidor usando SCPCopia los archivos al servidor usando SCP
-scp -r "c:\Users\Luis Flores\Documents\GITHUB\Welcome-Card-Wars-Kingdom\*" root@159.89.157.63:/var/www/cardwars-kingdom/
-```"c:\Users\Luis Flores\Documents\GITHUB\Welcome-Card-Wars-Kingdom" 4. Sincroniza y reinicia el servidorbashbash
-- Si usas Linux/Mac, la ruta local sería:  UB\Welcome-Card-Wars-Kingdom\*" root@159.89.157.63:/var/www/cardwars-kingdom/
-  `scp -r ~/Welcome-Card-Wars-Kingdom/* root@TU_IP_DEL_SERVIDOR:/var/www/cardwars-kingdom/`
-git push origin mainsudo bash /var/www/cardwars-kingdom/deploy/sync-and-restart.sh- Si usas Linux/Mac, la ruta local sería:  - Si usas Linux/Mac, la ruta local sería:  
-### 3. Conéctate a tu VPSwww/cardwars-kingdom/`Wars-Kingdom/* root@TU_IP_DEL_SERVIDOR:/var/www/cardwars-kingdom/`
+cd "c:\Users\Luis Flores\Documents\GITHUB\Welcome-Card-Wars-Kingdom"
+git add .
+git commit -m "Describe tus cambios aquí"
+git push origin main
+```
 
-```bashConéctate a tu VPSctate a tu VPSConéctate a tu VPS
+### 2. Conéctate a tu VPS
+
+```bash
 ssh root@TU_IP_DEL_SERVIDOR
-```bashOpción 2: Copiar archivos manualmente con SCPbashbash
-ssh root@TU_IP_DEL_SERVIDORssh root@TU_IP_DEL_SERVIDORssh root@TU_IP_DEL_SERVIDOR
-### 4. Instala dependencias y reinicia el servidor
-
-```bashActualiza el repositorio temporal en la VPSCopia los archivos al servidor usando SCPInstala dependencias y reinicia el servidorInstala dependencias y reinicia el servidor
 cd /var/www/cardwars-kingdom
+git pull origin main
+```
+
+### 3. Sincroniza y reinicia el servidor
+
+```bash
+sudo bash /var/www/cardwars-kingdom/deploy/sync-and-restart.sh
+```
+
+**Nota:** El script `sync-and-restart.sh` maneja automáticamente archivos untracked agregándolos al repositorio antes de sincronizar para evitar conflictos.
+
+---
+
+## Opción 2: Copiar archivos manualmente con SCP
+
+### 1. Abre una terminal en tu PC local
+
+En tu PC local (Windows):
+```bash
+scp -r "c:\Users\Luis Flores\Documents\GITHUB\Welcome-Card-Wars-Kingdom\*" root@TU_IP_DEL_SERVIDOR:/var/www/cardwars-kingdom/
+```
+
+En Linux/Mac:
+```bash
+scp -r ~/Welcome-Card-Wars-Kingdom/* root@TU_IP_DEL_SERVIDOR:/var/www/cardwars-kingdom/
+```
+
+### 2. Conéctate a tu VPS
+
+```bash
+ssh root@TU_IP_DEL_SERVIDOR
+cd /var/www/cardwars-kingdom
+```
+
+### 3. Instala dependencias y reinicia el servidor
+
+```bash
 source venv/bin/activate
-pip install -r requirements.txtomcuments\GITHUB\Welcome-Card-Wars-Kingdom\*" root@159.89.157.63:/var/www/cardwars-kingdom/
+pip install -r requirements.txt
+sudo bash /var/www/cardwars-kingdom/deploy/sync-and-restart.sh
+```
 deactivaterigin mainctivatev/bin/activate
 sudo systemctl restart cardwars-kingdom-net.service
 sudo systemctl reload nginxt clone https://github.com/Lu2312/Welcome-Card-Wars-Kingdom.git /tmp/Welcome-Card-Wars-Kingdom`)rs-Kingdom/* root@TU_IP_DEL_SERVIDOR:/var/www/cardwars-kingdom/`
