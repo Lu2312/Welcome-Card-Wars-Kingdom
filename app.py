@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, send_from_directory, request, redirect, session, abort
+from flask import Flask, render_template, jsonify, send_from_directory, request, redirect, session, abort, send_file
 import os
 from datetime import datetime, timedelta
 import requests
@@ -351,6 +351,11 @@ def serve_files(filename):
     files_dir = os.path.join(os.path.dirname(__file__), 'resources')
     return send_from_directory(files_dir, filename)
 
+# Serve dungeon images
+@app.route('/dungeon_archivos/<path:filename>')
+def serve_dungeon_files(filename):
+    return send_from_directory('dungeon_archivos', filename)
+
 @app.errorhandler(404)
 def not_found(error):
     """404 error handler"""
@@ -395,19 +400,18 @@ def spells():
     """Muestra la página de Hechizos."""
     return render_template('spells.html')
 
-# 4. Multiplayer (PvP)
-@app.route('/multiplayer-pvp')
-def multiplayer_pvp():
-    """Muestra la página de Multijugador (PvP)."""
-    # Usamos 'multiplayer_pvp' como nombre de la función y del archivo HTML
-    # La URL utiliza un guion para ser más amigable: /multiplayer-pvp
-    return render_template('multiplayer_pvp.html')
+# 4. PvP Seasons
+@app.route('/pvpseason')
+def pvp_seasons():
+    """Muestra la página de Temporadas PvP."""
+    return render_template('pvpseason.html')
+
 
 # 5. Dungeons
 @app.route('/dungeons')
 def dungeons():
     """Muestra la página de Mazmorras."""
-    return render_template('dungeons.html')
+    return send_file('dungeon.html')
 
 # 6. Treasure Chest Cave
 @app.route('/treasure-chest-cave')
@@ -439,6 +443,8 @@ def labs():
 def specials():
     """Muestra la página de Especiales."""
     return render_template('specials.html')
+
+
 
 
 
