@@ -411,7 +411,12 @@ def pvp_seasons():
 @app.route('/dungeons')
 def dungeons():
     """Muestra la página de Mazmorras."""
-    return send_file('dungeon.html')
+    # The dungeon page is a template stored in templates/dungeon.html.
+    # Previously the code used send_file('dungeon.html') which looks for a
+    # file in the project root and caused FileNotFoundError after we moved
+    # the page into templates/. Use render_template so Flask renders the
+    # template from the templates/ directory.
+    return render_template('dungeon.html')
 
 # 6. Treasure Chest Cave
 @app.route('/treasure-chest-cave')
