@@ -1,10 +1,7 @@
 {% extends "base.html" %}
 {% block additional_preloads %}
 <link rel="preload" as="image" href="/resources/home.gif">
-<link rel="preload" as="image" href="/resources/map-ice.png">
-<link rel="preload" as="image" href="/resources/map-candy2.png">
-<link rel="preload" as="image" href="/resources/map-candy.png">
-<link rel="preload" as="image" href="/resources/map-badlands.png">
+<!-- removed preload for missing images: map-ice, map-candy2, map-candy, map-badlands -->
 <link rel="preload" as="image" href="/resources/main-characters.png">
 <link rel="preload" as="image" href="/resources/main-map.png">
 <link rel="preload" as="image" href="/resources/discord-white.png">
@@ -85,7 +82,7 @@
         </div>
     </footer>
 
-    <button id="editModeBtn" title="Edit creatures" style="position:fixed;right:20px;bottom:20px;z-index:90;display:none;background:linear-gradient(135deg,#a532ff,#625fff);color:#fff;border:none;padding:12px 16px;border-radius:12px;box-shadow:0 8px 30px rgba(101,37,255,0.25);cursor:pointer;" onclick="window.openEditorModal(event)">
+    <button id="editModeBtn" title="Edit creatures" style="position:fixed;right:20px;bottom:20px;z-index:90;display:none;background:linear-gradient(135deg,var(--at-accent),var(--at-secondary));color:#fff;border:none;padding:12px 16px;border-radius:12px;box-shadow:0 8px 30px rgba(101,37,255,0.25);cursor:pointer;" onclick="window.openEditorModal(event)">
     ✎ Edit Creatures
 </button>
 
@@ -123,7 +120,7 @@
         <input id="loginPassword" type="password" placeholder="Password" style="width:100%;padding:8px;margin-bottom:8px;border-radius:6px;border:1px solid #333;background:#17171a;color:white;">
         <div style="display:flex;gap:8px;justify-content:flex-end;">
             <button id="loginCancel" style="background:#333;color:#fff;padding:8px 10px;border-radius:6px;border:none">Cancel</button>
-            <button id="loginSubmit" style="background:#625fff;color:#fff;padding:8px 10px;border-radius:6px;border:none">Login</button>
+            <button id="loginSubmit" style="background:var(--at-accent);color:#fff;padding:8px 10px;border-radius:6px;border:none">Login</button>
         </div>
         <div id="loginStatus" style="margin-top:8px;color:#f88;font-size:13px;"></div>
     </div>
@@ -468,7 +465,8 @@ function renderEditableList(creatures) {
         });
         if (targetItem) {
             targetItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            targetItem.style.boxShadow = '0 0 10px 2px #625fff';
+            const __at_accent = getComputedStyle(document.documentElement).getPropertyValue('--at-accent') || '#A532FF';
+            targetItem.style.boxShadow = `0 0 10px 2px ${__at_accent.trim()}`;
             setTimeout(() => targetItem.style.boxShadow = 'none', 3000); // Resalta por un momento
         }
         delete window.__targetEditorFolder;

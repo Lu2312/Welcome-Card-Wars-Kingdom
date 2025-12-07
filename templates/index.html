@@ -1,12 +1,8 @@
 {% extends "base.html" %}
 {% block additional_preloads %}
 <link rel="preload" as="image" href="/resources/home.gif">
-<link rel="preload" as="image" href="/resources/map-ice.png">
-<link rel="preload" as="image" href="/resources/map-candy2.png">
-<link rel="preload" as="image" href="/resources/map-candy.png">
-<link rel="preload" as="image" href="/resources/map-badlands.png">
+<!-- removed preload for missing images: map-ice, map-candy2, map-candy, map-badlands -->
 <link rel="preload" as="image" href="/resources/main-characters.png">
-<link rel="preload" as="image" href="/resources/main-map.png">
 <link rel="preload" as="image" href="/resources/discord-white.png">
 {% endblock %}
 {% block content %}
@@ -20,33 +16,17 @@
                 </div>
             </div>
             
-            <div class="relative flex items-center justify-center overflow-hidden">
-                <div class="absolute inset-x-8 inset-y-16 bg-gradient-to-t from-black via-transparent to-transparent z-[1]"></div>
-                            <div class="absolute inset-0 grid place-items-center z-[2]">
-                    <div class="text-center grid gap-6 px-4 animate-fadeInUp">
-                                    <a href="/download" class="shiny-wrap relative inline-flex items-center justify-center rounded-xl bg-brand-500 px-8 py-4 text-white shadow-2xl hover:opacity-95 hover:scale-105 transition-all duration-300 font-semibold text-lg">
-                                <span class="relative z-[1] flex items-center gap-3">
-                                            </span>
-                            </a>       <span class="flex items-center gap-3">
-                                    </span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+         
         </section>
-
-        <section class="section-welcome">
-            <div class="gradient-overlay-welcome"></div>
-            <div class="container-welcome">
-                <div class="flex-welcome">
-                        
-<h1>
+<h1 class="index-welcome-h1">
     Welcome to the 'Card Wars Kingdom: Revived.' Original Fandom Wiki<br>
-    Here you can find all the information about this game. Enjoy and play now click on <a href="/download">DOWNLOAD</a> !<br>
+</h1>
+</h2>
+    Here you can find all the information about this game. Enjoy and play now click on <a href="/download">DOWNLOAD</a> 
     And don't forget join <a href="https://discord.gg/card-wars-revived-1227932764117143642" target="_blank">DISCORD SERVER</a>
     <br>
-</h1>
+</h2>    
+
 
     <table class="factions-table">
         <thead>
@@ -124,11 +104,6 @@
                         <h2 class="heroes-subtitle">✨ IMAGINATION IS YOUR STRONGEST SPELL.</h2>
                         <p class="heroes-p">In Card Wars Kingdom, you'll summon an army of powerful creatures, each with unique abilities and skills that give you the edge in battle. From fiery spells to strategic gameplay, your heroes wield an array of magic that no other deck can match. No two creatures fight alike, and no two battles ever play out the same way.</p>
                     </div>
-                </div>
-            </div>
-        </section>
-                        <h2 class="maps-subtitle">FIGHT AROUND THE ADVENTURE TIME WORLDS</h2>
-                        <p class="maps-p">Embark on a thrilling journey through the Adventure Time universe in Card Wars Kingdom! Battle your way through iconic locations like the Grasslands, Ice Kingdom, and the Fire Kingdom. Assemble your team of powerful creatures, unleash magical spells, and take on epic challenges across diverse maps. Discover hidden secrets, collect rare cards, and conquer every battlefield in your quest to become the ultimate Card Wars champion!</p>
                 </div>
             </div>
         </section>
@@ -304,7 +279,7 @@
 			<input id="loginPassword" type="password" placeholder="Password" style="width:100%;padding:8px;margin-bottom:8px;border-radius:6px;border:1px solid #333;background:#071;color:white;">
 			<div style="display:flex;gap:8px;justify-content:flex-end;">
 				<button id="loginCancel" style="background:#333;color:#fff;padding:8px 10px;border-radius:6px;border:none">Cancel</button>
-				<button id="loginSubmit" style="background:#625fff;color:#fff;padding:8px 10px;border-radius:6px;border:none">Login</button>
+                <button id="loginSubmit" style="background:var(--at-accent);color:#fff;padding:8px 10px;border-radius:6px;border:none">Login</button>
 			</div>
 			<div id="loginStatus" style="margin-top:8px;color:#f88;font-size:13px;"></div>
 		</form>

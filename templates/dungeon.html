@@ -1,6 +1,33 @@
 <!DOCTYPE html>
+<html lang="es">
+{% extends "base.html" %}
+{% block additional_preloads %}
+<link rel="preload" as="image" href="/resources/home.gif">
+<!-- removed preload for missing images: map-ice, map-candy2, map-candy, map-badlands -->
+<link rel="preload" as="image" href="/resources/main-characters.png">
+<link rel="preload" as="image" href="/resources/main-map.png">
+<link rel="preload" as="image" href="/resources/discord-white.png">
+<link rel="preload" as="image" href="/resources/Cartoon_Network_2010.svg">
+{% endblock %}
+{% block content %}
 
-<table width="50%" style="border-color:black" border="1">
+<!-- header-nav is fixed in base, add extra top margin so title isn't overlapped -->
+<header style="text-align:center; margin: 5.5rem 0 18px;">
+	<h1 class="page-title">Dungeon Calendar</h1>
+</header>
+
+
+<table class="dungeon-table" style="border-color:black" border="1">
+	<colgroup>
+		<col style="width:75px">
+		<col style="width:75px">
+		<col style="width:75px">
+		<col style="width:75px">
+		<col style="width:75px">
+		<col style="width:75px">
+		<col style="width:75px">
+		<col style="width:75px">
+	</colgroup>
 
 <tbody><tr>
 <th>
@@ -125,3 +152,4 @@
 </td>
 <td align="center" valign="top"><span typeof="mw:File"><a href="/resources/dungeon/Turducken_Small.webp" class="mw-file-description image"><img alt="Turducken Small" src="/resources/dungeon/Turducken_Small.webp" decoding="async" loading="lazy" width="75" height="75" class="mw-file-element lazyloaded" data-image-name="Turducken Small.jpg" data-image-key="Turducken_Small.jpg" data-relevant="0" data-src="/resources/dungeon/Turducken_Small.webp"></a></span> Turducken
 </td></tr></tbody></table>
+{% endblock %}
