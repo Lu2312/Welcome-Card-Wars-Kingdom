@@ -6,7 +6,6 @@
     <link rel="preload" as="image" href="/resources/Main-Logo.webp">
     <link rel="preload" as="image" href="/resources/card-wars-kingdom-icon.png">
     {% block additional_preloads %}{% endblock %}
-    <link rel="stylesheet" href="/resources/a53f14ee4cfcc268.css" data-precedence="next">
     <link rel="icon" href="https://i.postimg.cc/522JrMVz/AT-Card-Wars2-Logo-Eng-1.png">
     <link rel="preconnect" href="https://fonts.googleapis.com/">
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="anonymous">
@@ -15,10 +14,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Rubik+Doodle+Shadow&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&display=swap" rel="stylesheet">
+    <!-- using local global stylesheet (static/css/styles.css) for site theme and background -->
     <link rel="stylesheet" href="/static/css/styles.css">
-    <link rel="stylesheet" href="/resources/a53f14ee4cfcc268.css">
 </head>
-<body class="font-[Poppins] antialiased bg-black text-white">
+<body class="font-[Poppins] antialiased text-white">
     <nav class="header-nav">
         <div class="nav-container">
             <a class="logo-link" href="/">
@@ -38,10 +37,6 @@
                         <span class="material-symbols-outlined">download</span>Download
                     </span>
                 </a>
-                <!-- Desktop admin button -->
-                <button id="headerAdminBtn" class="admin-btn">
-                    Admin Login
-                </button>
                 <div class="online-indicator">
                     <span class="online-dot"></span>
                     <div class="online-tooltip">
@@ -79,8 +74,8 @@
         <div class="max-w-7xl mx-auto px-6 flex flex-col items-center text-center space-y-8">
             <img src="/resources/card-wars-kingdom-icon.png" alt="Card Wars Icon" class="w-20 h-20 drop-shadow-2xl rounded-full border-2 border-purple-500">
             <div class="flex flex-col sm:flex-row gap-6 text-sm font-medium">
-                <a href="/download" class="text-gray-300 hover:text-white hover:scale-105 transition-all duration-300 flex items-center gap-2">
-                    <span class="material-symbols-outlined text-lg">download</span> FREE DOWNLOAD
+                <a href="/download" class="hover:scale-105 transition-all duration-300 flex items-center gap-2" style="background: black; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                    <span class="material-symbols-outlined text-lg" style="-webkit-text-fill-color: initial; background: linear-gradient(135deg, var(--at-accent), var(--at-pink)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">download</span> FREE DOWNLOAD
                 </a>
                 <a href="https://discord.gg/card-wars-revived-1227932764117143642" target="_blank" class="text-gray-300 hover:text-white hover:scale-105 transition-all duration-300 flex items-center gap-2">
                     <span class="material-symbols-outlined text-lg">chat</span> DISCORD SERVER

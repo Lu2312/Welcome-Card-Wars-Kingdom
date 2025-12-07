@@ -9,7 +9,7 @@
 		body { background:#050007;color:#fff;font-family:Inter,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial; padding:36px; }
 		.container{max-width:520px;margin:36px auto;padding:20px;background:#0b0b0e;border-radius:12px;border:1px solid #222;}
 		.input{width:100%;padding:10px;border-radius:8px;border:1px solid #333;background:#071;color:#fff;margin-bottom:10px}
-		.btn{background:#625fff;color:#fff;padding:10px 14px;border-radius:8px;border:none;cursor:pointer}
+		.btn{background: linear-gradient(90deg, var(--at-accent), var(--at-secondary)); color:#fff;padding:10px 14px;border-radius:8px;border:none;cursor:pointer}
 		.link{color:#8f8fef;text-decoration:underline;cursor:pointer}
 		.row{display:flex;gap:8px;align-items:center;justify-content:flex-end}
 	</style>
@@ -22,7 +22,7 @@
 		<div class="row">
 			<button id="cancel" class="btn" style="background:#333">Cancel</button>
 			<button id="submit" class="btn">Sign in</button>
-			<button id="logout" class="btn" style="background:#a532ff;display:none;">Salir</button>
+			<button id="logout" class="btn" style="background:var(--at-accent);display:none;">Salir</button>
 		</div>
 		<div id="status" style="margin-top:10px;color:#f88;font-size:13px"></div>
 		<p style="margin-top:12px;font-size:13px;color:#aab">Once signed in you can access the editor. <a href="/cards" class="link">Open Cards</a></p>

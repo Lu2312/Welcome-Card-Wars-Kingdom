@@ -1,58 +1,66 @@
 {% extends "base.html" %}
 {% block additional_preloads %}
 <link rel="preload" as="image" href="/resources/home.gif">
-<link rel="preload" as="image" href="/resources/map-ice.png">
-<link rel="preload" as="image" href="/resources/map-candy2.png">
-<link rel="preload" as="image" href="/resources/map-candy.png">
-<link rel="preload" as="image" href="/resources/map-badlands.png">
 <link rel="preload" as="image" href="/resources/main-characters.png">
 <link rel="preload" as="image" href="/resources/main-map.png">
 <link rel="preload" as="image" href="/resources/discord-white.png">
 <link rel="preload" as="image" href="/resources/Cartoon_Network_2010.svg">
 {% endblock %}
 {% block content %}
-
+<body>
+    
 <h2 class="table-title">Heroes</h2>
 
     <style>
-        /* Estilos CSS (sin cambios en las reglas de tabla y celdas) */
+        /* Adjusted for Adventure Time dark theme */
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
-            background-color: #f4f4f4;
+            /* let global styles control background (transparent here) */
+            background: black;
+            color: var(--at-text-main);
         }
 
         h2.table-title {
             text-align: center;
-            color: #333;
+            color: var(--at-primary);
             margin-bottom: 10px;
             font-size: 1.8em;
         }
 
         table {
             border-collapse: collapse;
-            width: 90%; 
+            width: 90%;
             margin: 20px auto;
-            border: 1px solid #ccc;
-            background-color: #fff;
+            border: 2px solid rgb(255, 255, 255);
+            background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.06));
+            color: var(--at-text-main);
+            box-shadow: 0 8px 30px -12px rgb(255, 255, 255);
+            border-radius: 8px;
+            
         }
 
         th, td {
-            border: 1px solid #ccc;
+            border: 1px solid rgb(255, 255, 255);
             padding: 8px;
             text-align: center;
             vertical-align: middle;
+            color: var(--at-text-main);
+            background: rgba(11,16,32,0.55); /* dark cell background */
         }
 
         thead th {
-            background-color: #eee;
+            background: white);
             font-weight: bold;
             font-size: 1.1em;
-            white-space: nowrap; 
+            white-space: nowrap;
+            color: var(--at-text-main);
+            border-bottom: 2px solid rgb(255, 255, 255);
         }
 
         .icon-cell {
             width: 100px;
+            background: rgba(11,16,32,0.6);
         }
 
         .icon-cell img, .floops-cell img {
@@ -63,9 +71,14 @@
         }
 
         .floops-cell {
-            padding: 2px;
+            padding: 6px 8px;
             width: 250px;
+            background: rgba(11,16,32,0.6);
         }
+
+        /* Make rows slightly alternating to improve scanability */
+        tbody tr:nth-child(even) td { background: rgba(11,16,32,0.52); }
+        tbody tr:nth-child(odd) td { background: rgba(11,16,32,0.6); }
 
         .floops-cell img {
             max-width: 100%;
@@ -76,7 +89,7 @@
         .cupcake-name {
             font-size: 0.9em;
             display: block;
-            color: #666;
+            color: var(--at-text-muted);
             margin-top: 2px;
         }
     </style>
@@ -370,6 +383,8 @@
         </tr>
     </tbody>
 </table>
+
+
 
 </body>
 {% endblock %}
