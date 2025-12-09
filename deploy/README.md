@@ -44,6 +44,42 @@ sudo ./deploy/update-vps.sh
 - Reinicia servicio
 - Verifica que funcione
 
+### 2.1. `clean-deploy.sh` - Despliegue Limpio (NUEVO)
+
+Realiza un despliegue completamente limpio con git clone fresco.
+
+**Uso:**
+```bash
+# Desde tu PC local
+./deploy/clean-deploy.sh
+```
+
+**Qué hace:**
+- Para el servicio actual
+- Hace backup del directorio existente
+- Clona repositorio fresco desde GitHub
+- Configura entorno virtual limpio
+- Instala dependencias
+- Establece permisos correctos
+- Inicia servicio
+- Verifica funcionamiento
+
+### 2.2. `sync-verify.sh` - Verificar Sincronización (NUEVO)
+
+Compara archivos entre local y VPS para verificar sincronización.
+
+**Uso:**
+```bash
+# Desde tu PC local
+./deploy/sync-verify.sh
+```
+
+**Qué hace:**
+- Compara checksums de archivos importantes
+- Verifica estado del servicio
+- Comprueba commits de git
+- Proporciona recomendaciones de sincronización
+
 ### 3. `check-status.sh` - Verificar Estado
 
 Muestra el estado completo del servidor.
@@ -82,7 +118,36 @@ cd /var/www/cardwars-kingdom.net
 
 ## 🚀 Instalación Rápida
 
-### Opción 1: Desde GitHub (Recomendado)
+### Opción 1: Despliegue Limpio con Git Clone (Recomendado)
+
+```bash
+# Conectar a VPS
+ssh root@159.89.157.63
+
+# Parar servicio si existe
+sudo systemctl stop cardwars-kingdom-net.service
+
+# Hacer backup del directorio existente (si existe)
+sudo mv /var/www/cardwars-kingdom.net /var/www/cardwars-kingdom.net.backup.$(date +%Y%m%d_%H%M%S)
+
+# Clonar repositorio limpio
+cd /var/www
+git clone https://github.com/Lu2312/Welcome-Card-Wars-Kingdom.git cardwars-kingdom.net
+
+# Configurar entorno virtual
+cd cardwars-kingdom.net
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+
+# Establecer permisos correctos
+sudo chown -R www-data:www-data /var/www/cardwars-kingdom.net
+
+# Iniciar servicio
+sudo systemctl start cardwars-kingdom-net.service
+```
+
+### Opción 2: Script Automático
 
 ```bash
 # Conectar a VPS
@@ -94,7 +159,7 @@ chmod +x setup-vps.sh
 sudo ./setup-vps.sh
 ```
 
-### Opción 2: Copiar Scripts Manualmente
+### Opción 3: Copiar Scripts Manualmente
 
 ```bash
 # Desde tu PC local
@@ -161,8 +226,63 @@ sudo systemctl status cardwars-kingdom-net.service
 sudo tail -f /var/log/nginx/cardwars-kingdom-net-error.log
 ```
 
+## 🔄 Sincronización Local → VPS
+
+### Método 1: Copia Limpia Completa (Recomendado)
+
+```bash
+# 1. Conectar a VPS y hacer backup
+ssh root@159.89.157.63 "systemctl stop cardwars-kingdom-net.service && mv /var/www/cardwars-kingdom.net /var/www/cardwars-kingdom.net.backup.$(date +%Y%m%d_%H%M%S)"
+
+# 2. Clonar repositorio fresco
+ssh root@159.89.157.63 "cd /var/www && git clone https://github.com/Lu2312/Welcome-Card-Wars-Kingdom.git cardwars-kingdom.net"
+
+# 3. Configurar entorno
+ssh root@159.89.157.63 "cd /var/www/cardwars-kingdom.net && python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt && chown -R www-data:www-data /var/www/cardwars-kingdom.net"
+
+# 4. Reiniciar servicio
+ssh root@159.89.157.63 "systemctl start cardwars-kingdom-net.service"
+```
+
+### Método 2: Copia Directa de Archivos
+
+```bash
+# Copiar archivos específicos desde local a VPS
+scp app.py templates/creatures.html requirements.txt root@159.89.157.63:/var/www/cardwars-kingdom.net/
+scp templates/*.html root@159.89.157.63:/var/www/cardwars-kingdom.net/templates/
+
+# Corregir permisos y reiniciar
+ssh root@159.89.157.63 "chown -R www-data:www-data /var/www/cardwars-kingdom.net && systemctl restart cardwars-kingdom-net.service"
+```
+
+### Método 3: Sincronización con rsync
+
+```bash
+# Excluir archivos no necesarios y sincronizar
+rsync -avz --exclude='.git' --exclude='__pycache__' --exclude='venv' --exclude='*.pyc' . root@159.89.157.63:/var/www/cardwars-kingdom.net/
+
+# Corregir permisos y reiniciar
+ssh root@159.89.157.63 "chown -R www-data:www-data /var/www/cardwars-kingdom.net && systemctl restart cardwars-kingdom-net.service"
+```
+
+## 🔍 Verificación de Sincronización
+
+```bash
+# Comparar checksums entre local y VPS
+echo "=== LOCAL ===" && md5sum app.py templates/creatures.html requirements.txt
+echo "=== VPS ===" && ssh root@159.89.157.63 "cd /var/www/cardwars-kingdom.net && md5sum app.py templates/creatures.html requirements.txt"
+
+# Verificar estado del servicio
+ssh root@159.89.157.63 "systemctl status cardwars-kingdom-net.service --no-pager"
+
+# Probar endpoint
+curl -I https://cardwars-kingdom.net/
+```
+
 ## 📝 Notas
 
 - Todos los scripts requieren permisos de root
-- Los backups se guardan en `/var/backups/cardwars-kingdom-TIMESTAMP`
+- Los backups se guardan en `/var/backups/cardwars-kingdom-TIMESTAMP` o `/var/www/cardwars-kingdom.net.backup.TIMESTAMP`
 - Los logs están en `/var/log/gunicorn/` y `/var/log/nginx/`
+- Siempre hacer backup antes de despliegues en producción
+- Usar `Método 1: Copia Limpia Completa` para resolver problemas de sincronización
