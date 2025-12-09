@@ -12,6 +12,9 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')
 app.config['DEBUG'] = os.environ.get('DEBUG', 'False') == 'True'
 
+# Remote creatures JSON used in several places
+CREATURES_JSON_URL = os.environ.get('CREATURES_JSON_URL', 'https://cardwarskingdom.pythonanywhere.com/persist/static/Blueprints/db_Creatures.json')
+
 # Simple in-memory storage for online users (use Redis in production)
 online_users = {}
 
@@ -69,6 +72,30 @@ def build_creature_list():
         return (c['number'] if isinstance(c.get('number'), int) else float('inf'), (c.get('name') or '').lower())
     creatures.sort(key=sort_key)
     return creatures
+
+
+def fetch_creatures_json(url, timeout=5):
+    """Fetch and return list of creatures from remote JSON.
+
+    Returns a list of objects (or [] on error). This mirrors items.py's logic
+    but keeps minimal server-side handling.
+    """
+    try:
+        resp = requests.get(url, timeout=timeout)
+        resp.raise_for_status()
+        data = resp.json()
+        if isinstance(data, list):
+            return data
+        # sometimes API returns an object with keys; try common key
+        if isinstance(data, dict):
+            # guess the main list field
+            for key in ('creatures', 'data', 'items', 'cards'):
+                if key in data and isinstance(data[key], list):
+                    return data[key]
+        return []
+    except requests.RequestException:
+        # fail silently, caller will handle empty list
+        return []
 
 @app.route('/')
 def index():
@@ -392,7 +419,22 @@ def creatures():
             if m:
                 creature_numbers.add(int(m.group(1)))
     creature_numbers = sorted(creature_numbers)
-    return render_template('creatures.html', creature_numbers=creature_numbers)
+
+    # Try to fetch remote creatures JSON server-side and build a mapping by Number.
+    creatures_by_number = {}
+    creatures_remote = fetch_creatures_json(CREATURES_JSON_URL)
+    for c in creatures_remote:
+        try:
+            num_val = c.get('Number')
+            if num_val is None:
+                continue
+            num_int = int(num_val)
+        except Exception:
+            # Number may not be an integer — skip
+            continue
+        creatures_by_number[num_int] = c
+
+    return render_template('creatures.html', creature_numbers=creature_numbers, creatures_by_number=creatures_by_number)
 
 # 3. Spells
 @app.route('/spells')
