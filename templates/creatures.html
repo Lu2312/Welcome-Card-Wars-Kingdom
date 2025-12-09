@@ -69,6 +69,21 @@
         height: 30px;
         border-radius: 8px;
     }
+    /* small badge to display creature number next to name */
+    .creature-number-badge {
+        display: inline-block;
+        min-width: 36px;
+        text-align: center;
+        background: #f0f0f0;
+        color: #111;
+        border-radius: 8px;
+        padding: 4px 8px;
+        font-weight: 700;
+        margin-left: 6px;
+        border: 1px solid rgba(0,0,0,0.06);
+        box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+        font-size: 0.9rem;
+    }
     .ficha-acciones {
         display: flex;
         align-items: center;
@@ -274,13 +289,13 @@
         font-size: 15px;
     }
     .stat-etiqueta.stat-pv { background: #4CAF50; }
-    .stat-valor.stat-pv { border-color: #4CAF50; }
+    .stat-valor.stat-pv { border-color: #4CAF50; color: #000; }
     .stat-etiqueta.stat-atq { background: #F44336; }
-    .stat-valor.stat-atq { border-color: #F44336; }
+    .stat-valor.stat-atq { border-color: #F44336; color: #000; }
     .stat-etiqueta.stat-mag { background: #2196F3; }
-    .stat-valor.stat-mag { border-color: #2196F3; }
+    .stat-valor.stat-mag { border-color: #2196F3; color: #000; }
     .stat-etiqueta.stat-crt { background: #FFC107; }
-    .stat-valor.stat-crt { border-color: #FFC107; }
+    .stat-valor.stat-crt { border-color: #FFC107; color: #000; }
     .ficha-pie {
         background: linear-gradient(90deg, #fceb9c 60%, #f7e8b0 100%);
         border-top: 2px solid #a3874e;
@@ -316,9 +331,7 @@
              <span class="ficha-nombre" role="text" aria-label="Nombre de criatura" id="creature-name-{{ num }}">{{ (c.Name|replace('!!','')) if c and c.Name else '—' }}</span>
          </div>
         <div class="ficha-acciones">
-            <button class="btn-actualizar" title="Actualizar">
-                <i class="icono-refrescar">↻</i>
-            </button>
+            <span class="creature-number-badge" title="Número de criatura">{{ (c.Number if c and c.Number is not none else num) }}</span>
             <span class="texto-estadisticas">Estadísticas actuales</span>
             <button class="btn-cerrar" title="Cerrar">X</button>
         </div>
@@ -351,10 +364,14 @@
             </div>
 
             <div class="ficha-estadisticas-grid">
-                <div class="stat-etiqueta stat-pv">PV</div><span class="stat-valor stat-pv">140</span>
-                <div class="stat-etiqueta stat-atq">ATQ</div><span class="stat-valor stat-atq">38</span>
-                <div class="stat-etiqueta stat-mag">MAG</div><span class="stat-valor stat-mag">79</span>
-                <div class="stat-etiqueta stat-crt">CRT</div><span class="stat-valor stat-crt">15%</span>
+                <div class="stat-etiqueta stat-pv">PV</div>
+                <span class="stat-valor stat-pv">{% if c and c.PV_calc is defined %}{{ c.PV_calc }}{% elif c and c.MinHP is defined and c.MaxHP is defined %}{{ ((c.MinHP|float) + 0.5 * ((c.MaxHP|float) - (c.MinHP|float)))|round(0)|int }}{% else %}—{% endif %}</span>
+                <div class="stat-etiqueta stat-atq">ATQ</div>
+                <span class="stat-valor stat-atq">{% if c and c.ATQ_calc is defined %}{{ c.ATQ_calc }}{% elif c and c.MinSTR is defined and c.MaxSTR is defined %}{{ ((c.MinSTR|float) + 0.5 * ((c.MaxSTR|float) - (c.MinSTR|float)))|round(0)|int }}{% else %}—{% endif %}</span>
+                <div class="stat-etiqueta stat-mag">MAG</div>
+                <span class="stat-valor stat-mag">{% if c and c.MAG_calc is defined %}{{ c.MAG_calc }}{% elif c and c.MinINT is defined and c.MaxINT is defined %}{{ ((c.MinINT|float) + 0.5 * ((c.MaxINT|float) - (c.MinINT|float)))|round(0)|int }}{% else %}—{% endif %}</span>
+                <div class="stat-etiqueta stat-crt">CRT</div>
+                <span class="stat-valor stat-crt">{% if c and c.CRT_calc is defined %}{{ c.CRT_calc }}%{% elif c and c.MinDEX is defined and c.MaxDEX is defined %}{{ ((c.MinDEX|float) + 0.5 * ((c.MaxDEX|float) - (c.MinDEX|float)))|round(0)|int }}%{% else %}—{% endif %}</span>
             </div>
         </div>
     </div>

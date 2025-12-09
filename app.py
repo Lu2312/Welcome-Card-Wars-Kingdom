@@ -415,7 +415,8 @@ def creatures():
     creature_numbers = set()
     if os.path.exists(creature_dir):
         for fname in os.listdir(creature_dir):
-            m = re.match(r'^(\d{2})_CREATURE\.png$', fname)
+            # match any leading zeros and any number of digits (e.g. 001, 099, 100, 270)
+            m = re.match(r'^0*([0-9]+)_CREATURE\.png$', fname)
             if m:
                 creature_numbers.add(int(m.group(1)))
     creature_numbers = sorted(creature_numbers)
@@ -432,7 +433,119 @@ def creatures():
         except Exception:
             # Number may not be an integer — skip
             continue
-        creatures_by_number[num_int] = c
+
+        # Try to parse MinHP/MaxHP and compute the requested PV formula:
+        # PV = MinHP - 0.5 * (MaxHP - MinHP)
+        pv_val = None
+        try:
+            minhp_raw = c.get('MinHP')
+            maxhp_raw = c.get('MaxHP')
+            if minhp_raw is not None and maxhp_raw is not None:
+                minhp = float(minhp_raw)
+                maxhp = float(maxhp_raw)
+                # new requested formula: MinHP + 0.5 * (MaxHP - MinHP)
+                pv_calc = minhp + 0.5 * (maxhp - minhp)
+                # store as integer for display (round to nearest)
+                pv_val = int(round(pv_calc))
+        except Exception:
+            pv_val = None
+
+        # store the object and attach parsed numeric fields for template convenience
+        c_parsed = dict(c)
+        if pv_val is not None:
+            c_parsed['PV_calc'] = pv_val
+        # also attach numeric copies of MinHP/MaxHP when parseable
+        try:
+            if 'MinHP' in c and c.get('MinHP') is not None:
+                c_parsed['MinHP_num'] = float(c.get('MinHP'))
+        except Exception:
+            pass
+        try:
+            if 'MaxHP' in c and c.get('MaxHP') is not None:
+                c_parsed['MaxHP_num'] = float(c.get('MaxHP'))
+        except Exception:
+            pass
+
+        # Parse MinSTR/MaxSTR and compute ATQ using: MinSTR + 0.5 * (MaxSTR - MinSTR)
+        atq_val = None
+        try:
+            minstr_raw = c.get('MinSTR')
+            maxstr_raw = c.get('MaxSTR')
+            if minstr_raw is not None and maxstr_raw is not None:
+                minstr = float(minstr_raw)
+                maxstr = float(maxstr_raw)
+                atq_calc = minstr + 0.5 * (maxstr - minstr)
+                atq_val = int(round(atq_calc))
+        except Exception:
+            atq_val = None
+
+        if atq_val is not None:
+            c_parsed['ATQ_calc'] = atq_val
+        try:
+            if 'MinSTR' in c and c.get('MinSTR') is not None:
+                c_parsed['MinSTR_num'] = float(c.get('MinSTR'))
+        except Exception:
+            pass
+        try:
+            if 'MaxSTR' in c and c.get('MaxSTR') is not None:
+                c_parsed['MaxSTR_num'] = float(c.get('MaxSTR'))
+        except Exception:
+            pass
+
+        # Parse MinDEX/MaxDEX and compute CRT using: MinDEX + 0.5 * (MaxDEX - MinDEX)
+        crt_val = None
+        try:
+            mindex_raw = c.get('MinDEX')
+            maxdex_raw = c.get('MaxDEX')
+            if mindex_raw is not None and maxdex_raw is not None:
+                mindex = float(mindex_raw)
+                maxdex = float(maxdex_raw)
+                crt_calc = mindex + 0.5 * (maxdex - mindex)
+                crt_val = int(round(crt_calc))
+        except Exception:
+            crt_val = None
+
+        if crt_val is not None:
+            # CRT is shown as a percent in UI; store integer percentage
+            c_parsed['CRT_calc'] = crt_val
+        try:
+            if 'MinDEX' in c and c.get('MinDEX') is not None:
+                c_parsed['MinDEX_num'] = float(c.get('MinDEX'))
+        except Exception:
+            pass
+        try:
+            if 'MaxDEX' in c and c.get('MaxDEX') is not None:
+                c_parsed['MaxDEX_num'] = float(c.get('MaxDEX'))
+        except Exception:
+            pass
+
+        # Parse MinINT/MaxINT and compute MAG using: MinINT + 0.5 * (MaxINT - MinINT)
+        mag_val = None
+        try:
+            minint_raw = c.get('MinINT')
+            maxint_raw = c.get('MaxINT')
+            if minint_raw is not None and maxint_raw is not None:
+                minint = float(minint_raw)
+                maxint = float(maxint_raw)
+                mag_calc = minint + 0.5 * (maxint - minint)
+                mag_val = int(round(mag_calc))
+        except Exception:
+            mag_val = None
+
+        if mag_val is not None:
+            c_parsed['MAG_calc'] = mag_val
+        try:
+            if 'MinINT' in c and c.get('MinINT') is not None:
+                c_parsed['MinINT_num'] = float(c.get('MinINT'))
+        except Exception:
+            pass
+        try:
+            if 'MaxINT' in c and c.get('MaxINT') is not None:
+                c_parsed['MaxINT_num'] = float(c.get('MaxINT'))
+        except Exception:
+            pass
+
+        creatures_by_number[num_int] = c_parsed
 
     return render_template('creatures.html', creature_numbers=creature_numbers, creatures_by_number=creatures_by_number)
 
