@@ -61,6 +61,7 @@
         border: 2px solid #a3874e;
         padding: 6px;
         text-align: center;
+        color: #000; /* mostrar nombres en color negro */
         font-size: 18px;
         font-weight: bold;
         background: #fff;
@@ -308,11 +309,12 @@
 <h1 style="text-align:center; font-size:3.125rem; font-family:'Segoe UI',Arial,sans-serif; color:#a3874e; margin-top:60px; margin-bottom:18px; letter-spacing:2px; text-shadow:0 2px 8px #e0e0e0;">Creature Book</h1>
 <div class="creature-book-container">
 {% for num in creature_numbers %}
-<div class="ficha-personaje">
+<div class="ficha-personaje" data-creature-number="{{ num }}">
     <div class="ficha-cabecera">
-        <div class="ficha-nombre-contenedor">
-               <input type="text" placeholder="Name {{ num }}" class="ficha-nombre">
-        </div>
+         <div class="ficha-nombre-contenedor">
+             {%- set c = (creatures_by_number.get(num) if creatures_by_number is defined else None) -%}
+             <span class="ficha-nombre" role="text" aria-label="Nombre de criatura" id="creature-name-{{ num }}">{{ (c.Name|replace('!!','')) if c and c.Name else '—' }}</span>
+         </div>
         <div class="ficha-acciones">
             <button class="btn-actualizar" title="Actualizar">
                 <i class="icono-refrescar">↻</i>
@@ -365,5 +367,6 @@
 </div>
 {% endfor %}
 </div>
+{# Server-side now fills names via creatures_by_number. Client-side fetch removed. #}
 
 {% endblock %}
