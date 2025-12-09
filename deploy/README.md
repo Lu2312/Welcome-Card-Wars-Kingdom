@@ -150,7 +150,9 @@ sudo systemctl start cardwars-kingdom-net.service
 ### Opción 2: Script Automático
 
 ```bash
-# Conectar a VPS
+# Conectar a VPSroot@ubuntu-s-1vcpu-1gb-sfo2-01:/var/www/cardwars-kingdom.net# git pull origin main
+fatal: not a git repository (or any of the parent directories): .git
+root@ubuntu-s-1vcpu-1gb-sfo2-01:/var/www/cardwars-kingdom.net# cd s
 ssh root@159.89.157.63
 
 # Descargar y ejecutar script
@@ -286,3 +288,156 @@ curl -I https://cardwars-kingdom.net/
 - Los logs están en `/var/log/gunicorn/` y `/var/log/nginx/`
 - Siempre hacer backup antes de despliegues en producción
 - Usar `Método 1: Copia Limpia Completa` para resolver problemas de sincronización
+
+## 🔔 Nota importante — corrección Nginx & CDN (reciente)
+
+Detectamos y corregimos un caso común donde Nginx apuntaba a la ruta equivocada para archivos estáticos y Cloudflare entregaba una copia antigua/404:
+
+- Problema: `location /static` apuntaba a `/var/www/cardwars-kingdom/static` (carpeta antigua). Esto devolvía 404 aunque la copia correcta estaba en `/var/www/cardwars-kingdom.net/static` en el origen.
+- Acción aplicada: Cambiar `alias` a `/var/www/cardwars-kingdom.net/static`, recargar Nginx y verificar. Ejemplo:
+
+```bash
+sudo cp /etc/nginx/sites-available/cardwars-kingdom-net /tmp/cardwars-kingdom-net.conf.bak
+sudo sed -i 's#/var/www/cardwars-kingdom/static#/var/www/cardwars-kingdom.net/static#g' /etc/nginx/sites-available/cardwars-kingdom-net
+sudo nginx -t && sudo systemctl reload nginx
+```
+
+- Nota: Cloudflare puede seguir devolviendo una versión cacheada (o 404) hasta que purgues la caché en Cloudflare. Revisa `cf-cache-status` y purga el asset si hace falta.
+
+## 🔁 Cómo actualizar el código en la VPS (dos formas)
+
+### A — Actualizar desde GitHub (recomendado cuando `.git` existe)
+
+1. Entra al servidor y verifica que el directorio es un repo git:
+
+```bash
+cd /var/www/cardwars-kingdom.net
+if [ -d .git ]; then git status || true; else echo ".git missing"; fi
+```
+
+2. Si `.git` existe y estás en la rama `main`:
+
+```bash
+sudo systemctl stop cardwars-kingdom-net.service
+cd /var/www/cardwars-kingdom.net
+git fetch origin
+git pull origin main
+python3 -m venv venv || true
+source venv/bin/activate
+pip install -r requirements.txt
+sudo chown -R www-data:www-data /var/www/cardwars-kingdom.net
+sudo systemctl start cardwars-kingdom-net.service
+```
+
+3. Si `.git` no existe (caso frecuente tras despliegues por tar/scp), usa la opción segura (re-clonar):
+
+```bash
+# Crea clon limpio en directorio temporal
+cd /var/www
+git clone https://github.com/Lu2312/Welcome-Card-Wars-Kingdom.git cardwars-kingdom.net.new
+
+# Compara sin sobrescribir (opcional)
+diff -ru /var/www/cardwars-kingdom.net /var/www/cardwars-kingdom.net.new | less
+
+# Si está OK, usa backup y reemplaza
+sudo systemctl stop cardwars-kingdom-net.service
+sudo mv /var/www/cardwars-kingdom.net /var/www/cardwars-kingdom.net.backup.$(date +%Y%m%d_%H%M%S)
+sudo mv /var/www/cardwars-kingdom.net.new /var/www/cardwars-kingdom.net
+cd /var/www/cardwars-kingdom.net
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+sudo chown -R www-data:www-data /var/www/cardwars-kingdom.net
+sudo systemctl start cardwars-kingdom-net.service
+```
+
+### B — Re-inicializar git en el directorio actual (cuidado)
+
+Si quieres mantener los archivos actuales y recuperar el control con Git (más arriesgado):
+
+```bash
+cd /var/www/cardwars-kingdom.net
+git init
+git remote add origin https://github.com/Lu2312/Welcome-Card-Wars-Kingdom.git
+git fetch origin
+# Ver diferencias (no cambia archivos):
+git diff --name-status origin/main
+# Si quieres sobrescribir con origin/main (¡irrevocable para archivos sin respaldo!):
+git reset --hard origin/main
+```
+
+## 🖥️ Actualizar desde tu máquina local → VPS
+
+Se proporcionan 3 métodos según tu preferencia y herramientas:
+
+1) Copia limpia con `scp`/tar (rápido pero manual):
+
+```bash
+# En tu PC: crear tar o copiar archivos seleccionados
+tar czf repo-sync.tar.gz --exclude='.git' --exclude='venv' .
+scp repo-sync.tar.gz root@159.89.157.63:/tmp/
+
+# En la VPS:
+ssh root@159.89.157.63
+cd /var/www
+sudo systemctl stop cardwars-kingdom-net.service
+sudo mv cardwars-kingdom.net cardwars-kingdom.net.backup.$(date +%Y%m%d_%H%M%S)
+sudo tar xzf /tmp/repo-sync.tar.gz -C /var/www/cardwars-kingdom.net
+cd /var/www/cardwars-kingdom.net
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+sudo chown -R www-data:www-data /var/www/cardwars-kingdom.net
+sudo systemctl start cardwars-kingdom-net.service
+```
+
+2) Copiar archivos concretos con `scp` (útil para cambios pequeños):
+
+```bash
+# Desde tu PC
+scp app.py templates/index.html static/css/styles.css root@159.89.157.63:/var/www/cardwars-kingdom.net/
+
+# En la VPS
+ssh root@159.89.157.63
+sudo chown www-data:www-data /var/www/cardwars-kingdom.net/app.py /var/www/cardwars-kingdom.net/templates/index.html /var/www/cardwars-kingdom.net/static/css/styles.css
+sudo systemctl restart cardwars-kingdom-net.service
+```
+
+3) Sincronización segura con `rsync` (recomendada cuando tienes rsync instalado):
+
+```bash
+# Desde tu PC (en el repo raíz)
+rsync -avz --delete --exclude='.git' --exclude='venv' --exclude='__pycache__' . root@159.89.157.63:/var/www/cardwars-kingdom.net/
+
+# En la VPS
+ssh root@159.89.157.63
+sudo chown -R www-data:www-data /var/www/cardwars-kingdom.net
+sudo systemctl restart cardwars-kingdom-net.service
+```
+
+### Evitar problemas con CDN / Cloudflare
+
+Si el sitio usa Cloudflare y ves cambios no aplicados (CSS/JS viejos/404):
+
+- Purga el asset en Cloudflare o activa Dev Mode temporalmente.
+- Para purgar por API (reemplaza ZONE_ID / YOUR_API_TOKEN):
+
+```bash
+curl -X POST "https://api.cloudflare.com/client/v4/zones/<ZONE_ID>/purge_cache" \
+	-H "Authorization: Bearer <YOUR_API_TOKEN>" \
+	-H "Content-Type: application/json" \
+	--data '{"files":["https://cardwars-kingdom.net/static/css/styles.css"]}'
+```
+
+o purgar todo:
+
+```bash
+curl -X POST "https://api.cloudflare.com/client/v4/zones/<ZONE_ID>/purge_cache" \
+	-H "Authorization: Bearer <YOUR_API_TOKEN>" \
+	-H "Content-Type: application/json" \
+	--data '{"purge_everything":true}'
+```
+
+---
+
+*Con estos pasos la VPS puede mantenerse sincronizada con GitHub y con una copia local de forma segura. Siempre realiza backup antes de aplicar cambios en producción.*
