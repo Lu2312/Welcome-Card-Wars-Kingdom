@@ -1,0 +1,273 @@
+{% extends "base.html" %}
+{% block additional_preloads %}
+<link rel="preload" as="image" href="/resources/main-map.png">
+{% endblock %}
+{% block content %}
+<div class="page-hero container">
+    <h1 class="page-title">Status Effects</h1>
+    <p class="muted">Effects applied to creatures: Burn, Freezing, Poison, etc.</p>
+</div>
+<section class="container">
+    <h2>Overview</h2>
+    <p>In Card Wars Kingdom, status effects are temporary conditions applied to creatures that influence combat in many ways: they can buff allies, debuff enemies, change energy costs, or trigger extra actions on contact. Below is a categorized summary of the most common Landscapes, Positive Effects, Negative Effects and Armor Effects.</p>
+</section>
+
+<section class="container">
+    <h2>Landscapes</h2>
+    <p class="muted">Landscapes are board conditions that stay active until changed (a creature can only have one landscape). They often alter energy gains, damage or other global properties.</p>
+    <div class="grid-2-cols gap-6 status-grid">
+        <article class="card status-type-landscape">
+            <div class="status-card">
+                <img src="/resources/Status/Status_Land_Plains.png" alt="Blue Plains" class="status-icon" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/resources/dungeon/Screenshot-placeholder.svg'">
+                <div>
+                    <h3>Blue Plains</h3>
+                    <p>Grants +1 energy each turn while reducing per-turn Floop Meter. A mix of economy and cost over time.</p>
+                </div>
+            </div>
+        </article>
+        <article class="card status-type-landscape">
+            <div class="status-card">
+                <img src="/resources/Status/Status_Land_Corn.png" alt="Cornfields" class="status-icon" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/resources/dungeon/Screenshot-placeholder.svg'">
+                <div>
+                    <h3>Cornfields</h3>
+                    <p>Causes Drag attacks to hit twice but prevents the creature from drawing new cards.</p>
+                </div>
+            </div>
+        </article>
+        <article class="card status-type-landscape">
+            <div class="status-card">
+                <img src="/resources/Status/Status_Land_Nice.png" alt="Nicelands" class="status-icon" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/resources/dungeon/Screenshot-placeholder.svg'">
+                <div>
+                    <h3>Nicelands</h3>
+                    <p>Heals creatures every turn but introduces a targeting restriction: some attacks lose target locking.</p>
+                </div>
+            </div>
+        </article>
+        <article class="card status-type-landscape">
+            <div class="status-card">
+                <img src="/resources/Status/Status_Land_Sand.png" alt="Sandylands" class="status-icon" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/resources/dungeon/Screenshot-placeholder.svg'">
+                <div>
+                    <h3>Sandylands</h3>
+                    <p>Deals minor team damage each turn and increases chance of critical hits for creatures in play.</p>
+                </div>
+            </div>
+        </article>
+        <article class="card status-type-landscape">
+            <div class="status-card">
+                <img src="/resources/Status/Status_Land_Swamp.png" alt="Useless Swamp" class="status-icon" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/resources/dungeon/Screenshot-placeholder.svg'">
+                <div>
+                    <h3>Useless Swamp</h3>
+                    <p>On being attacked this landscape inflicts Blind and a small poison to the attacker; Drag attacks become costlier.</p>
+                </div>
+            </div>
+        </article>
+    </div>
+</section>
+
+<section class="container">
+    <h2>Positive Effects (Buffs)</h2>
+    <p class="muted">Positive effects improve a creature's performance for a number of turns or until cancelled. They can increase damage, reduce costs, or provide defensive benefits.</p>
+    <div class="image-grid status-grid">
+        <article class="card status-type-positive">
+            <div class="status-card">
+                <img src="/resources/Status/Status_Pos_Str.png" alt="Attack Up" class="status-icon" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/resources/dungeon/Screenshot-placeholder.svg'">
+                <div>
+                    <h4>Attack Up</h4>
+                    <p>Temporarily increases attack power for the next attack; stacks may increase potency or duration.</p>
+                </div>
+            </div>
+        </article>
+        <article class="card status-type-positive">
+            <div class="status-card">
+                <img src="/resources/Status/Status_Pos_CritRate.png" alt="Bulls-Eye" class="status-icon" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/resources/dungeon/Screenshot-placeholder.svg'">
+                <div>
+                    <h4>Bulls-Eye</h4>
+                    <p>Makes the next attack a guaranteed critical hit (stacking increases occurrences).</p>
+                </div>
+            </div>
+        </article>
+        <article class="card status-type-positive">
+            <div class="status-card">
+                <img src="/resources/Status/Status_Pos_STRCounter.png" alt="Counterattack" class="status-icon" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/resources/dungeon/Screenshot-placeholder.svg'">
+                <div>
+                    <h4>Counterattack</h4>
+                    <p>When attacked, the creature automatically responds with a Drag attack; stacking controls how many times this triggers.</p>
+                </div>
+            </div>
+        </article>
+        <article class="card status-type-positive">
+            <div class="status-card">
+                <img src="/resources/Status/Status_Pos_Def.png" alt="Defense Up" class="status-icon" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/resources/dungeon/Screenshot-placeholder.svg'">
+                <div>
+                    <h4>Defense Up</h4>
+                    <p>Reduces damage taken for several turns; stacking typically extends duration rather than percentage.</p>
+                </div>
+            </div>
+        </article>
+        <article class="card status-type-positive">
+            <div class="status-card">
+                <img src="/resources/Status/Status_Pos_Adrenaline.png" alt="Haste" class="status-icon" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/resources/dungeon/Screenshot-placeholder.svg'">
+                <div>
+                    <h4>Haste</h4>
+                    <p>Reduces the energy cost for Drag attacks, letting creatures act more efficiently while active.</p>
+                </div>
+            </div>
+        </article>
+        <article class="card status-type-positive">
+            <div class="status-card">
+                <img src="/resources/Status/Status_Pos_LifeSteal.png" alt="Life Leech" class="status-icon" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/resources/dungeon/Screenshot-placeholder.svg'">
+                <div>
+                    <h4>Life Leech</h4>
+                    <p>Restores health to the attacker based on a percentage of the damage dealt.</p>
+                </div>
+            </div>
+        </article>
+        <article class="card status-type-positive">
+            <div class="status-card">
+                <img src="/resources/Status/Status_Pos_Regen.png" alt="Regen" class="status-icon" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/resources/dungeon/Screenshot-placeholder.svg'">
+                <div>
+                    <h4>Regen</h4>
+                    <p>Heals a small percentage of HP each turn while active; stacking increases duration.</p>
+                </div>
+            </div>
+        </article>
+        <article class="card status-type-positive">
+            <div class="status-card">
+                <img src="/resources/Status/Status_Pos_Shield.png" alt="Shield" class="status-icon" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/resources/dungeon/Screenshot-placeholder.svg'">
+                <div>
+                    <h4>Shield</h4>
+                    <p>Blocks the next damage effect; stacks allow additional blocks before expiring.</p>
+                </div>
+            </div>
+        </article>
+    </div>
+</section>
+
+<section class="container">
+    <h2>Negative Effects (Debuffs)</h2>
+    <p class="muted">Negative effects hinder a creature: reducing damage, blocking actions, forcing behavior, or dealing damage over time.</p>
+    <div class="image-grid status-grid">
+        <article class="card status-type-negative">
+            <div class="status-card">
+                <img src="/resources/Status/Status_Neg_Cripple.png" alt="Attack Down" class="status-icon" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/resources/dungeon/Screenshot-placeholder.svg'">
+                <div>
+                    <h4>Attack Down</h4>
+                    <p>Reduces a creature's attack value; stacking increases the duration of the reduction.</p>
+                </div>
+            </div>
+        </article>
+        <article class="card status-type-negative">
+            <div class="status-card">
+                <img src="/resources/Status/Status_Neg_Berserk.png" alt="Berserk" class="status-icon" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/resources/dungeon/Screenshot-placeholder.svg'">
+                <div>
+                    <h4>Berserk</h4>
+                    <p>Forces the creature to automatically attack at the start of turns; stacking extends duration.</p>
+                </div>
+            </div>
+        </article>
+        <article class="card status-type-negative">
+            <div class="status-card">
+                <img src="/resources/Status/Status_Neg_Blind.png" alt="Blind" class="status-icon" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/resources/dungeon/Screenshot-placeholder.svg'">
+                <div>
+                    <h4>Blind</h4>
+                    <p>Makes attacks miss for a number of turns; stacking adds additional missed attacks.</p>
+                </div>
+            </div>
+        </article>
+        <article class="card status-type-negative">
+            <div class="status-card">
+                <img src="/resources/Status/Status_Neg_Transmogrify.png" alt="Morph" class="status-icon" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/resources/dungeon/Screenshot-placeholder.svg'">
+                <div>
+                    <h4>Morph</h4>
+                    <p>Transforms the creature into a much weaker form with greatly reduced attack and magic.</p>
+                </div>
+            </div>
+        </article>
+        <article class="card status-type-negative">
+            <div class="status-card">
+                <img src="/resources/Status/Status_Neg_Poison.png" alt="Poison" class="status-icon" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/resources/dungeon/Screenshot-placeholder.svg'">
+                <div>
+                    <h4>Poison / Burn</h4>
+                    <p>Deals a small amount of damage each turn; stacking increases damage or duration.</p>
+                </div>
+            </div>
+        </article>
+        <article class="card status-type-negative">
+            <div class="status-card">
+                <img src="/resources/Status/Status_Neg_BlockCards.png" alt="Silence" class="status-icon" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/resources/dungeon/Screenshot-placeholder.svg'">
+                <div>
+                    <h4>Silence</h4>
+                    <p>Prevents playing cards on the affected creature; stacking increases the number of turns silenced.</p>
+                </div>
+            </div>
+        </article>
+        <article class="card status-type-negative">
+            <div class="status-card">
+                <img src="/resources/Status/Status_Neg_APLeak.png" alt="Slow" class="status-icon" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/resources/dungeon/Screenshot-placeholder.svg'">
+                <div>
+                    <h4>Slow / Haste (Opposing)</h4>
+                    <p>Slow increases Drag attack energy cost, while Haste reduces cost — they mutually cancel when applied.</p>
+                </div>
+            </div>
+        </article>
+        <article class="card status-type-negative">
+            <div class="status-card">
+                <img src="/resources/Status/Status_Neg_Confuse.png" alt="Confuse" class="status-icon" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/resources/dungeon/Screenshot-placeholder.svg'">
+                <div>
+                    <h4>Confuse</h4>
+                    <p>Causes the creature to attack random targets rather than a specified target; stacking increases duration.</p>
+                </div>
+            </div>
+        </article>
+    </div>
+</section>
+
+<section class="container">
+    <h2>Positive Armor Effects</h2>
+    <p class="muted">Armor effects provide a defensive property that triggers on contact or shields the creature from certain debuffs.</p>
+    <div class="grid-2-cols gap-6 status-grid">
+        <article class="card status-type-armor">
+            <div class="status-card">
+                <img src="/resources/Status/Status_Pos_Stealth.png" alt="Vanish" class="status-icon" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/resources/dungeon/Screenshot-placeholder.svg'">
+                <div>
+                    <h3>Vanish / Immunity</h3>
+                    <p>Vanish grants temporary invisibility (can't be targeted by normal attacks); Immunity protects against certain debuffs.</p>
+                </div>
+            </div>
+        </article>
+        <article class="card status-type-armor">
+            <div class="status-card">
+                <img src="/resources/Status/Status_Pos_Void.png" alt="Void Armor" class="status-icon" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/resources/dungeon/Screenshot-placeholder.svg'">
+                <div>
+                    <h3>Void / Flame / Frost Armor</h3>
+                    <p>These armors inflict a contact effect (like Magic Down, burning, or chilling) against attackers who strike the wearer.</p>
+                </div>
+            </div>
+        </article>
+        <article class="card status-type-armor">
+            <div class="status-card">
+                <img src="/resources/Status/Status_Pos_AutoRevive.png" alt="Revive" class="status-icon" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/resources/dungeon/Screenshot-placeholder.svg'">
+                <div>
+                    <h3>Revive / Resurrection</h3>
+                    <p>On death, the creature may respawn at reduced HP or with a special state; stacking doesn't increase revives, but it affects how they behave.</p>
+                </div>
+            </div>
+        </article>
+        <article class="card status-type-armor">
+            <div class="status-card">
+                <img src="/resources/Status/Status_Pos_Thorns.png" alt="Thorns" class="status-icon" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/resources/dungeon/Screenshot-placeholder.svg'">
+                <div>
+                    <h3>Toxic / Thorns</h3>
+                    <p>Applies poison or reflect damage when attackers contact the armored creature.</p>
+                </div>
+            </div>
+        </article>
+    </div>
+</section>
+
+<section class="container mutedsmall">
+    <h3>Source & Attribution</h3>
+    <p>Content adapted and summarized from the Card Wars Kingdom (Revived) Wiki — "Status Effects" page on Fandom: <a href="https://cwk-revived.fandom.com/wiki/Status_Effects" target="_blank">https://cwk-revived.fandom.com/wiki/Status_Effects</a>.</p>
+    <p>This community content is available under CC-BY-SA (Fandom).</p>
+</section>
+{% endblock %}

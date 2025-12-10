@@ -18,14 +18,10 @@
             
          
         </section>
-<h1 class="index-welcome-h1">
-    Welcome to the 'Card Wars Kingdom: Revived.' Original Fandom Wiki<br>
-</h1>
-</h2>
-    Here you can find all the information about this game. Enjoy and play now click on <a href="/download">DOWNLOAD</a> 
-    And don't forget join <a href="https://discord.gg/card-wars-revived-1227932764117143642" target="_blank">DISCORD SERVER</a>
-    <br>
-</h2>    
+<header class="intro">
+    <h1 class="index-welcome-h1">Welcome to Card Wars Kingdom: Revived</h1>
+    <p class="intro-lead">Find all the game info here — cards, heroes, dungeons, and community updates. <a href="/download">Download</a> and join our <a href="https://discord.gg/card-wars-revived-1227932764117143642" target="_blank">Discord Server</a>!</p>
+</header>
 
 
     <table class="factions-table">
@@ -70,9 +66,8 @@
         </tbody>
     </table>
 
-    <h1>
-    Menu
-</h1>
+    <h1 class="section-menu-title">Menu</h1>
+    <nav class="menu-list" aria-label="Main menu">
         <ul class="menu-nav">
         <li><a href="{{ url_for('heroes') }}">Heroes</a></li>
         <li><a href="{{ url_for('creatures') }}">Creatures</a></li>
@@ -84,7 +79,8 @@
         <li><a href="{{ url_for('status_effects') }}">Status Effects</a></li>
         <li><a href="{{ url_for('labs') }}">Lab's</a></li>
         <li><a href="{{ url_for('specials') }}">Specials</a></li>
-    </ul>
+        </ul>
+    </nav>
     <br>
             <nav class="main-nav">
 
@@ -272,16 +268,16 @@
 	</script>
 
     <!-- Add Login Modal (desktop + mobile can use it) -->
-<div id="loginModal" style="display:none;position:fixed;inset:0;z-index:120;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;">
-	<div class="login-modal-content" style="background:#0b0b0e;color:#fff;">
-		<h3 style="margin:0 0 8px 0">Admin Login</h3>
+<div id="loginModal" class="login-modal">
+    <div class="login-modal-content">
+        <h3 class="login-modal-title">Admin Login</h3>
 		<form>
-			<input id="loginPassword" type="password" placeholder="Password" style="width:100%;padding:8px;margin-bottom:8px;border-radius:6px;border:1px solid #333;background:#071;color:white;">
-			<div style="display:flex;gap:8px;justify-content:flex-end;">
-				<button id="loginCancel" style="background:#333;color:#fff;padding:8px 10px;border-radius:6px;border:none">Cancel</button>
-                <button id="loginSubmit" style="background:var(--at-accent);color:#fff;padding:8px 10px;border-radius:6px;border:none">Login</button>
+            <input id="loginPassword" type="password" placeholder="Password" class="login-input">
+            <div class="login-actions">
+                <button id="loginCancel" class="login-btn-cancel">Cancel</button>
+                <button id="loginSubmit" class="login-btn-submit">Login</button>
 			</div>
-			<div id="loginStatus" style="margin-top:8px;color:#f88;font-size:13px;"></div>
+            <div id="loginStatus" class="login-status"></div>
 		</form>
 	</div>
 </div>

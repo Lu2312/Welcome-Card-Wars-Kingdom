@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block additional_preloads %}
+<link rel="preload" as="image" href="/resources/home.gif">
+{% endblock %}
+{% block content %}
+<div class="page-hero container">
+    <h1 class="page-title">Treasure Chest Cave</h1>
+    <p class="muted">Open chests to obtain rewards and exclusive cards. This page summarizes the Treasure Chest Cave system (adapted from the CWK-Revived Fandom wiki).</p>
+</div>
+
+<section class="container">
+    <h2>Overview</h2>
+    <p>The Treasure Chest Cave provides players with two main types of chests with differing costs and rewards. Use bones or gems to open chests and try your luck for better odds.</p>
+</section>
+
+<section class="container grid-2-cols gap-6">
+    <article class="card">
+        <h3>Standard Chest</h3>
+        <p><strong>Cost:</strong> 50 Bones</p>
+        <ul>
+            <li>Cool: 90% chance</li>
+            <li>Rare: 45% chance</li>
+            <li>Algebraic: 15% chance</li>
+        </ul>
+        <p class="muted">Standard chests provide a balanced variety of items and are the most affordable option.</p>
+    </article>
+
+    <article class="card">
+        <h3>Premium Chest</h3>
+        <p><strong>Cost:</strong> 200 Gems</p>
+        <ul>
+            <li>Cool: 90% chance</li>
+            <li>Rare: 60% chance</li>
+            <li>Algebraic: 25% chance</li>
+        </ul>
+        <p class="muted">Premium chests cost gems but have better chances for rare or algebraic items.</p>
+    </article>
+</section>
+
+<section class="container">
+    <h2>Tips & Notes</h2>
+    <ul>
+        <li>Premium chests usually give a higher chance for rare and algebraic items.</li>
+        <li>Check the in-game store and events for limited-time chests and discounts.</li>
+        <li>Drop chances may reflect item rarity tiers; the numerical values are taken from the community page and may change with updates.</li>
+    </ul>
+</section>
+
+<section class="container">
+    <h2>Images</h2>
+    <p>Screenshot (from the Fandom page)</p>
+    <div class="image-grid">
+           <img src="/resources/treasure_cave/Tresure_Cave.webp" alt="Treasure Chest Cave screenshot" loading="lazy" decoding="async"
+               onerror="this.onerror=null;this.src='/resources/dungeon/Screenshot-placeholder.svg';">
+    </div>
+</section>
+
+<section class="container mutedsmall">
+    <h3>Source & Attribution</h3>
+    <p>Content adapted from the Card Wars Kingdom (Revived) Wiki — "Treasure Chest Cave" page on Fandom: <a href="https://cwk-revived.fandom.com/wiki/Treasure_Chest_Cave" target="_blank">https://cwk-revived.fandom.com/wiki/Treasure_Chest_Cave</a>.</p>
+    <p>This community content is available under CC-BY-SA (Fandom). Please visit the original page for comments and updates.</p>
+</section>
+{% endblock %}
