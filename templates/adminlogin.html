@@ -5,27 +5,20 @@
 	<meta name="viewport" content="width=device-width,initial-scale=1"/>
 	<title>Admin Login - Card Wars Kingdom</title>
 	<link rel="stylesheet" href="/resources/a53f14ee4cfcc268.css">
-	<style>
-		body { background:#050007;color:#fff;font-family:Inter,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial; padding:36px; }
-		.container{max-width:520px;margin:36px auto;padding:20px;background:#0b0b0e;border-radius:12px;border:1px solid #222;}
-		.input{width:100%;padding:10px;border-radius:8px;border:1px solid #333;background:#071;color:#fff;margin-bottom:10px}
-		.btn{background: linear-gradient(90deg, var(--at-accent), var(--at-secondary)); color:#fff;padding:10px 14px;border-radius:8px;border:none;cursor:pointer}
-		.link{color:#8f8fef;text-decoration:underline;cursor:pointer}
-		.row{display:flex;gap:8px;align-items:center;justify-content:flex-end}
-	</style>
+	<!-- moved styles to static/css/styles.css -->
 </head>
 <body>
-	<div class="container" role="main">
+	<div class="container admin-container" role="main">
 		<h2>Admin Login</h2>
-		<p style="color:#cfcfcf;font-size:14px">Introduce la contraseña de administrador para habilitar edición.</p>
+		<p class="admin-note">Introduce la contraseña de administrador para habilitar edición.</p>
 		<input id="pwd" class="input" type="password" placeholder="Password" aria-label="Admin password">
 		<div class="row">
-			<button id="cancel" class="btn" style="background:#333">Cancel</button>
+			<button id="cancel" class="btn admin-btn-cancel">Cancel</button>
 			<button id="submit" class="btn">Sign in</button>
-			<button id="logout" class="btn" style="background:var(--at-accent);display:none;">Salir</button>
+			<button id="logout" class="btn admin-btn-logout">Salir</button>
 		</div>
-		<div id="status" style="margin-top:10px;color:#f88;font-size:13px"></div>
-		<p style="margin-top:12px;font-size:13px;color:#aab">Once signed in you can access the editor. <a href="/cards" class="link">Open Cards</a></p>
+		<div id="status" class="admin-status"></div>
+		<p class="admin-msg">Once signed in you can access the editor. <a href="/cards" class="link">Open Cards</a></p>
 	</div>
 
 	<script>

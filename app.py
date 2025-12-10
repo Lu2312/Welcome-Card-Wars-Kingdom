@@ -378,6 +378,18 @@ def serve_files(filename):
     files_dir = os.path.join(os.path.dirname(__file__), 'resources')
     return send_from_directory(files_dir, filename)
 
+
+@app.after_request
+def add_cache_headers(response):
+    try:
+        p = request.path or ''
+        if p.startswith('/resources') or p.startswith('/creature-book'):
+            # cache static resources for a week by default
+            response.headers['Cache-Control'] = 'public, max-age=604800'
+    except Exception:
+        pass
+    return response
+
 # Serve dungeon images
 @app.route('/dungeon_archivos/<path:filename>')
 def serve_dungeon_files(filename):
@@ -420,6 +432,18 @@ def creatures():
             if m:
                 creature_numbers.add(int(m.group(1)))
     creature_numbers = sorted(creature_numbers)
+
+    # Prepare a quick lookup for which files exist per creature number to avoid
+    # rendering <img> tags for files that are not present (prevent 404s).
+    images_map = {}
+    for n in creature_numbers:
+        key = f"{n:02d}"
+        images_map[n] = {
+            'CREATURE': os.path.isfile(os.path.join(creature_dir, f"{key}_CREATURE.png")),
+            'ICON': os.path.isfile(os.path.join(creature_dir, f"{key}_ICON.png")),
+            'PASSIVE': os.path.isfile(os.path.join(creature_dir, f"{key}_PASSIVE.png")),
+            'SPELL': os.path.isfile(os.path.join(creature_dir, f"{key}_SPELL.png")),
+        }
 
     # Try to fetch remote creatures JSON server-side and build a mapping by Number.
     creatures_by_number = {}
@@ -547,7 +571,12 @@ def creatures():
 
         creatures_by_number[num_int] = c_parsed
 
-    return render_template('creatures.html', creature_numbers=creature_numbers, creatures_by_number=creatures_by_number)
+    return render_template(
+        'creatures.html', 
+        creature_numbers=creature_numbers, 
+        creatures_by_number=creatures_by_number,
+        images_map=images_map
+    )
 
 # 3. Spells
 @app.route('/spells')

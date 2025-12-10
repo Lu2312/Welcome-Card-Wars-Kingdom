@@ -10,318 +10,9 @@
 <link rel="preload" as="image" href="/resources/Cartoon_Network_2010.svg">
 {% endblock %}
 {% block content %}
-<style>
-    body {
-        background: linear-gradient(135deg, #f7f3e8 0%, #e0e0e0 100%);
-        min-height: 100vh;
-        margin: 0;
-        font-family: 'Segoe UI', Arial, sans-serif;
-    }
-    .creature-book-container {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 32px;
-        justify-content: center;
-        padding: 40px 0;
-        max-width: 1400px;
-        margin: 0 auto;
-    }
-    .ficha-personaje {
-        width: 370px;
-        background: #fffbe6;
-        border: 4px solid #a3874e;
-        border-radius: 18px;
-        box-shadow: 0 8px 32px rgba(80, 60, 20, 0.18);
-        overflow: hidden;
-        position: relative;
-        transition: transform 0.2s;
-        margin-bottom: 0;
-    }
-    .ficha-personaje:hover {
-        transform: scale(1.03);
-        box-shadow: 0 12px 40px rgba(80, 60, 20, 0.28);
-    }
-    .ficha-cabecera {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 8px 16px;
-        background: linear-gradient(90deg, #fceb9c 60%, #f7e8b0 100%);
-        border-bottom: 2px solid #a3874e;
-        height: 48px;
-    }
-    .ficha-nombre-contenedor {
-        flex-grow: 1;
-        margin-right: 10px;
-        height: 100%;
-        display: flex;
-        align-items: center;
-    }
-    .ficha-nombre {
-        border: 2px solid #a3874e;
-        padding: 6px;
-        text-align: center;
-        color: #000; /* mostrar nombres en color negro */
-        font-size: 18px;
-        font-weight: bold;
-        background: #fff;
-        width: 180px;
-        height: 30px;
-        border-radius: 8px;
-    }
-    /* small badge to display creature number next to name */
-    .creature-number-badge {
-        display: inline-block;
-        min-width: 36px;
-        text-align: center;
-        background: #f0f0f0;
-        color: #111;
-        border-radius: 8px;
-        padding: 4px 8px;
-        font-weight: 700;
-        margin-left: 6px;
-        border: 1px solid rgba(0,0,0,0.06);
-        box-shadow: 0 1px 2px rgba(0,0,0,0.06);
-        font-size: 0.9rem;
-    }
-    .ficha-acciones {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-    .btn-actualizar, .btn-cerrar {
-        background: #559dd7;
-        border: 2px solid #3c6e96;
-        border-radius: 7px;
-        color: white;
-        font-weight: bold;
-        cursor: pointer;
-        width: 32px;
-        height: 32px;
-        line-height: 28px;
-        text-align: center;
-        font-family: inherit;
-        font-size: 18px;
-        transition: background 0.2s;
-    }
-    .btn-cerrar {
-        background: #d75555;
-        border-color: #963c3c;
-        border-radius: 50%;
-    }
-    .btn-actualizar:hover {
-        background: #3c6e96;
-    }
-    .btn-cerrar:hover {
-        background: #963c3c;
-    }
-    .texto-estadisticas {
-        font-weight: bold;
-        font-size: 15px;
-        color: #4a4a4a;
-    }
-    .ficha-cuerpo {
-        display: flex;
-        padding: 16px;
-        gap: 16px;
-        background: #fffbe6;
-    }
-    .ficha-imagen-criatura-contenedor {
-        width: 60%;
-        height: 220px;
-        background: #fff;
-        border: 2px solid #a3874e;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        position: relative;
-        overflow: hidden;
-        border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(80, 60, 20, 0.08);
-    }
-    .ficha-imagen-criatura-contenedor img {
-        max-width: 96%;
-        max-height: 96%;
-        object-fit: contain;
-        display: block;
-        margin: auto;
-        position: relative;
-    }
-    .ficha-detalles {
-        width: 40%;
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-    }
-    .ficha-icono-contenedor {
-        display: flex;
-        gap: 8px;
-        margin-bottom: 4px;
-    }
-    .icono-placeholder {
-        width: 54px;
-        height: 54px;
-        background: #fff;
-        border: 2px solid #a3874e;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        border-radius: 50%;
-        box-shadow: 0 1px 4px rgba(80, 60, 20, 0.08);
-    }
-    .icono-placeholder img {
-        max-width: 80%;
-        max-height: 80%;
-        object-fit: contain;
-    }
-    .imagen-placeholder {
-        width: 110px;
-        height: 54px;
-        background: #fff;
-        border: 2px solid #a3874e;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        border-radius: 8px;
-        box-shadow: 0 1px 4px rgba(80, 60, 20, 0.08);
-    }
-    .imagen-placeholder img {
-        max-width: 90%;
-        max-height: 90%;
-        object-fit: contain;
-    }
-    .ficha-nivel {
-        background: #fceb9c;
-        border-radius: 7px;
-        padding: 7px 10px;
-        box-shadow: 0 1px 4px rgba(80, 60, 20, 0.08);
-    }
-    .label-nivel {
-        font-weight: bold;
-        font-size: 17px;
-    }
-    .barra-xp-contenedor {
-        background: #e0e0e0;
-        height: 16px;
-        border-radius: 10px;
-        margin-top: 4px;
-        position: relative;
-        overflow: hidden;
-    }
-    .barra-xp-relleno {
-        height: 100%;
-        background: linear-gradient(90deg, #ffcc00 70%, #ffe680 100%);
-        position: absolute;
-        left: 0;
-        top: 0;
-        border-radius: 10px;
-    }
-    .xp-texto {
-        position: absolute;
-        width: 100%;
-        text-align: center;
-        line-height: 16px;
-        font-size: 11px;
-        font-weight: bold;
-        color: #333;
-    }
-    .icono-estrella {
-        position: absolute;
-        right: 7px;
-        top: 50%;
-        transform: translateY(-50%);
-        font-size: 15px;
-    }
-    .ficha-stats-nivel {
-        display: flex;
-        align-items: center;
-        gap: 7px;
-        font-weight: bold;
-        font-size: 15px;
-        margin-top: 2px;
-    }
-    .stat-costo {
-        background: #6a5acd;
-        color: white;
-        border-radius: 50%;
-        width: 28px;
-        height: 28px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 15px;
-    }
-    .stat-elemento {
-        background: #559dd7;
-        color: white;
-        padding: 4px 10px;
-        border-radius: 6px;
-        font-size: 15px;
-    }
-    .stat-cantidad {
-        border: 2px solid #a3874e;
-        background: #fff;
-        padding: 3px 7px;
-        border-radius: 4px;
-        font-size: 15px;
-    }
-    .ficha-estadisticas-grid {
-        display: grid;
-        grid-template-columns: auto 1fr;
-        gap: 6px 12px;
-        margin-top: 12px;
-    }
-    .stat-etiqueta {
-        font-weight: bold;
-        padding: 3px 7px;
-        border-radius: 6px;
-        color: white;
-        text-align: right;
-        font-size: 15px;
-    }
-    .stat-valor {
-        font-weight: bold;
-        padding: 3px 7px;
-        background: white;
-        border-radius: 6px;
-        text-align: center;
-        border: 2px solid #555;
-        font-size: 15px;
-    }
-    .stat-etiqueta.stat-pv { background: #4CAF50; }
-    .stat-valor.stat-pv { border-color: #4CAF50; color: #000; }
-    .stat-etiqueta.stat-atq { background: #F44336; }
-    .stat-valor.stat-atq { border-color: #F44336; color: #000; }
-    .stat-etiqueta.stat-mag { background: #2196F3; }
-    .stat-valor.stat-mag { border-color: #2196F3; color: #000; }
-    .stat-etiqueta.stat-crt { background: #FFC107; }
-    .stat-valor.stat-crt { border-color: #FFC107; color: #000; }
-    .ficha-pie {
-        background: linear-gradient(90deg, #fceb9c 60%, #f7e8b0 100%);
-        border-top: 2px solid #a3874e;
-        padding: 12px;
-        border-radius: 0 0 18px 18px;
-    }
-    .action-cards-contenedor {
-        height: 90px;
-        background: #fff;
-        border: 2px solid #a3874e;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 18px;
-        color: #cc0000;
-        border-radius: 10px;
-        box-shadow: 0 1px 4px rgba(80, 60, 20, 0.08);
-    }
-    .action-cards-contenedor img {
-        max-width: 90%;
-        max-height: 90%;
-        object-fit: contain;
-    }
-</style>
+<div class="creatures-page">
 
-<h1 style="text-align:center; font-size:3.125rem; font-family:'Segoe UI',Arial,sans-serif; color:#a3874e; margin-top:60px; margin-bottom:18px; letter-spacing:2px; text-shadow:0 2px 8px #e0e0e0;">Creature Book</h1>
+<h1 class="page-title">Creature Book</h1>
 <div class="creature-book-container">
 {% for num in creature_numbers %}
 <div class="ficha-personaje" data-creature-number="{{ num }}">
@@ -339,13 +30,30 @@
 
     <div class="ficha-cuerpo">
         <div class="ficha-imagen-criatura-contenedor">
-            <img src="/resources/Creature-Book/{{ '%02d' % num }}_CREATURE.png" alt="Imagen de criatura {{ num }}" style="display:block; margin:auto; max-width:95%; max-height:95%; object-fit:contain; position:absolute; top:0; left:0; right:0; bottom:0;">
+            {% if images_map.get(num) and images_map[num]['CREATURE'] %}
+            <img src="/resources/Creature-Book/{{ '%02d' % num }}_CREATURE.png" alt="Imagen de criatura {{ num }}" loading="lazy" decoding="async">
+            {% else %}
+            <!-- Placeholder / no image available -->
+            <div class="placeholder-text">No image</div>
+            {% endif %}
         </div>
         
         <div class="ficha-detalles">
             <div class="ficha-icono-contenedor">
-                <div class="icono-placeholder"><img src="/resources/Creature-Book/{{ '%02d' % num }}_ICON.png" alt="Icono" style="max-width:80%; max-height:80%; object-fit:contain; margin-left:4px;"></div>
-                <div class="imagen-placeholder"><img src="/resources/Creature-Book/{{ '%02d' % num }}_PASSIVE.png" alt="Icono de criatura" style="max-width:100%; max-height:100%; object-fit:contain;"></div>
+                <div class="icono-placeholder">
+                    {% if images_map.get(num) and images_map[num]['ICON'] %}
+                        <img src="/resources/Creature-Book/{{ '%02d' % num }}_ICON.png" alt="Icono" loading="lazy" decoding="async">
+                    {% else %}
+                        <div class="icon-fallback"></div>
+                    {% endif %}
+                </div>
+                <div class="imagen-placeholder">
+                    {% if images_map.get(num) and images_map[num]['PASSIVE'] %}
+                        <img src="/resources/Creature-Book/{{ '%02d' % num }}_PASSIVE.png" alt="Icono de criatura" loading="lazy" decoding="async">
+                    {% else %}
+                        <div class="spell-fallback"></div>
+                    {% endif %}
+                </div>
             </div>
             
             <div class="ficha-nivel">
@@ -377,8 +85,12 @@
     </div>
 
     <div class="ficha-pie">
-        <div class="action-cards-contenedor">
-            <img src="/resources/Creature-Book/{{ '%02d' % num }}_SPELL.png" alt="Imagen action cards" style="max-width:100%; max-height:100%; object-fit:contain;">
+                <div class="action-cards-contenedor">
+                {% if images_map.get(num) and images_map[num]['SPELL'] %}
+                <img src="/resources/Creature-Book/{{ '%02d' % num }}_SPELL.png" alt="Imagen action cards" loading="lazy" decoding="async">
+            {% else %}
+                <div class="placeholder-text">No Spell</div>
+            {% endif %}
         </div>
     </div>
 </div>
@@ -386,4 +98,5 @@
 </div>
 {# Server-side now fills names via creatures_by_number. Client-side fetch removed. #}
 
+</div>
 {% endblock %}

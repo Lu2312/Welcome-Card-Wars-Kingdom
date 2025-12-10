@@ -37,6 +37,297 @@ body {
     background: linear-gradient(to bottom, var(--at-bg-1) 0%, var(--at-bg-2) 50%, var(--at-bg-1) 100%);
 }
 
+/* When header is fixed we need a top padding to keep content visible under the nav */
+/* The header uses a 4rem height (see .nav-container), so add matching top padding on body */
+body {
+    padding-top: 4rem; /* space to compensate the fixed header */
+}
+
+/* Make images responsive by default */
+img { max-width: 100%; height: auto; display: block; }
+
+/* Utility container used across templates */
+.container { max-width: 80rem; margin: 0 auto; padding: 0 1.5rem; }
+
+/* Login modal (index) */
+.login-modal { display: none; position: fixed; inset: 0; z-index: 120; background: rgba(0,0,0,0.7); align-items: center; justify-content: center; }
+.login-modal-content { background: #0b0b0e; color: #fff; padding: 18px; border-radius: 8px; }
+.login-modal-title { margin: 0 0 8px 0; }
+.login-input { width: 100%; padding: 8px; margin-bottom: 8px; border-radius: 6px; border: 1px solid #333; background: #071; color: white; }
+.login-actions { display: flex; gap: 8px; justify-content: flex-end; }
+.login-btn-cancel { background: #333; color: #fff; padding: 8px 10px; border-radius: 6px; border: none; cursor: pointer; }
+.login-btn-submit { background: var(--at-accent); color: #fff; padding: 8px 10px; border-radius: 6px; border: none; cursor: pointer; }
+.login-status { margin-top: 8px; color: #f88; font-size: 13px; }
+
+/* Admin login page (adminlogin.html) */
+.admin-container { max-width: 520px; margin: 36px auto; padding: 20px; background: #0b0b0e; border-radius: 12px; border: 1px solid #222; }
+.admin-body { background: #050007; color: #fff; font-family: Inter, system-ui, Segoe UI, Roboto, "Helvetica Neue", Arial; padding: 36px; }
+.admin-input { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #333; background: #071; color: #fff; margin-bottom: 10px; }
+.admin-btn { background: linear-gradient(90deg, var(--at-accent), var(--at-secondary)); color: #fff; padding: 10px 14px; border-radius: 8px; border: none; cursor: pointer; }
+.admin-row { display:flex; gap:8px; align-items:center; justify-content:flex-end; }
+.admin-link { color: #8f8fef; text-decoration: underline; cursor: pointer; }
+.admin-status { margin-top:10px; color:#f88; font-size:13px; }
+.admin-msg { margin-top: 12px; font-size: 13px; color: #aab; }
+.admin-note { color:#cfcfcf; font-size:14px; }
+.admin-btn-cancel { background:#333; border:none; color:#fff; padding:8px 10px; border-radius:6px; }
+.admin-btn-logout { background:var(--at-accent); display:none; color:#fff; padding:8px 10px; border-radius:6px; border:none; }
+
+/* Dungeon table column sizing for use with <col class="col-75"> */
+col.col-75 { width: 75px; }
+.no-border { border: none !important; }
+
+.dungeon-header { text-align: center; margin: 5.5rem 0 18px; }
+.dungeon-table { border-color: black; }
+/* Heroes page styles (moved from templates/heroes.html) */
+.heroes-page { background: black; color: var(--at-text-main); font-family: Arial, sans-serif; margin: 20px; }
+.table-title { text-align: center; color: var(--at-primary); margin-bottom: 10px; font-size: 1.8em; }
+.heroes-table { border-collapse: collapse; width: 90%; margin: 20px auto; border: 2px solid rgb(255, 255, 255); background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.06)); color: var(--at-text-main); box-shadow: 0 8px 30px -12px rgb(255, 255, 255); border-radius: 8px; }
+.heroes-table th, .heroes-table td { border: 1px solid rgb(255, 255, 255); padding: 8px; text-align: center; vertical-align: middle; color: var(--at-text-main); background: rgba(11,16,32,0.55); }
+.heroes-table thead th { font-weight: bold; font-size: 1.1em; white-space: nowrap; color: var(--at-text-main); border-bottom: 2px solid rgb(255, 255, 255); }
+.icon-cell { width: 100px; background: rgba(11,16,32,0.6); }
+.icon-cell img, .floops-cell img { display: block; max-width: 100%; height: auto; margin: 0 auto; }
+.floops-cell { padding: 6px 8px; width: 250px; background: rgba(11,16,32,0.6); }
+.floops-cell img { max-width: 100%; height: auto; margin: 0; }
+.cupcake-name { font-size: 0.9em; display: block; color: var(--at-text-muted); margin-top: 2px; }
+.heroes-table tbody tr:nth-child(even) td { background: rgba(11,16,32,0.52); }
+.heroes-table tbody tr:nth-child(odd) td { background: rgba(11,16,32,0.6); }
+
+@media (max-width: 640px) {
+    .heroes-table { width: 100%; display: block; overflow-x: auto; }
+    .icon-cell { width: 56px !important; }
+    .floops-cell { width: auto !important; min-width: 120px !important; }
+    .icon-cell img { width: 48px; height: 48px; }
+}
+
+/* Generic card used across pages */
+.card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    padding: 14px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.24);
+}
+
+/* Status cards with icons */
+.status-card { display: flex; gap: 1rem; align-items: center; }
+.status-icon { object-fit: contain; border-radius: 12px; border: 2px solid rgba(255,255,255,0.04); box-shadow: 0 6px 18px rgba(0,0,0,0.4); padding: 6px; background: rgba(0,0,0,0.06); }
+.status-grid article.card { min-height: 84px; }
+.status-card h3, .status-card h4 { margin: 0 0 0.2rem 0; }
+.status-card p { margin: 0; }
+/* Make sure the text inside status cards can shrink/wrap without overlapping the icon */
+.status-card > div { flex: 1 1 auto; min-width: 0; }
+.status-card > div p { word-break: break-word; overflow-wrap: anywhere; }
+
+/* Force grid columns for status grid to be wide enough for icon+text */
+/* keep comfortable reading width per card: min 260px */
+.status-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; grid-auto-rows: auto; }
+
+/* make positive cards span 3 columns on large screens for better readability */
+.image-grid.status-grid > article.status-type-positive { grid-column: span 1; }
+@media (min-width: 1024px) {
+    .image-grid.status-grid > article.status-type-positive { grid-column: span 3; }
+}
+
+/* Ensure text inside the positive card has generous width when it spans 3 columns */
+.image-grid.status-grid > article.status-type-positive .status-card > div { max-width: 100%; }
+
+/* Make negative cards also span 3 columns on large screens for better readability */
+.image-grid.status-grid > article.status-type-negative { grid-column: span 1; }
+@media (min-width: 1024px) {
+    .image-grid.status-grid > article.status-type-negative { grid-column: span 3; }
+}
+
+/* Ensure text inside the negative card has generous width when it spans 3 columns */
+.image-grid.status-grid > article.status-type-negative .status-card > div { max-width: 100%; }
+
+/* Responsive: on smaller screens stack icon above text */
+@media (max-width: 640px) {
+    .status-card { flex-direction: column; align-items: center; text-align: center; }
+    /* Mobile icons: 50% of previous 60px => 30px */
+    .status-icon { width: 30px; height: 30px; }
+    .status-grid { grid-template-columns: repeat(1, 1fr); }
+    .status-grid article.card { min-height: auto; }
+}
+
+/* Accent styles for types */
+.status-type-landscape { border-left: 6px solid rgba(107,214,255,0.6); background: rgba(107,214,255,0.02); }
+.status-type-positive { border-left: 6px solid rgba(16,185,129,0.9); }
+.status-type-negative { border-left: 6px solid rgba(245,101,101,0.9); }
+.status-type-armor { border-left: 6px solid rgba(165,50,255,0.85); background: rgba(165,50,255,0.03); }
+
+/* Slightly darker background for negative effects to draw attention */
+.status-type-negative { background: rgba(255,255,255,0.02); }
+.status-type-positive { background: rgba(255,255,255,0.03); }
+
+/* Hover behavior for the cards */
+.status-grid article.card:hover { transform: translateY(-6px); box-shadow: 0 22px 44px rgba(0,0,0,0.35); }
+
+/* fine tune appearance to match other site cards */
+.status-grid article.card { padding: 14px; border-radius: 12px; transition: transform 0.22s ease, box-shadow 0.22s ease; min-height: 100px; }
+    .status-grid { gap: 14px; }
+    /* Desktop icons: 50% of previous 42px => 21px */
+    .status-icon { width: 21px; height: 21px; padding: 4px; }
+    .status-card > div h3, .status-card > div h4 { font-size: 1.05rem; margin-bottom: 0.2rem; }
+/* we rely on minmax auto-fit for responsive layout */
+.status-card > div p { font-size: 0.95rem; margin-top: 0.25rem; }
+
+/* ensure the title and text horizontally align and the text doesn't overlap */
+.status-card { align-items: center; }
+.status-card > div { min-width: 0; }
+.status-card > div p { white-space: normal; overflow-wrap: break-word; }
+
+/* Better visual grouping for each card: a subtle card border and shadow */
+.status-grid article.card { border: 1px solid rgba(255,255,255,0.04); background: rgba(0,0,0,0.04); box-shadow: 0 8px 18px rgba(0,0,0,0.3); }
+.status-grid article.card:focus-within, .status-grid article.card:hover { box-shadow: 0 16px 36px rgba(0,0,0,0.45); transform: translateY(-4px); }
+.status-card h3, .status-card h4 { color: rgba(255,255,255,0.95); font-weight: 700; }
+.status-card p { color: rgba(255,255,255,0.8); }
+
+/* Color headings by status type */
+.status-type-positive .status-card h3, .status-type-positive .status-card h4 { color: #33d27a; }
+.status-type-negative .status-card h3, .status-type-negative .status-card h4 { color: #ff8b8b; }
+.status-type-landscape .status-card h3, .status-type-landscape .status-card h4 { color: #6bd6ff; }
+.status-type-armor .status-card h3, .status-type-armor .status-card h4 { color: #b48cff; }
+
+/* Responsive 2 column grid for small-to-large ranges */
+.grid-2-cols { display: grid; grid-template-columns: 1fr; gap: 16px; }
+@media (min-width: 768px) {
+    .grid-2-cols { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* Image grid used for screenshots */
+.image-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; align-items: center; }
+.image-grid img { width: 100%; height: auto; border-radius: 8px; box-shadow: 0 6px 30px rgba(0,0,0,0.3); }
+
+/* Reduce the icon sizes inside the Positive Effects area by 50% visually */
+.image-grid.status-grid > article.status-type-positive .status-icon {
+    transform: scale(0.5);
+    transform-origin: center center;
+}
+
+/* Apply the same 50% visual scale to Negative and Armor status icons */
+.image-grid.status-grid > article.status-type-negative .status-icon,
+.image-grid.status-grid > article.status-type-armor .status-icon {
+    transform: scale(0.5);
+    transform-origin: center center;
+}
+
+/* Increase Armor icons by 50% relative to their current scale of 0.5 -> 0.75 */
+.image-grid.status-grid > article.status-type-armor .status-icon {
+    transform: scale(0.75);
+    transform-origin: center center;
+}
+
+/* small muted paragraph */
+.mutedsmall { color: rgba(255,255,255,0.65); font-size: 0.95rem; }
+
+/* download.html container */
+.download-nav-container { display: flex; justify-content: space-between; align-items: center; }
+
+/* Download page styles */
+.download-page { margin: 0; font-family: 'Poppins', sans-serif; background: linear-gradient(135deg, #0a0a0d 0%, #1a1a2e 100%); color: white; min-height: 100vh; }
+.container.download { max-width: 1200px; margin: 0 auto; padding: 20px; }
+nav.download-nav { background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(10px); padding: 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 3rem; }
+nav.download-nav a { color: rgba(255, 255, 255, 0.8); text-decoration: none; margin: 0 1rem; transition: color 0.3s; }
+nav.download-nav a:hover { color: white; }
+.download-header { text-align:center; margin-bottom: 3rem; }
+.download-header h1 { font-size: 3rem; font-weight: 800; margin-bottom: 1rem; background: linear-gradient(45deg, var(--at-accent), var(--at-pink)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.version-card { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 8px 32px rgba(165, 50, 255, 0.2); }
+.version-info { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; }
+.version-tag { font-size: 1.5rem; font-weight: 700; color: var(--at-accent); }
+.release-date { color: rgba(255, 255, 255, 0.6); font-size: 0.9rem; }
+.release-notes { background: rgba(0, 0, 0, 0.3); border-radius: 10px; padding: 1.5rem; margin-bottom: 2rem; line-height: 1.6; }
+.release-notes h3 { margin-top: 0; color: var(--at-accent); }
+.download-buttons { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+.download-btn { background: linear-gradient(135deg, var(--at-accent), var(--at-pink)); color: white; padding: 1rem 2rem; border-radius: 10px; text-decoration: none; display: flex; justify-content: space-between; align-items: center; transition: transform 0.3s, box-shadow 0.3s; border: none; cursor: pointer; font-size: 1rem; }
+.download-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(165, 50, 255, 0.4); }
+.download-info { display: flex; flex-direction: column; align-items: flex-start; }
+.file-name { font-weight: 600; }
+.file-size { font-size: 0.8rem; opacity: 0.8; }
+.loading { text-align: center; padding: 3rem; font-size: 1.2rem; color: rgba(255, 255, 255, 0.6); }
+.error { background: rgba(255, 107, 138, 0.08); border: 1px solid rgba(255, 51, 102, 0.3); border-radius: 10px; padding: 1.5rem; text-align: center; color: var(--at-pink); }
+.direct-link { text-align: center; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(255, 255, 255, 0.1); }
+.direct-link a { color: var(--at-accent); text-decoration: none; font-weight: 600; }
+.direct-link a:hover { text-decoration: underline; }
+
+/* Footer link gradient helper */
+.footer-link-gradient { background: black; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.footer-icon-gradient { -webkit-text-fill-color: initial; background: linear-gradient(135deg, var(--at-accent), var(--at-pink)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+/* Footer icon centering helper */
+.footer-icon-center { display: block; margin: 0.5rem auto; }
+
+/* Creature Book (moved from templates/creatures.html) */
+.creatures-page { background: linear-gradient(135deg, #f7f3e8 0%, #e0e0e0 100%); min-height: 100vh; margin: 0; font-family: 'Segoe UI', Arial, sans-serif; }
+.creatures-page .creature-book-container { display: flex; flex-wrap: wrap; gap: 32px; justify-content: center; padding: 40px 0; max-width: 1400px; margin: 0 auto; }
+.creatures-page .ficha-personaje { width: 370px; background: #fffbe6; border: 4px solid #a3874e; border-radius: 18px; box-shadow: 0 8px 32px rgba(80, 60, 20, 0.18); overflow: hidden; position: relative; transition: transform 0.2s; margin-bottom: 0; }
+.creatures-page .ficha-personaje:hover { transform: scale(1.03); box-shadow: 0 12px 40px rgba(80, 60, 20, 0.28); }
+.creatures-page .ficha-cabecera { display: flex; justify-content: space-between; align-items: center; padding: 8px 16px; background: linear-gradient(90deg, #fceb9c 60%, #f7e8b0 100%); border-bottom: 2px solid #a3874e; height: 48px; }
+.creatures-page .ficha-nombre-contenedor { flex-grow: 1; margin-right: 10px; height: 100%; display: flex; align-items: center; }
+.creatures-page .ficha-nombre { border: 2px solid #a3874e; text-align: center; color: #000; font-size: 18px; font-weight: bold; background: #fff; width: 180px; height: 30px; border-radius: 8px; }
+.creatures-page .creature-number-badge { display: inline-block; min-width: 36px; text-align: center; background: #f0f0f0; color: #111; border-radius: 8px; padding: 4px 8px; font-weight: 700; margin-left: 6px; border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 1px 2px rgba(0,0,0,0.06); font-size: 0.9rem; }
+.creatures-page .ficha-acciones { display: flex; align-items: center; gap: 8px; }
+.creatures-page .btn-actualizar, .creatures-page .btn-cerrar { background: #559dd7; border: 2px solid #3c6e96; border-radius: 7px; color: white; font-weight: bold; cursor: pointer; width: 32px; height: 32px; line-height: 28px; text-align: center; font-family: inherit; font-size: 18px; transition: background 0.2s; }
+.creatures-page .btn-cerrar { background: #d75555; border-color: #963c3c; border-radius: 50%; }
+.creatures-page .btn-actualizar:hover { background: #3c6e96; }
+.creatures-page .btn-cerrar:hover { background: #963c3c; }
+.creatures-page .texto-estadisticas { font-weight: bold; font-size: 15px; color: #4a4a4a; }
+.creatures-page .ficha-cuerpo { display: flex; padding: 16px; gap: 16px; background: #fffbe6; }
+.creatures-page .ficha-imagen-criatura-contenedor { width: 60%; height: 220px; background: #fff; border: 2px solid #a3874e; display: flex; justify-content: center; align-items: center; position: relative; overflow: hidden; border-radius: 12px; box-shadow: 0 2px 8px rgba(80, 60, 20, 0.08); }
+.creatures-page .ficha-imagen-criatura-contenedor img { max-width: 96%; max-height: 96%; object-fit: contain; display: block; margin: auto; position: relative; }
+.creatures-page .ficha-detalles { width: 40%; display: flex; flex-direction: column; gap: 12px; }
+.creatures-page .ficha-icono-contenedor { display: flex; gap: 8px; margin-bottom: 4px; }
+.creatures-page .icono-placeholder { width: 54px; height: 54px; background: #fff; border: 2px solid #a3874e; display: flex; justify-content: center; align-items: center; border-radius: 50%; box-shadow: 0 1px 4px rgba(80, 60, 20, 0.08); }
+.creatures-page .icono-placeholder img { max-width: 80%; max-height: 80%; object-fit: contain; }
+.creatures-page .imagen-placeholder { width: 110px; height: 54px; background: #fff; border: 2px solid #a3874e; display: flex; justify-content: center; align-items: center; border-radius: 8px; box-shadow: 0 1px 4px rgba(80, 60, 20, 0.08); }
+.creatures-page .imagen-placeholder img { max-width: 90%; max-height: 90%; object-fit: contain; }
+.creatures-page .ficha-nivel { background: #fceb9c; border-radius: 7px; padding: 7px 10px; box-shadow: 0 1px 4px rgba(80, 60, 20, 0.08); }
+.creatures-page .label-nivel { font-weight: bold; font-size: 17px; }
+.creatures-page .barra-xp-contenedor { background: #e0e0e0; height: 16px; border-radius: 10px; margin-top: 4px; position: relative; overflow: hidden; }
+.creatures-page .barra-xp-relleno { height: 100%; background: linear-gradient(90deg, #ffcc00 70%, #ffe680 100%); position: absolute; left: 0; top: 0; border-radius: 10px; }
+.creatures-page .xp-texto { position: absolute; width: 100%; text-align: center; line-height: 16px; font-size: 11px; font-weight: bold; color: #333; }
+.creatures-page .icono-estrella { position: absolute; right: 7px; top: 50%; transform: translateY(-50%); font-size: 15px; }
+.creatures-page .ficha-stats-nivel { display: flex; align-items: center; gap: 7px; font-weight: bold; font-size: 15px; margin-top: 2px; }
+.creatures-page .stat-costo { background: #6a5acd; color: white; border-radius: 50%; width: 28px; height: 28px; display: flex; justify-content: center; align-items: center; font-size: 15px; }
+.creatures-page .stat-elemento { background: #559dd7; color: white; padding: 4px 10px; border-radius: 6px; font-size: 15px; }
+.creatures-page .stat-cantidad { border: 2px solid #a3874e; background: #fff; padding: 3px 7px; border-radius: 4px; font-size: 15px; }
+.creatures-page .ficha-estadisticas-grid { display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; margin-top: 12px; }
+.creatures-page .stat-etiqueta { font-weight: bold; padding: 3px 7px; border-radius: 6px; color: white; text-align: right; font-size: 15px; }
+.creatures-page .stat-valor { font-weight: bold; padding: 3px 7px; background: white; border-radius: 6px; text-align: center; border: 2px solid #555; font-size: 15px; }
+.creatures-page .stat-etiqueta.stat-pv { background: #4CAF50; }
+.creatures-page .stat-valor.stat-pv { border-color: #4CAF50; color: #000; }
+.creatures-page .stat-etiqueta.stat-atq { background: #F44336; }
+.creatures-page .stat-valor.stat-atq { border-color: #F44336; color: #000; }
+.creatures-page .stat-etiqueta.stat-mag { background: #2196F3; }
+.creatures-page .stat-valor.stat-mag { border-color: #2196F3; color: #000; }
+.creatures-page .stat-etiqueta.stat-crt { background: #FFC107; }
+.creatures-page .stat-valor.stat-crt { border-color: #FFC107; color: #000; }
+.creatures-page .ficha-pie { background: linear-gradient(90deg, #fceb9c 60%, #f7e8b0 100%); border-top: 2px solid #a3874e; padding: 12px; border-radius: 0 0 18px 18px; }
+.creatures-page .action-cards-contenedor { height: 90px; background: #fff; border: 2px solid #a3874e; display: flex; justify-content: center; align-items: center; font-size: 18px; color: #cc0000; border-radius: 10px; box-shadow: 0 1px 4px rgba(80, 60, 20, 0.08); }
+.creatures-page .action-cards-contenedor img { max-width: 90%; max-height: 90%; object-fit: contain; }
+
+@media (max-width: 640px) {
+    .creatures-page .creature-book-container { display: flex; flex-direction: column; gap: 16px; padding: 12px; max-width: 100%; margin: 0 auto; }
+    .creatures-page .ficha-personaje { width: 100% !important; box-sizing: border-box; padding: 12px !important; border-radius: 12px !important; margin-bottom: 8px !important; }
+    .creatures-page .ficha-cuerpo { flex-direction: column !important; gap: 12px !important; padding: 8px !important; }
+    .creatures-page .ficha-imagen-criatura-contenedor { width: 100% !important; height: auto !important; min-height: 140px !important; padding: 8px; }
+    .creatures-page .ficha-imagen-criatura-contenedor img { position: static !important; width: auto !important; max-width: 100% !important; height: auto !important; }
+    .creatures-page .ficha-detalles { width: 100% !important; }
+    .creatures-page .ficha-icono-contenedor { gap: 8px !important; align-items: center !important; }
+    .creatures-page .imagen-placeholder, .creatures-page .icono-placeholder { width: auto !important; height: auto !important; }
+    .creatures-page .ficha-nivel { padding: 6px 8px !important; }
+    .creatures-page .label-nivel { font-size: 0.95rem !important; }
+    .creatures-page .ficha-estadisticas-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 6px; }
+    .creatures-page .action-cards-contenedor { height: auto !important; padding: 8px !important; }
+    .creatures-page .ficha-pie { padding: 8px !important; }
+    .creatures-page .ficha-cabecera { padding: 8px 10px !important; height: auto !important; }
+    .creatures-page .ficha-nombre { width: 140px !important; font-size: 14px !important; height: 28px !important; }
+}
+
+/* Placeholder classes used in creatures.html */
+.placeholder-text { text-align:center; color:#999; }
+.icon-fallback { width:34px; height:34px; background:#f2f2f2; border-radius:50%; }
+.spell-fallback { width:100%; height:100%; background:#f9f9f9; }
+
 /* Improved animations: subtle and professional */
 @keyframes fadeInUp {
     from {
@@ -104,11 +395,11 @@ body {
     display: block;
     filter: drop-shadow(0 0 12px rgba(165, 50, 255, 0.55));
 }
-@media (min-width: 640px) {
-    .site-logo {
-        height: 54px;
-        max-height: 64px;
-    }
+@media (max-width: 640px) {
+    .status-card { flex-direction: column; align-items: center; text-align: center; }
+    /* Mobile icons: 50% of previous 60px => 30px */
+    .status-icon { width: 30px; height: 30px; }
+    .site-logo { max-height: 64px; }
 }
 @media (min-width: 1024px) {
     .site-logo {
@@ -241,7 +532,7 @@ h1, h2, h3 {
 /* Links and interactive text colors (Adventure Time inspired) */
 a, a:visited {
     color: var(--at-secondary);
-    text-decoration: underline dotted;
+    text-decoration: underline dotted; /* default link style */
 }
 a:hover, a:focus {
     color: var(--at-primary);
@@ -259,6 +550,23 @@ a:hover, a:focus {
 }
 .nav-links a:hover {
     color: var(--at-secondary);
+}
+
+/* Nav links: remove dotted underline used by global 'a' rule */
+.nav-links a,
+.mobile-links a,
+.menu-links a {
+    text-decoration: none; /* no dotted underline in navigation */
+}
+.nav-links a:hover,
+.mobile-links a:hover {
+    text-decoration: underline; /* show a clean underline on hover */
+}
+
+/* Keep visible focus outline for accessibility, but use a better color */
+.nav-links a:focus, .mobile-links a:focus {
+    outline: 2px solid rgba(255, 209, 102, 0.6); /* visible focus ring */
+    outline-offset: 3px;
 }
 
 /* Make small highlighted spans use AT yellow */
@@ -337,6 +645,18 @@ a:hover, a:focus {
         white-space: normal; /* allow wrapping on small devices */
     }
     .dungeon-table img { width: 48px; height: 48px; }
+}
+
+/* Make icon/floops tables more responsive on small screens */
+@media (max-width: 640px) {
+    table {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+    }
+    .icon-cell { width: 56px !important; }
+    .floops-cell { width: auto !important; min-width: 120px !important; }
+    .icon-cell img { width: 48px; height: 48px; }
 }
 .dungeon-table th {
     background: rgba(255,255,255,0.04);
@@ -501,6 +821,73 @@ a:hover, a:focus {
     }
 }
 
+/* Responsive tweaks for Creature Book (mobile first) */
+@media (max-width: 640px) {
+    .creature-book-container {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        padding: 12px;
+        max-width: 100%;
+        margin: 0 auto;
+    }
+    .ficha-personaje {
+        width: 100% !important;
+        box-sizing: border-box;
+        padding: 12px !important;
+        border-radius: 12px !important;
+        margin-bottom: 8px !important;
+    }
+    .ficha-cuerpo {
+        flex-direction: column !important;
+        gap: 12px !important;
+        padding: 8px !important;
+    }
+    .ficha-imagen-criatura-contenedor {
+        width: 100% !important;
+        height: auto !important;
+        min-height: 140px !important;
+        padding: 8px;
+    }
+    .ficha-imagen-criatura-contenedor img {
+        position: static !important;
+        width: auto !important;
+        max-width: 100% !important;
+        height: auto !important;
+    }
+    .ficha-detalles {
+        width: 100% !important;
+    }
+    .ficha-icono-contenedor {
+        gap: 8px !important;
+        align-items: center !important;
+    }
+    .imagen-placeholder, .icono-placeholder {
+        width: auto !important;
+        height: auto !important;
+    }
+    .ficha-nivel { padding: 6px 8px !important; }
+    .label-nivel { font-size: 0.95rem !important; }
+    .ficha-estadisticas-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 6px; }
+    .action-cards-contenedor { height: auto !important; padding: 8px !important; }
+    .ficha-pie { padding: 8px !important; }
+    .ficha-cabecera { padding: 8px 10px !important; height: auto !important; }
+    .ficha-nombre { width: 140px !important; font-size: 14px !important; height: 28px !important; }
+}
+
+/* Medium breakpoint: two-column list to keep cards readable */
+@media (min-width: 641px) and (max-width: 1023px) {
+    .creature-book-container {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+        padding: 20px;
+    }
+    .ficha-personaje { width: 100% !important; }
+    .ficha-cuerpo { flex-direction: column; }
+    .ficha-imagen-criatura-contenedor { height: 180px; }
+}
+
 /* Estilo para la primera sección hero: gradiente de fondo, padding, centrado de contenido y min-height para colocar debajo del header */
 .section-hero {
     position: relative;
@@ -511,6 +898,107 @@ a:hover, a:focus {
     justify-content: center; /* Centra horizontalmente */
     min-height: 50vh; /* Altura mínima para colocar la imagen debajo del header */
 }
+
+/* Generic page hero block used across templates like page-hero (ensures spacing from fixed header) */
+.page-hero {
+    padding-top: 1.25rem; /* extra space inside hero */
+    padding-bottom: 1rem;
+    margin-top: 0.5rem; /* small gap to visualize separation */
+}
+
+/* Adventure Time inspired hero styles */
+.section-hero {
+    background: radial-gradient(circle at 15% 20%, rgba(255, 209, 102, 0.08), transparent 12%),
+                radial-gradient(circle at 85% 70%, rgba(107,214,255,0.06), transparent 14%),
+                linear-gradient(to bottom right, #001032 0%, #2b1652 60%, #001032 100%);
+    border-bottom: 8px solid rgba(165,50,255,0.06);
+}
+
+.intro { max-width: 1200px; margin: 1.25rem auto; padding: 1rem 1.5rem; text-align: center; }
+.intro-lead { color: rgba(255,255,255,0.95); font-size: 1.05rem; margin-top: 0.5rem; }
+
+.index-welcome-h1 {
+    font-family: 'Luckiest Guy', 'Poppins', sans-serif; /* Adventure Time style heading */
+    font-weight: 700;
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    color: #ffd166;
+    text-shadow: 0 6px 12px rgba(0,0,0,0.66);
+    -webkit-text-stroke: 1px rgba(0,0,0,0.2);
+    margin: 0.6rem 0 0.4rem;
+}
+
+/* Make menu look like AT rounded buttons */
+.menu-nav a {
+    font-family: 'Luckiest Guy', 'Poppins', sans-serif;
+    background: linear-gradient(90deg, rgba(255,209,102,0.12), rgba(165,50,255,0.08));
+    color: #fff; border: 2px solid rgba(255,255,255,0.08);
+    border-left: 6px solid rgba(255, 209, 102, 0.25);
+    box-shadow: 0 10px 25px -10px rgba(0,0,0,0.75), 0 6px 20px rgba(165,50,255,0.06) inset;
+}
+
+/* small cloud/star decorative shapes for hero via pseudo-elements */
+.section-hero::before {
+    content: '';
+    position: absolute;
+    left: -5%;
+    top: -8%;
+    width: 250px;
+    height: 250px;
+    background: radial-gradient(circle at 30% 30%, rgba(255,209,102,0.18), rgba(255,255,255,0.02));
+    border-radius: 50%;
+    filter: blur(30px);
+    transform: rotate(-10deg);
+    opacity: 0.9;
+}
+.section-hero::after {
+    content: '';
+    position: absolute;
+    right: -8%;
+    bottom: -6%;
+    width: 300px;
+    height: 210px;
+    background: radial-gradient(circle at 30% 40%, rgba(107,214,255,0.12), rgba(0,0,0,0));
+    border-radius: 50%;
+    filter: blur(28px);
+    transform: scale(1.1);
+}
+
+/* Menu responsive: horizontal on wide screens, vertical on mobile */
+@media (min-width: 768px) {
+    .menu-nav { flex-direction: row; justify-content: center; align-items: center; }
+    .menu-nav li { margin: 0 6px; }
+}
+
+/* Menu link playful hover */
+.menu-nav a:hover { transform: translateY(-6px); box-shadow: 0 18px 32px -12px rgba(0,0,0,0.6), 0 10px 20px rgba(165,50,255,0.06) inset; }
+
+/* Improve faction header labels for cartoon feel */
+.factions-table .faction-header th { border-radius: 14px; padding: 1.1rem 1.25rem; font-size: 1rem; }
+.factions-table .main-header th { font-family: 'Luckiest Guy', 'Poppins', sans-serif; font-size: 1.6rem; }
+
+/* menu title style (Menu heading) */
+.section-menu-title, h1.section-menu-title { font-family: 'Luckiest Guy', 'Poppins', sans-serif; font-size: 1.8rem; text-align: center; color: #ffd166; text-shadow: 0 6px 12px rgba(0,0,0,0.6); margin-top: 1rem; }
+
+.menu-list { max-width: 1100px; margin: 0.75rem auto 2rem; padding: 1rem; display: flex; justify-content: center; }
+.menu-nav li { list-style: none; }
+
+/* Faction tiles: more playful rounded boxes and bold color */
+.factions-table th, .factions-table td { border-radius: 8px; padding: 1.25rem; }
+.factions-table .main-header th { border-radius: 10px; padding: 1.6rem; }
+.factions-table .image-cell img { border: 6px solid rgba(255,255,255,0.03); border-radius: 12px; }
+
+/* Make hero GIF container more cartoonish */
+.hero-gif-container {
+    background: linear-gradient(90deg, rgba(255,249,196,0.06), rgba(165,50,255,0.06));
+    border: 6px solid rgba(255,255,255,0.03);
+}
+
+/* Additional index-friendly spacing */
+.section-heroes { padding: 3rem 0; }
+.section-community { padding: 2.5rem 0; }
+
+/* small rounded accent for download button inside hero */
+.download-btn { border-radius: 1rem; }
 
 /* Estilo para el contenedor del GIF hero: centrado, padding y borde */
 .hero-gif-container {
@@ -1110,21 +1598,21 @@ a:hover, a:focus {
 
 .menu-nav a {
     text-decoration: none;
-    color: var(--at-text-main);
-    padding: 0.75rem 1.5rem;
-    background-color: rgba(255,255,255,0.02);
-    border-radius: 0.5rem;
+    color: #fff;
+    padding: 0.6rem 1.2rem;
+    background: linear-gradient(90deg, rgba(255,209,102,0.12), rgba(165,50,255,0.08));
+    border-radius: 1.5rem;
     display: inline-block;
-    transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
-    font-weight: 600;
+    transition: transform 0.25s ease, box-shadow 0.25s, background-color 0.25s;
+    font-weight: 700;
     text-align: center;
-    border: 1px solid rgba(255,255,255,0.06);
+    border: 2px solid rgba(255,255,255,0.06);
 }
 
 .menu-nav a:hover {
     background: linear-gradient(90deg, rgba(255, 209, 102, 0.12), rgba(107, 214, 255, 0.06));
     color: var(--at-bg-2);
-    box-shadow: 0 4px 6px -1px rgba(165, 50, 255, 0.2);
+    box-shadow: 0 4px 6px -1px rgba(63, 15, 255, 0.2);
 }
 
 /* Table styles moved from HTML for professionalism */

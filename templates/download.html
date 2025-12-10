@@ -1,190 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Download - Card Wars Kingdom</title>
-    <link rel="icon" href="https://i.postimg.cc/522JrMVz/AT-Card-Wars2-Logo-Eng-1.png">
-    <link rel="stylesheet" href="/resources/a53f14ee4cfcc268.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #0a0a0d 0%, #1a1a2e 100%);
-            color: white;
-            min-height: 100vh;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        nav {
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(10px);
-            padding: 1rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            margin-bottom: 3rem;
-        }
-        
-        nav a {
-            color: rgba(255, 255, 255, 0.8);
-            text-decoration: none;
-            margin: 0 1rem;
-            transition: color 0.3s;
-        }
-        
-        nav a:hover {
-            color: white;
-        }
-        
-        .download-header {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-        
-        .download-header h1 {
-            font-size: 3rem;
-            font-weight: 800;
-            margin-bottom: 1rem;
-            background: linear-gradient(45deg, var(--at-accent), var(--at-pink));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .version-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 8px 32px rgba(165, 50, 255, 0.2);
-        }
-        
-        .version-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        .version-tag {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--at-accent);
-        }
-        
-        .release-date {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 0.9rem;
-        }
-        
-        .release-notes {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            line-height: 1.6;
-        }
-        
-        .release-notes h3 {
-            margin-top: 0;
-            color: var(--at-accent);
-        }
-        
-        .download-buttons {
-            display: grid;
-            gap: 1rem;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        }
-        
-        .download-btn {
-            background: linear-gradient(135deg, var(--at-accent), var(--at-pink));
-            color: white;
-            padding: 1rem 2rem;
-            border-radius: 10px;
-            text-decoration: none;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: transform 0.3s, box-shadow 0.3s;
-            border: none;
-            cursor: pointer;
-            font-size: 1rem;
-        }
-        
-        .download-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(165, 50, 255, 0.4);
-        }
-        
-        .download-info {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-        }
-        
-        .file-name {
-            font-weight: 600;
-        }
-        
-        .file-size {
-            font-size: 0.8rem;
-            opacity: 0.8;
-        }
-        
-        .loading {
-            text-align: center;
-            padding: 3rem;
-            font-size: 1.2rem;
-            color: rgba(255, 255, 255, 0.6);
-        }
-        
-        .error {
-            background: rgba(255, 107, 138, 0.08);
-            border: 1px solid rgba(255, 51, 102, 0.3);
-            border-radius: 10px;
-            padding: 1.5rem;
-            text-align: center;
-            color: var(--at-pink);
-        }
-        
-        .direct-link {
-            text-align: center;
-            margin-top: 2rem;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .direct-link a {
-            color: var(--at-accent);
-            text-decoration: none;
-            font-weight: 600;
-        }
-        
-        .direct-link a:hover {
-            text-decoration: underline;
-        }
-    </style>
-</head>
-<body>
-    <nav>
-        <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
-            <div>
-                <a href="/">Home</a>
-                <a href="/cards">Cards</a>
-                <a href="/status">Status</a>
-                <a href="/download">Download</a>
-            </div>
-        </div>
-    </nav>
-    
+{% extends "base.html" %}
+{% block additional_preloads %}
+<link rel="preload" as="image" href="/resources/home.gif">
+{% endblock %}
+{% block content %}
+<div class="download-page">
     <div class="container">
         <div class="download-header">
             <h1>Download Card Wars Kingdom</h1>
@@ -201,7 +20,6 @@
             <p>View all releases on <a href="https://github.com/Sgsysysgsgsg/Card-Wars-Kingdom-Revived/releases" target="_blank">GitHub</a></p>
         </div>
     </div>
-    
     <script>
         async function loadLatestRelease() {
             const contentDiv = document.getElementById('release-content');
@@ -301,5 +119,5 @@
         // Load release on page load
         loadLatestRelease();
     </script>
-</body>
-</html>
+    </div>
+{% endblock %}
