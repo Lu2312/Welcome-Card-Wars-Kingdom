@@ -42,6 +42,7 @@ Welcome-Card-Wars-Kingdom/
 ├── data/                           # Archivos de datos JSON
 ├── cwk_wiki/                       # Wiki de cartas
 ├── deploy/                         # Scripts de despliegue
+│   ├── DEPLOYMENT_METHODS.md       # Documentación completa de deployment
 │   ├── nginx-config                # Configuración de Nginx
 │   ├── logs.sh                     # Script para ver logs
 │   ├── status.sh                   # Script para verificar estado
@@ -371,6 +372,117 @@ mv ../backup-resources/* resources/  # Restaura después del pull
 **¿Por qué ocurre?**
 - Archivos locales no subidos a Git entran en conflicto con cambios del repositorio.
 - Suele pasar con carpetas como `resources/` que contienen muchos archivos.
+
+### 🚨 Problema: Archivos estáticos no cargan (CSS/JS)
+
+**Síntomas:**
+- El sitio web carga pero sin estilos
+- Error 404 en archivos `/static/css/styles.css`
+- Iconos y elementos visuales no se muestran
+
+**Diagnóstico:**
+```bash
+# Verificar configuración de nginx
+sudo nginx -t
+
+# Verificar archivos estáticos existen
+ls -la /var/www/cardwars-kingdom/static/
+
+# Verificar permisos
+ls -la /var/www/cardwars-kingdom/static/css/styles.css
+
+# Probar acceso directo
+curl -I http://localhost/static/css/styles.css
+```
+
+**Solución:**
+```bash
+# 1. Verificar ruta correcta en nginx
+sudo nano /etc/nginx/sites-available/cardwars-kingdom-net
+# Debe contener: alias /var/www/cardwars-kingdom/static;
+
+# 2. Corregir permisos de archivos estáticos
+sudo chmod -R 755 /var/www/cardwars-kingdom/static/
+
+# 3. Verificar propietario correcto
+sudo chown -R www-data:www-data /var/www/cardwars-kingdom/static/
+
+# 4. Recargar nginx
+sudo systemctl reload nginx
+```
+
+### 🚨 Problema: Servicio no inicia o falla constantemente
+
+**Síntomas:**
+- `systemctl status` muestra servicio como "failed"
+- Error "WorkingDirectory not found"
+- Servicio se reinicia constantemente
+
+**Diagnóstico:**
+```bash
+# Ver logs detallados del servicio
+sudo journalctl -u cardwars-kingdom-net.service -f
+
+# Verificar configuración del servicio
+sudo systemctl cat cardwars-kingdom-net.service
+
+# Verificar directorio de trabajo
+ls -la /var/www/cardwars-kingdom/
+```
+
+**Solución:**
+```bash
+# 1. Corregir rutas en servicio systemd
+sudo nano /etc/systemd/system/cardwars-kingdom-net.service
+# WorkingDirectory debe ser /var/www/cardwars-kingdom
+
+# 2. Recargar configuración
+sudo systemctl daemon-reload
+
+# 3. Reiniciar servicio
+sudo systemctl restart cardwars-kingdom-net.service
+
+# 4. Verificar estado
+sudo systemctl status cardwars-kingdom-net.service
+```
+
+### 🚨 Problema: Nginx configuration test failed
+
+**Síntomas:**
+- `nginx -t` muestra errores de sintaxis
+- Nginx no se recarga/reinicia
+- Sitio web no accesible
+
+**Solución:**
+```bash
+# 1. Restaurar configuración desde backup
+sudo cp /var/www/cardwars-kingdom/nginx/cardwars-kingdom.conf /etc/nginx/sites-available/cardwars-kingdom-net
+
+# 2. Verificar configuración básica
+cat > /etc/nginx/sites-available/cardwars-kingdom-net << 'EOF'
+server {
+    listen 80;
+    server_name cardwars-kingdom.net www.cardwars-kingdom.net;
+    
+    location / {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+    
+    location /static {
+        alias /var/www/cardwars-kingdom/static;
+    }
+}
+EOF
+
+# 3. Probar configuración
+sudo nginx -t
+
+# 4. Si es exitoso, recargar
+sudo systemctl reload nginx
+```
 
 ## 🔐 Seguridad
 

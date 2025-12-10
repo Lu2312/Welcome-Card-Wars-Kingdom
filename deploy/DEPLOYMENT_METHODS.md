@@ -107,6 +107,54 @@ Esto significa que tu editor o sistema está usando saltos de línea de Windows 
 
 ## 🐛 Troubleshooting
 
+### ✅ SOLUCIONADO: Problemas de Nginx y Archivos Estáticos (Diciembre 2024)
+
+**Problemas resueltos automáticamente:**
+- ✅ Configuración de nginx corrompida por comandos mezclados
+- ✅ Puerto incorrecto (8080/8081 → 8000) en configuración nginx
+- ✅ Ruta incorrecta de archivos estáticos (`/var/www/cardwars-kingdom.net/static` → `/var/www/cardwars-kingdom/static`)
+- ✅ Servicio systemd apuntando a directorio incorrecto (`cardwars-kingdom.net` → `cardwars-kingdom`)
+- ✅ Permisos restrictivos en archivos estáticos (700 → 755)
+
+**Si experimentas estos problemas nuevamente:**
+
+```bash
+# 1. Verificar y corregir configuración de nginx
+sudo cp /var/www/cardwars-kingdom/nginx/cardwars-kingdom.conf /etc/nginx/sites-available/cardwars-kingdom-net
+
+# O crear configuración simple funcional:
+cat > /etc/nginx/sites-available/cardwars-kingdom-net << 'EOF'
+server {
+    listen 80;
+    server_name cardwars-kingdom.net www.cardwars-kingdom.net;
+    location / {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+    location /static {
+        alias /var/www/cardwars-kingdom/static;
+        expires 30d;
+    }
+}
+EOF
+
+# 2. Corregir rutas en servicio systemd
+sudo sed -i 's|/var/www/cardwars-kingdom.net|/var/www/cardwars-kingdom|g' /etc/systemd/system/cardwars-kingdom-net.service
+
+# 3. Corregir permisos de archivos estáticos
+sudo chmod -R 755 /var/www/cardwars-kingdom/static/
+
+# 4. Aplicar cambios
+sudo nginx -t && sudo systemctl reload nginx
+sudo systemctl daemon-reload && sudo systemctl restart cardwars-kingdom-net.service
+
+# 5. Verificar funcionamiento
+curl -I http://localhost/static/css/styles.css
+curl -I https://cardwars-kingdom.net/
+```
+
 ### Problema: Error "would be overwritten by merge" en git pull
 
 **Síntomas:**
