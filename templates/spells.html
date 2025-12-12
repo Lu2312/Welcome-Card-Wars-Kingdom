@@ -4,10 +4,66 @@
 {% endblock %}
 {% block content %}
 <div class="page-hero container">
-    <h1 class="page-title">Spells</h1>
-    <p class="muted">All action and magic cards used in game.</p>
+    <h1 class="page-title">Spells / Action Cards</h1>
+    <p class="muted">Complete action and spell card library. Uses external JSON and local resources for artwork.</p>
 </div>
 <section class="container">
-    <p>Currently we don’t have a detailed spells page — this is a placeholder. Add cards and filters here.</p>
+    <div class="grid-2-cols">
+        <div>
+            <input id="spells-filter" placeholder="Filter by name, faction, type..." style="width:100%; padding:8px; border-radius:8px; border:1px solid rgba(255,255,255,0.06); background:rgba(255,255,255,0.02); color: white;"/>
+        </div>
+        <div style="text-align:right;">
+            <small class="muted">Total: <span id="spells-count">{{ spells|length }}</span></small>
+        </div>
+    </div>
 </section>
+
+<section class="container">
+    <div id="spells-grid" class="creatures-page spells-page animate-fadeInUp">
+        <div class="spells-grid">
+            {% for spell in spells %}
+            {% set id = spell.get('ID') or spell.get('Name') %}
+            {% set name = spell.get('Name') or spell.get('ID') %}
+            {% set desc = spell.get('Description') or spell.get('CardText') or '' %}
+            {% set frame = spell.get('CardFrame') or spell.get('CardFramePath') or '' %}
+            {% set sprite = spell.get('SpriteName') or spell.get('UITexture') or spell.get('Icon') or '' %}
+            {% set cost = spell.get('Cost') or spell.get('Energy') or '' %}
+            <article class="card spell-card" data-name="{{ name|lower }}" data-faction="{{ spell.get('Faction','')|lower }}">
+                <div class="spell-frame-wrap">
+                    <img class="spell-frame" src="/resources/spells/cardframes/{{ frame }}.png" alt="{{ frame }}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/resources/dungeon/Screenshot-placeholder.svg'">
+                    <img class="spell-icon" src="/resources/spells/cardicons/{{ sprite }}.png" alt="{{ name }}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/resources/dungeon/Spell-Icon-placeholder.svg'">
+                    <div class="spell-cost">{{ cost }}</div>
+                </div>
+                <div class="spell-info">
+                    <h3>{{ name }}</h3>
+                    <p class="muted">{% if spell.get('Faction') %}{{ spell.get('Faction') }}{% endif %} {% if spell.get('Rarity') %}• Rarity {{ spell.get('Rarity') }}{% endif %}</p>
+                    <p>{{ desc }}</p>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+    const filter = document.getElementById('spells-filter');
+    const grid = document.querySelectorAll('.spells-grid .spell-card');
+    const countElt = document.getElementById('spells-count');
+    function applyFilter(){
+        const q = (filter.value || '').trim().toLowerCase();
+        let shown = 0;
+        grid.forEach(function(card){
+            const name = card.getAttribute('data-name') || '';
+            const faction = card.getAttribute('data-faction') || '';
+            const match = !q || name.includes(q) || faction.includes(q);
+            card.style.display = match ? 'block' : 'none';
+            if(match) shown++;
+        });
+        countElt.textContent = shown;
+    }
+    filter.addEventListener('input', applyFilter);
+});
+</script>
+
 {% endblock %}

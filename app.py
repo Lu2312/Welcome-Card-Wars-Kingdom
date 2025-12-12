@@ -14,6 +14,8 @@ app.config['DEBUG'] = os.environ.get('DEBUG', 'False') == 'True'
 
 # Remote creatures JSON used in several places
 CREATURES_JSON_URL = os.environ.get('CREATURES_JSON_URL', 'https://cardwarskingdom.pythonanywhere.com/persist/static/Blueprints/db_Creatures.json')
+# Action / Spell cards JSON (Action cards / Spells)
+ACTIONS_JSON_URL = os.environ.get('ACTIONS_JSON_URL', 'https://cardwarskingdom.pythonanywhere.com/persist/static/Blueprints/db_ActionCards.json')
 
 # Simple in-memory storage for online users (use Redis in production)
 online_users = {}
@@ -167,6 +169,39 @@ def latest_release():
 
     except requests.RequestException as e:
         return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/spells/database')
+def spells_database():
+    """Get action / spell cards database from external API"""
+    try:
+        external_api = ACTIONS_JSON_URL
+        response = requests.get(external_api, timeout=10)
+
+        if response.status_code == 200:
+            cards_data = response.json()
+            return jsonify(cards_data)
+        else:
+            return jsonify({'error': 'Failed to fetch spells database'}), 500
+
+    except requests.RequestException as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/spells')
+def spells_page():
+    """Render a book of spells (action cards) by fetching external JSON"""
+    spells = []
+    try:
+        resp = requests.get(ACTIONS_JSON_URL, timeout=8)
+        resp.raise_for_status()
+        data = resp.json()
+        if isinstance(data, list):
+            spells = data
+    except requests.RequestException:
+        spells = []
+
+    return render_template('spells.html', spells=spells)
 
 @app.route('/api/health')
 def health():

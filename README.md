@@ -503,10 +503,12 @@ sudo systemctl reload nginx
 - `GET /pvp-seasons` - Página de PvP seasons
 - `GET /status` - Estado del servidor
 - `GET /download` - Página de descarga
+- `GET /spells` - Book of Spells / Action Cards (rendered page)
 - `GET /api/health` - Health check del servicio
 - `GET /api/latest-release` - Información de la última versión
 - `GET /api/users/online` - Cantidad de usuarios online
 - `GET /api/users/heartbeat` - Actualizar actividad del usuario
+- `GET /api/spells/database` - Obtener JSON de action cards / spells (externo)
 
 ## 🤝 Contribuir
 
