@@ -69,7 +69,11 @@
                 <div class="spell-info">
                     <h3>{{ name }}</h3>
                     <p class="muted">{% if spell.get('Faction') %}{{ spell.get('Faction') }}{% endif %} {% if spell.get('Rarity') %}• Rarity {{ spell.get('Rarity') }}{% endif %}</p>
-                    <p>{{ '' if desc_clean.startswith('!!') else desc_clean }}</p>
+                    <p class="desc-preview">{{ '' if desc_clean.startswith('!!') else desc_clean }}</p>
+                    {% if desc and desc != (desc.splitlines()[0] if desc else '') %}
+                    <p class="desc-full" style="display:none;">{{ desc }}</p>
+                    <p><a href="#" class="desc-toggle">Show more</a></p>
+                    {% endif %}
                 </div>
             </article>
             {% endfor %}
@@ -99,7 +103,11 @@
                 <div class="spell-info">
                     <h3>{{ name }}</h3>
                     <p class="muted">{% if spell.get('Faction') %}{{ spell.get('Faction') }}{% endif %} {% if spell.get('Rarity') %}• Rarity {{ spell.get('Rarity') }}{% endif %}</p>
-                    <p>{{ desc.splitlines()[0] if desc else '' }}</p>
+                    <p class="desc-preview">{{ desc.splitlines()[0] if desc else '' }}</p>
+                    {% if desc and desc != (desc.splitlines()[0] if desc else '') %}
+                    <p class="desc-full" style="display:none;">{{ desc }}</p>
+                    <p><a href="#" class="desc-toggle">Show more</a></p>
+                    {% endif %}
                 </div>
             </article>
             {% endfor %}
@@ -175,6 +183,24 @@ document.addEventListener('DOMContentLoaded', function(){
     viewGridBtn.addEventListener('click', showGrid);
     viewGroupedBtn.addEventListener('click', showGrouped);
     showGrid();
+    // description toggle handlers
+    document.addEventListener('click', function(e){
+        const t = e.target;
+        if(t && t.classList && t.classList.contains('desc-toggle')){
+            e.preventDefault();
+            const parent = t.closest('.spell-info');
+            if(!parent) return;
+            const full = parent.querySelector('.desc-full');
+            if(!full) return;
+            if(full.style.display === 'none' || full.style.display === ''){
+                full.style.display = 'block';
+                t.textContent = 'Show less';
+            } else {
+                full.style.display = 'none';
+                t.textContent = 'Show more';
+            }
+        }
+    });
 });
 </script>
 

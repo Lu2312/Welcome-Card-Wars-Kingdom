@@ -340,6 +340,11 @@ nav.download-nav a:hover { color: white; }
 .spell-info h3 { margin: 0 0 4px; font-size: 1rem; }
 .spell-info p { margin: 0 0 6px; color: rgba(255,255,255,0.86); }
 
+.desc-preview { font-size: 0.95rem; }
+.desc-full { font-size: 0.9rem; color: rgba(255,255,255,0.9); margin-top: 6px; }
+.desc-toggle { color: var(--at-accent); text-decoration: none; font-weight: 700; font-size: 0.9rem; }
+.desc-toggle:hover { text-decoration: underline; }
+
 /* Category buttons */
 .btn-category { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); color: white; padding: 6px 10px; border-radius: 8px; cursor: pointer; }
 .btn-category:hover { opacity: 0.85; }
