@@ -9,35 +9,67 @@
 </div>
 <section class="container">
     <div class="grid-2-cols">
-        <div>
-            <input id="spells-filter" placeholder="Filter by name, faction, type..." style="width:100%; padding:8px; border-radius:8px; border:1px solid rgba(255,255,255,0.06); background:rgba(255,255,255,0.02); color: white;"/>
+        <div style="display:flex; gap:8px; align-items:center;">
+            <input id="spells-filter" placeholder="Filter by name, faction, type..." style="flex:1; padding:8px; border-radius:8px; border:1px solid rgba(255,255,255,0.06); background:rgba(255,255,255,0.02); color: white;"/>
+            <select id="spells-sort" style="padding:8px; border-radius:8px; background:rgba(255,255,255,0.02); color: white;">
+                <option value="name">Name</option>
+                <option value="cost">Cost</option>
+                <option value="faction">Faction</option>
+            </select>
+            <div style="display:flex; gap:6px; margin-left:6px;">
+                <button class="btn-category" data-cat="All" style="background:rgba(255,255,255,0.02); color:white; border-radius:8px; padding:6px 10px;">All ({{ spells|length }})</button>
+                <button class="btn-category" data-cat="CORN" style="background:rgba(255,255,255,0.02); color:white; border-radius:8px; padding:6px 10px;">CORN ({{ category_counts.get('CORN', 0) }})</button>
+                <button class="btn-category" data-cat="DUNGEON" style="background:rgba(255,255,255,0.02); color:white; border-radius:8px; padding:6px 10px;">DUNGEON ({{ category_counts.get('DUNGEON', 0) }})</button>
+                <button class="btn-category" data-cat="Leader" style="background:rgba(255,255,255,0.02); color:white; border-radius:8px; padding:6px 10px;">Leader ({{ category_counts.get('Leader', 0) }})</button>
+                <button class="btn-category" data-cat="NICE" style="background:rgba(255,255,255,0.02); color:white; border-radius:8px; padding:6px 10px;">NICE ({{ category_counts.get('NICE', 0) }})</button>
+                <button class="btn-category" data-cat="PLAINS" style="background:rgba(255,255,255,0.02); color:white; border-radius:8px; padding:6px 10px;">PLAINS ({{ category_counts.get('PLAINS', 0) }})</button>
+                <button class="btn-category" data-cat="sand" style="background:rgba(255,255,255,0.02); color:white; border-radius:8px; padding:6px 10px;">sand ({{ category_counts.get('sand', category_counts.get('Sand', 0)) }})</button>
+                <button class="btn-category" data-cat="SWAMP" style="background:rgba(255,255,255,0.02); color:white; border-radius:8px; padding:6px 10px;">SWAMP ({{ category_counts.get('SWAMP', 0) }})</button>
+                <button class="btn-category" data-cat="TUT" style="background:rgba(255,255,255,0.02); color:white; border-radius:8px; padding:6px 10px;">TUT ({{ category_counts.get('TUT', 0) }})</button>
+            </div>
         </div>
         <div style="text-align:right;">
             <small class="muted">Total: <span id="spells-count">{{ spells|length }}</span></small>
         </div>
+    </div>
+    <div style="margin-top:8px; display:flex; gap:8px; align-items:center;">
+        <label style="color:rgba(255,255,255,0.8);">View:</label>
+        <button id="view-grid" style="background:rgba(255,255,255,0.02); color:white; border-radius:8px; padding:6px 10px;">Grid</button>
+        <button id="view-grouped" style="background:rgba(255,255,255,0.02); color:white; border-radius:8px; padding:6px 10px;">Grouped</button>
     </div>
 </section>
 
 <section class="container">
     <div id="spells-grid" class="creatures-page spells-page animate-fadeInUp">
         <div class="spells-grid">
+            {% if spells|length == 0 %}
+                <div class="card" style="padding:20px;">No spells found. If the remote JSON couldn't be fetched, try running the app with network access or create `data/db_ActionCards.json` locally as cache.</div>
+            {% endif %}
             {% for spell in spells %}
-            {% set id = spell.get('ID') or spell.get('Name') %}
-            {% set name = spell.get('Name') or spell.get('ID') %}
-            {% set desc = spell.get('Description') or spell.get('CardText') or '' %}
+            {% set id = (spell.get('ID') or spell.get('Name') or '').strip() %}
+            {% set name = spell.get('display_name') or spell.get('Name') or spell.get('ID') %}
+            {% set desc = spell.get('display_description') or spell.get('Description') or spell.get('CardText') or '' %}
+            {% set desc_clean = desc.splitlines()[0] if desc else '' %}
             {% set frame = spell.get('CardFrame') or spell.get('CardFramePath') or '' %}
             {% set sprite = spell.get('SpriteName') or spell.get('UITexture') or spell.get('Icon') or '' %}
             {% set cost = spell.get('Cost') or spell.get('Energy') or '' %}
-            <article class="card spell-card" data-name="{{ name|lower }}" data-faction="{{ spell.get('Faction','')|lower }}">
+            {% if cost is string and cost.isdigit() %}
+                {% set cost_display = cost %}
+            {% else %}
+                {% set cost_display = cost %}
+            {% endif %}
+            <article class="card spell-card" data-id="{{ id }}" data-name="{{ name|lower }}" data-faction="{{ spell.get('Faction','')|lower }}" data-type="{{ (spell.get('TypeText') or '')|lower }}" data-cost="{{ (spell.get('Cost') or spell.get('Energy') or '') }}" data-category="{{ (spell.get('category') or 'Other')|lower }}">
                 <div class="spell-frame-wrap">
-                    <img class="spell-frame" src="/resources/spells/cardframes/{{ frame }}.png" alt="{{ frame }}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/resources/dungeon/Screenshot-placeholder.svg'">
-                    <img class="spell-icon" src="/resources/spells/cardicons/{{ sprite }}.png" alt="{{ name }}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/resources/dungeon/Spell-Icon-placeholder.svg'">
+                    {% set frame_path = spell_asset('cardframes', frame) or '/resources/dungeon/Screenshot-placeholder.svg' %}
+                    {% set sprite_path = spell_asset('cardicons', sprite) or '/resources/dungeon/Spell-Icon-placeholder.svg' %}
+                    <img class="spell-frame" src="{{ frame_path }}" alt="{{ frame }}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/resources/dungeon/Screenshot-placeholder.svg'">
+                    <img class="spell-icon" src="{{ sprite_path }}" alt="{{ name }}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/resources/dungeon/Spell-Icon-placeholder.svg'">
                     <div class="spell-cost">{{ cost }}</div>
                 </div>
                 <div class="spell-info">
                     <h3>{{ name }}</h3>
                     <p class="muted">{% if spell.get('Faction') %}{{ spell.get('Faction') }}{% endif %} {% if spell.get('Rarity') %}• Rarity {{ spell.get('Rarity') }}{% endif %}</p>
-                    <p>{{ desc }}</p>
+                    <p>{{ '' if desc_clean.startswith('!!') else desc_clean }}</p>
                 </div>
             </article>
             {% endfor %}
@@ -45,24 +77,104 @@
     </div>
 </section>
 
+<section class="container" id="spells-grouped" style="display:none;">
+    {% for cat in category_list %}
+        <h3 style="margin-top:1.5rem;">{{ cat }} <small class="muted">({{ category_counts.get(cat,0) }})</small></h3>
+        <div class="spells-grid">
+            {% for spell in spells|selectattr('category','equalto',cat)|list %}
+            {% set id = (spell.get('ID') or spell.get('Name') or '').strip() %}
+            {% set name = spell.get('display_name') or spell.get('Name') or spell.get('ID') %}
+            {% set desc = spell.get('display_description') or spell.get('Description') or spell.get('CardText') or '' %}
+            {% set frame = spell.get('CardFrame') or spell.get('CardFramePath') or '' %}
+            {% set sprite = spell.get('SpriteName') or spell.get('UITexture') or spell.get('Icon') or '' %}
+            {% set cost = spell.get('Cost') or spell.get('Energy') or '' %}
+            {% set frame_path = spell_asset('cardframes', frame) or '/resources/dungeon/Screenshot-placeholder.svg' %}
+            {% set sprite_path = spell_asset('cardicons', sprite) or '/resources/dungeon/Spell-Icon-placeholder.svg' %}
+            <article class="card spell-card" data-id="{{ id }}" data-name="{{ name|lower }}" data-faction="{{ spell.get('Faction','')|lower }}" data-type="{{ (spell.get('TypeText') or '')|lower }}" data-cost="{{ (spell.get('Cost') or spell.get('Energy') or '') }}" data-category="{{ (spell.get('category') or 'Other')|lower }}">
+                <div class="spell-frame-wrap">
+                    <img class="spell-frame" src="{{ frame_path }}" alt="{{ frame }}" loading="lazy" decoding="async">
+                    <img class="spell-icon" src="{{ sprite_path }}" alt="{{ name }}" loading="lazy" decoding="async">
+                    <div class="spell-cost">{{ cost }}</div>
+                </div>
+                <div class="spell-info">
+                    <h3>{{ name }}</h3>
+                    <p class="muted">{% if spell.get('Faction') %}{{ spell.get('Faction') }}{% endif %} {% if spell.get('Rarity') %}• Rarity {{ spell.get('Rarity') }}{% endif %}</p>
+                    <p>{{ desc.splitlines()[0] if desc else '' }}</p>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+    {% endfor %}
+</section>
+
 <script>
 document.addEventListener('DOMContentLoaded', function(){
     const filter = document.getElementById('spells-filter');
     const grid = document.querySelectorAll('.spells-grid .spell-card');
     const countElt = document.getElementById('spells-count');
+    const sortSelect = document.getElementById('spells-sort');
+    const gridContainer = document.querySelector('.spells-grid');
+    let activeCategory = 'All';
+    const categoryButtons = document.querySelectorAll('.btn-category');
+    // default to All button active
+    (function(){
+        categoryButtons.forEach(x => x.style.opacity = 1);
+        const all = Array.from(categoryButtons).find(b => b.getAttribute('data-cat') === 'All');
+        if(all){ all.style.opacity = 0.6; }
+    })();
+    categoryButtons.forEach(b => b.addEventListener('click', function(){
+        categoryButtons.forEach(x => x.style.opacity = 1);
+        this.style.opacity = 0.6; // indicate active
+        activeCategory = this.getAttribute('data-cat');
+        applyFilter();
+    }));
+
     function applyFilter(){
         const q = (filter.value || '').trim().toLowerCase();
         let shown = 0;
         grid.forEach(function(card){
             const name = card.getAttribute('data-name') || '';
             const faction = card.getAttribute('data-faction') || '';
-            const match = !q || name.includes(q) || faction.includes(q);
+            const type = card.getAttribute('data-type') || '';
+            const category = (card.getAttribute('data-category') || 'other');
+            const catMatch = (activeCategory === 'All') || (category === activeCategory.toLowerCase());
+            const match = catMatch && (!q || name.includes(q) || faction.includes(q) || type.includes(q));
             card.style.display = match ? 'block' : 'none';
             if(match) shown++;
         });
         countElt.textContent = shown;
     }
+    function sortGrid(){
+        const key = sortSelect.value || 'name';
+        const items = Array.from(gridContainer.querySelectorAll('.spell-card'));
+        items.sort(function(a,b){
+            if(key === 'cost'){
+                const ca = parseInt(a.getAttribute('data-cost')||'') || 9999;
+                const cb = parseInt(b.getAttribute('data-cost')||'') || 9999;
+                return ca - cb;
+            }
+            if(key === 'faction'){
+                return (a.getAttribute('data-faction')||'').localeCompare((b.getAttribute('data-faction')||''));
+            }
+            return (a.getAttribute('data-name')||'').localeCompare((b.getAttribute('data-name')||''));
+        });
+        // re-append in order
+        items.forEach(i => gridContainer.appendChild(i));
+    }
     filter.addEventListener('input', applyFilter);
+    sortSelect.addEventListener('change', function(){ sortGrid(); applyFilter(); });
+    // initial sort
+    sortGrid();
+    // view toggle handlers
+    const viewGridBtn = document.getElementById('view-grid');
+    const viewGroupedBtn = document.getElementById('view-grouped');
+    const groupedSection = document.getElementById('spells-grouped');
+    const gridSection = document.getElementById('spells-grid');
+    function showGrid(){ gridSection.style.display = ''; groupedSection.style.display = 'none'; viewGridBtn.style.opacity = 0.6; viewGroupedBtn.style.opacity = 1; }
+    function showGrouped(){ gridSection.style.display = 'none'; groupedSection.style.display = ''; viewGridBtn.style.opacity = 1; viewGroupedBtn.style.opacity = 0.6; }
+    viewGridBtn.addEventListener('click', showGrid);
+    viewGroupedBtn.addEventListener('click', showGrouped);
+    showGrid();
 });
 </script>
 

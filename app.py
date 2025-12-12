@@ -17,6 +17,18 @@ CREATURES_JSON_URL = os.environ.get('CREATURES_JSON_URL', 'https://cardwarskingd
 # Action / Spell cards JSON (Action cards / Spells)
 ACTIONS_JSON_URL = os.environ.get('ACTIONS_JSON_URL', 'https://cardwarskingdom.pythonanywhere.com/persist/static/Blueprints/db_ActionCards.json')
 
+# Categories to detect in spells (order matters: first match wins)
+CATEGORIES = [
+    ('CORN', ['corn']),
+    ('DUNGEON', ['dungeon']),
+    ('Leader', ['leader']),
+    ('NICE', ['nice']),
+    ('PLAINS', ['plains']),
+    ('sand', ['sand']),
+    ('SWAMP', ['swamp']),
+    ('TUT', ['tut', 'tutorial']),
+]
+
 # Simple in-memory storage for online users (use Redis in production)
 online_users = {}
 
@@ -43,6 +55,38 @@ def load_texts():
             pass
     return {}
 
+
+def load_local_spell_texts(xml_path=None):
+    """Parse the XML localization file (EN_Sheet1.xml) and return a dict of key->text.
+
+    Keys in the file include entries like '!!CORN_0001_NAME' or '!!CORN_0001_DESC'.
+    We store both the raw key and the key without leading '!!' for convenience.
+    """
+    if xml_path is None:
+        xml_path = os.path.join(os.path.dirname(__file__), 'resources', 'spells', 'EN_Sheet1.xml')
+    texts = {}
+    try:
+        import xml.etree.ElementTree as ET
+        tree = ET.parse(xml_path)
+        root = tree.getroot()
+        for entry in root.findall('entry'):
+            name = entry.get('name')
+            if not name:
+                continue
+            text = (entry.text or '').strip()
+            texts[name] = text
+            # also store without leading !! if present
+            if name.startswith('!!'):
+                texts[name[2:]] = text
+    except Exception:
+        # fail silently, return what we have
+        pass
+    return texts
+
+
+# Load spell localization texts at import time (used to replace placeholders)
+SPELL_LOCAL_TEXTS = load_local_spell_texts()
+
 def save_texts(texts):
     try:
         with open(TEXTS_FILE, 'w', encoding='utf-8') as f:
@@ -53,6 +97,35 @@ def save_texts(texts):
 
 def is_image(filename):
     return filename.lower().endswith(('.png', '.jpg', '.jpeg', '.webp', '.gif', '.bmp', '.svg'))
+
+
+def find_local_asset(kind, key):
+    """Find a local asset file for spells by searching in resources/spells/<kind> for a filename containing key string.
+
+    kind: either 'cardframes' or 'cardicons'
+    key: text found in the JSON (e.g. 'UI_ActionCard_Frame_Corn_Spell' or 'UI_ActionCard_Icon_0' or 'Spell_HuskerAmulet')
+    Returns a relative URL '/resources/spells/<kind>/<file>' or None if not found.
+    """
+    if not key:
+        return None
+    base = os.path.join(os.path.dirname(__file__), 'resources', 'spells', kind)
+    if not os.path.exists(base):
+        return None
+    # Try to match exact name first (with common extensions)
+    possible_names = [key, key + '.png', key + '.jpg', key + '.jpeg', key + '.webp', key + '.svg']
+    for pname in possible_names:
+        for root, _, files in os.walk(base):
+            for f in files:
+                if f.lower() == pname.lower():
+                    return f"/resources/spells/{kind}/{f}"
+    # If exact not found, try substring match
+    lower_key = key.lower()
+    for root, _, files in os.walk(base):
+        for f in files:
+            if lower_key in f.lower() or f.lower() in lower_key:
+                return f"/resources/spells/{kind}/{f}"
+    # last resort: return None
+    return None
 
 def build_creature_list():
     creatures = []
@@ -192,16 +265,108 @@ def spells_database():
 def spells_page():
     """Render a book of spells (action cards) by fetching external JSON"""
     spells = []
+    local_cache = os.path.join(DATA_DIR, 'db_ActionCards.json')
     try:
         resp = requests.get(ACTIONS_JSON_URL, timeout=8)
         resp.raise_for_status()
         data = resp.json()
         if isinstance(data, list):
             spells = data
+            # update local cache
+            try:
+                with open(local_cache, 'w', encoding='utf-8') as f:
+                    json.dump(spells, f, ensure_ascii=False, indent=2)
+            except Exception:
+                pass
     except requests.RequestException:
-        spells = []
+        # If we have a local cache, use it as fallback
+        try:
+            if os.path.exists(local_cache):
+                with open(local_cache, 'r', encoding='utf-8') as f:
+                    cached = json.load(f)
+                    if isinstance(cached, list):
+                        spells = cached
+        except Exception:
+            spells = []
 
-    return render_template('spells.html', spells=spells)
+    # annotate spells with category
+    def detect_category(item):
+        check_fields = []
+        for k in ('CardFrame', 'Name', 'TypeText', 'UITexture', 'SpriteName', 'Faction', 'Description'):
+            v = item.get(k)
+            if v and isinstance(v, str):
+                check_fields.append(v.lower())
+        combined = ' '.join(check_fields)
+        for name, patterns in CATEGORIES:
+            for p in patterns:
+                if p.lower() in combined:
+                    return name
+        return 'Other'
+
+    category_counts = {}
+    for s in spells:
+        try:
+            c = detect_category(s)
+            s['category'] = c
+            category_counts[c] = category_counts.get(c, 0) + 1
+        except Exception:
+            s['category'] = 'Other'
+            category_counts['Other'] = category_counts.get('Other', 0) + 1
+
+        # Resolve display name and description using local XML texts when available
+        try:
+            # Name resolution
+            raw_name = s.get('Name') or ''
+            display_name = raw_name
+            if raw_name and raw_name.startswith('!!') and raw_name in SPELL_LOCAL_TEXTS:
+                display_name = SPELL_LOCAL_TEXTS.get(raw_name)
+            elif raw_name and raw_name.lstrip('!') in SPELL_LOCAL_TEXTS:
+                display_name = SPELL_LOCAL_TEXTS.get(raw_name.lstrip('!'))
+            else:
+                # Try by ID
+                sid = s.get('ID') or ''
+                if sid:
+                    for cand in (f'!!{sid}_NAME', f'{sid}_NAME'):
+                        if cand in SPELL_LOCAL_TEXTS:
+                            display_name = SPELL_LOCAL_TEXTS.get(cand)
+                            break
+            s['display_name'] = display_name or s.get('Name') or s.get('ID')
+
+            # Description resolution
+            raw_desc = (s.get('Description') or '').strip()
+            display_desc = raw_desc
+            if raw_desc.startswith('!!') and raw_desc in SPELL_LOCAL_TEXTS:
+                display_desc = SPELL_LOCAL_TEXTS.get(raw_desc)
+            elif raw_desc and raw_desc.lstrip('!') in SPELL_LOCAL_TEXTS:
+                display_desc = SPELL_LOCAL_TEXTS.get(raw_desc.lstrip('!'))
+            else:
+                sid = s.get('ID') or ''
+                if sid:
+                    for cand in (f'!!{sid}_DESC', f'{sid}_DESC'):
+                        if cand in SPELL_LOCAL_TEXTS:
+                            display_desc = SPELL_LOCAL_TEXTS.get(cand)
+                            break
+
+            # fallback: if description is a placeholder like '!!...' hide it
+            if isinstance(display_desc, str) and display_desc.startswith('!!'):
+                display_desc = ''
+
+            s['display_description'] = display_desc or ''
+            # short preview
+            s['display_description_clean'] = (s['display_description'].splitlines()[0] if s['display_description'] else '')
+        except Exception:
+            s.setdefault('display_name', s.get('Name') or s.get('ID'))
+            s.setdefault('display_description', '')
+            s.setdefault('display_description_clean', '')
+
+    # Ensure counts for all known categories exist (including Other)
+    for cat, _ in CATEGORIES:
+        category_counts.setdefault(cat, 0)
+    category_counts.setdefault('Other', 0)
+
+    # category list in order
+    category_list = [name for name, _ in CATEGORIES] + ['Other']
+    return render_template('spells.html', spells=spells, category_counts=category_counts, category_list=category_list)
 
 @app.route('/api/health')
 def health():
@@ -306,6 +471,13 @@ def logout():
 
 def require_admin():
     return bool(session.get('is_admin'))
+
+
+@app.context_processor
+def inject_helpers():
+    return {
+        'spell_asset': find_local_asset
+    }
 
 # ---------- protect rename endpoint ----------
 @app.route('/creature-book-rename', methods=['POST'])
