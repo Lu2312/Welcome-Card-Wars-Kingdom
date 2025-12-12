@@ -328,6 +328,23 @@ nav.download-nav a:hover { color: white; }
 .icon-fallback { width:34px; height:34px; background:#f2f2f2; border-radius:50%; }
 .spell-fallback { width:100%; height:100%; background:#f9f9f9; }
 
+/* Spells / Action Cards grid */
+.spells-page { padding: 1rem 0 3rem; }
+.spells-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; align-items: start; }
+.spell-card { display: block; padding: 8px; background: rgba(255,255,255,0.02); border-radius: 10px; }
+.spell-frame-wrap { position: relative; width: 100%; height: 0; padding-bottom: 140%; overflow: hidden; border-radius: 10px; }
+.spell-frame { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.spell-icon { position: absolute; width: 48%; height: 48%; left: 50%; top: 40%; transform: translate(-50%, -40%); object-fit: contain; }
+.spell-cost { position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.6); color: #fff; padding: 6px 8px; border-radius: 6px; font-weight: 700; }
+.spell-info { padding: 8px 6px 0 6px; }
+.spell-info h3 { margin: 0 0 4px; font-size: 1rem; }
+.spell-info p { margin: 0 0 6px; color: rgba(255,255,255,0.86); }
+
+@media (max-width: 640px) {
+    .spell-icon { width: 38%; height: 38%; }
+    .spell-frame-wrap { padding-bottom: 120%; }
+}
+
 /* Improved animations: subtle and professional */
 @keyframes fadeInUp {
     from {
