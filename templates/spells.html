@@ -65,15 +65,16 @@
                     <img class="spell-frame" src="{{ frame_path }}" alt="{{ frame }}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/resources/dungeon/Screenshot-placeholder.svg'">
                     <img class="spell-icon" src="{{ sprite_path }}" alt="{{ name }}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/resources/dungeon/Spell-Icon-placeholder.svg'">
                     <div class="spell-cost">{{ cost }}</div>
-                </div>
-                <div class="spell-info">
-                    <h3>{{ name }}</h3>
-                    <p class="muted">{% if spell.get('Faction') %}{{ spell.get('Faction') }}{% endif %} {% if spell.get('Rarity') %}• Rarity {{ spell.get('Rarity') }}{% endif %}</p>
-                    <p class="desc-preview">{{ '' if desc_clean.startswith('!!') else desc_clean }}</p>
-                    {% if desc and desc != (desc.splitlines()[0] if desc else '') %}
-                    <p class="desc-full" style="display:none;">{{ desc }}</p>
-                    <p><a href="#" class="desc-toggle">Show more</a></p>
-                    {% endif %}
+                    <!-- Image caption/overlay: move or change --spell-caption-height in CSS to adjust height -->
+                    <div class="spell-info">
+                        <h3>{{ name }}</h3>
+                        <p class="muted">{% if spell.get('Faction') %}{{ spell.get('Faction') }}{% endif %} {% if spell.get('Rarity') %}• Rarity {{ spell.get('Rarity') }}{% endif %}</p>
+                        <p class="desc-preview">{{ '' if desc_clean.startswith('!!') else desc_clean }}</p>
+                        {% if desc and desc != (desc.splitlines()[0] if desc else '') %}
+                        <p class="desc-full" style="display:none;">{{ desc }}</p>
+                        <p><a href="#" class="desc-toggle">Show more</a></p>
+                        {% endif %}
+                    </div>
                 </div>
             </article>
             {% endfor %}
@@ -99,15 +100,15 @@
                     <img class="spell-frame" src="{{ frame_path }}" alt="{{ frame }}" loading="lazy" decoding="async">
                     <img class="spell-icon" src="{{ sprite_path }}" alt="{{ name }}" loading="lazy" decoding="async">
                     <div class="spell-cost">{{ cost }}</div>
-                </div>
-                <div class="spell-info">
+                    <!-- Image caption/overlay: move or change --spell-caption-height in CSS to adjust height -->
+                    <div class="spell-info">
                     <h3>{{ name }}</h3>
-                    <p class="muted">{% if spell.get('Faction') %}{{ spell.get('Faction') }}{% endif %} {% if spell.get('Rarity') %}• Rarity {{ spell.get('Rarity') }}{% endif %}</p>
                     <p class="desc-preview">{{ desc.splitlines()[0] if desc else '' }}</p>
                     {% if desc and desc != (desc.splitlines()[0] if desc else '') %}
                     <p class="desc-full" style="display:none;">{{ desc }}</p>
                     <p><a href="#" class="desc-toggle">Show more</a></p>
                     {% endif %}
+                    </div>
                 </div>
             </article>
             {% endfor %}

@@ -337,6 +337,27 @@ nav.download-nav a:hover { color: white; }
 .spell-icon { position: absolute; width: 48%; height: 48%; left: 50%; top: 40%; transform: translate(-50%, -40%); object-fit: contain; }
 .spell-cost { position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.6); color: #fff; padding: 6px 8px; border-radius: 6px; font-weight: 700; }
 .spell-info { padding: 8px 6px 0 6px; }
+.spell-frame-wrap {
+    /* Variable to control caption overlay height (adjust this to reposition/resize caption) */
+    --spell-caption-height: 36%; /* change this value (px, %, etc.) to raise/lower overlay */
+}
+.spell-frame-wrap .spell-info {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: var(--spell-caption-height);
+    box-sizing: border-box;
+    padding: 10px 12px;
+    background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.65) 60%);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 6px;
+}
+.spell-frame-wrap .spell-info h3 { color: white; margin: 0; }
+.spell-frame-wrap .spell-info p { color: rgba(255,255,255,0.95); margin: 0; }
 .spell-info h3 { margin: 0 0 4px; font-size: 1rem; }
 .spell-info p { margin: 0 0 6px; color: rgba(255,255,255,0.86); }
 
