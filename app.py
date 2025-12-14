@@ -1,6 +1,7 @@
 from flask import Flask, render_template, jsonify, send_from_directory, request, redirect, session, abort, send_file
 import os
 from datetime import datetime, timedelta
+import functools
 import requests
 import re
 import json
@@ -99,6 +100,7 @@ def is_image(filename):
     return filename.lower().endswith(('.png', '.jpg', '.jpeg', '.webp', '.gif', '.bmp', '.svg'))
 
 
+@functools.lru_cache(maxsize=4096)
 def find_local_asset(kind, key):
     """Find a local asset file for spells by searching in resources/spells/<kind> for a filename containing key string.
 
@@ -108,6 +110,9 @@ def find_local_asset(kind, key):
     """
     if not key:
         return None
+    # Normalize arguments for cache key stability
+    kind = str(kind or '')
+    key = str(key or '')
     base = os.path.join(os.path.dirname(__file__), 'resources', 'spells', kind)
     if not os.path.exists(base):
         return None

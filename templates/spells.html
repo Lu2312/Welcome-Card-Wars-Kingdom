@@ -32,57 +32,14 @@
             <small class="muted">Total: <span id="spells-count">{{ spells|length }}</span></small>
         </div>
     </div>
-    <div style="margin-top:8px; display:flex; gap:8px; align-items:center;">
-        <label style="color:rgba(255,255,255,0.8);">View:</label>
-        <button id="view-grid" style="background:rgba(255,255,255,0.02); color:white; border-radius:8px; padding:6px 10px;">Grid</button>
-        <button id="view-grouped" style="background:rgba(255,255,255,0.02); color:white; border-radius:8px; padding:6px 10px;">Grouped</button>
-    </div>
 </section>
 
-<section class="container">
-    <div id="spells-grid" class="creatures-page spells-page animate-fadeInUp">
-        <div class="spells-grid">
-            {% if spells|length == 0 %}
-                <div class="card" style="padding:20px;">No spells found. If the remote JSON couldn't be fetched, try running the app with network access or create `data/db_ActionCards.json` locally as cache.</div>
-            {% endif %}
-            {% for spell in spells %}
-            {% set id = (spell.get('ID') or spell.get('Name') or '').strip() %}
-            {% set name = spell.get('display_name') or spell.get('Name') or spell.get('ID') %}
-            {% set desc = spell.get('display_description') or spell.get('Description') or spell.get('CardText') or '' %}
-            {% set desc_clean = desc.splitlines()[0] if desc else '' %}
-            {% set frame = spell.get('CardFrame') or spell.get('CardFramePath') or '' %}
-            {% set sprite = spell.get('SpriteName') or spell.get('UITexture') or spell.get('Icon') or '' %}
-            {% set cost = spell.get('Cost') or spell.get('Energy') or '' %}
-            {% if cost is string and cost.isdigit() %}
-                {% set cost_display = cost %}
-            {% else %}
-                {% set cost_display = cost %}
-            {% endif %}
-            <article class="card spell-card" data-id="{{ id }}" data-name="{{ name|lower }}" data-faction="{{ spell.get('Faction','')|lower }}" data-type="{{ (spell.get('TypeText') or '')|lower }}" data-cost="{{ (spell.get('Cost') or spell.get('Energy') or '') }}" data-category="{{ (spell.get('category') or 'Other')|lower }}">
-                <div class="spell-frame-wrap">
-                    {% set frame_path = spell_asset('cardframes', frame) or '/resources/dungeon/Screenshot-placeholder.svg' %}
-                    {% set sprite_path = spell_asset('cardicons', sprite) or '/resources/dungeon/Spell-Icon-placeholder.svg' %}
-                    <img class="spell-frame" src="{{ frame_path }}" alt="{{ frame }}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/resources/dungeon/Screenshot-placeholder.svg'">
-                    <img class="spell-icon" src="{{ sprite_path }}" alt="{{ name }}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/resources/dungeon/Spell-Icon-placeholder.svg'">
-                    <div class="spell-cost">{{ cost }}</div>
-                    <!-- Image caption/overlay: move or change --spell-caption-height in CSS to adjust height -->
-                    <div class="spell-info">
-                        <h3>{{ name }}</h3>
-                        <p class="muted">{% if spell.get('Faction') %}{{ spell.get('Faction') }}{% endif %} {% if spell.get('Rarity') %}• Rarity {{ spell.get('Rarity') }}{% endif %}</p>
-                        <p class="desc-preview">{{ '' if desc_clean.startswith('!!') else desc_clean }}</p>
-                        {% if desc and desc != (desc.splitlines()[0] if desc else '') %}
-                        <p class="desc-full" style="display:none;">{{ desc }}</p>
-                        <p><a href="#" class="desc-toggle">Show more</a></p>
-                        {% endif %}
-                    </div>
-                </div>
-            </article>
-            {% endfor %}
-        </div>
-    </div>
-</section>
+{# Replaced grid view with grouped-only view. If no spells, show an explanatory message here. #}
 
-<section class="container" id="spells-grouped" style="display:none;">
+<section class="container" id="spells-grouped">
+    {% if spells|length == 0 %}
+        <div class="card" style="padding:20px;">No spells found. If the remote JSON couldn't be fetched, try running the app with network access or create `data/db_ActionCards.json` locally as cache.</div>
+    {% endif %}
     {% for cat in category_list %}
         <h3 style="margin-top:1.5rem;">{{ cat }} <small class="muted">({{ category_counts.get(cat,0) }})</small></h3>
         <div class="spells-grid">
@@ -116,13 +73,14 @@
     {% endfor %}
 </section>
 
+{# Duplicate grouped section removed to avoid rendering spells twice (performance improvement) #}
+
 <script>
 document.addEventListener('DOMContentLoaded', function(){
     const filter = document.getElementById('spells-filter');
     const grid = document.querySelectorAll('.spells-grid .spell-card');
     const countElt = document.getElementById('spells-count');
     const sortSelect = document.getElementById('spells-sort');
-    const gridContainer = document.querySelector('.spells-grid');
     let activeCategory = 'All';
     const categoryButtons = document.querySelectorAll('.btn-category');
     // default to All button active
@@ -155,35 +113,30 @@ document.addEventListener('DOMContentLoaded', function(){
     }
     function sortGrid(){
         const key = sortSelect.value || 'name';
-        const items = Array.from(gridContainer.querySelectorAll('.spell-card'));
-        items.sort(function(a,b){
-            if(key === 'cost'){
-                const ca = parseInt(a.getAttribute('data-cost')||'') || 9999;
-                const cb = parseInt(b.getAttribute('data-cost')||'') || 9999;
-                return ca - cb;
-            }
-            if(key === 'faction'){
-                return (a.getAttribute('data-faction')||'').localeCompare((b.getAttribute('data-faction')||''));
-            }
-            return (a.getAttribute('data-name')||'').localeCompare((b.getAttribute('data-name')||''));
+        // Sort items within each .spells-grid container (grouped view may have many)
+        const containers = document.querySelectorAll('.spells-grid');
+        containers.forEach(function(gridContainer){
+            const items = Array.from(gridContainer.querySelectorAll('.spell-card'));
+            items.sort(function(a,b){
+                if(key === 'cost'){
+                    const ca = parseInt(a.getAttribute('data-cost')||'') || 9999;
+                    const cb = parseInt(b.getAttribute('data-cost')||'') || 9999;
+                    return ca - cb;
+                }
+                if(key === 'faction'){
+                    return (a.getAttribute('data-faction')||'').localeCompare((b.getAttribute('data-faction')||''));
+                }
+                return (a.getAttribute('data-name')||'').localeCompare((b.getAttribute('data-name')||''));
+            });
+            // re-append in order
+            items.forEach(i => gridContainer.appendChild(i));
         });
-        // re-append in order
-        items.forEach(i => gridContainer.appendChild(i));
     }
     filter.addEventListener('input', applyFilter);
     sortSelect.addEventListener('change', function(){ sortGrid(); applyFilter(); });
     // initial sort
     sortGrid();
-    // view toggle handlers
-    const viewGridBtn = document.getElementById('view-grid');
-    const viewGroupedBtn = document.getElementById('view-grouped');
-    const groupedSection = document.getElementById('spells-grouped');
-    const gridSection = document.getElementById('spells-grid');
-    function showGrid(){ gridSection.style.display = ''; groupedSection.style.display = 'none'; viewGridBtn.style.opacity = 0.6; viewGroupedBtn.style.opacity = 1; }
-    function showGrouped(){ gridSection.style.display = 'none'; groupedSection.style.display = ''; viewGridBtn.style.opacity = 1; viewGroupedBtn.style.opacity = 0.6; }
-    viewGridBtn.addEventListener('click', showGrid);
-    viewGroupedBtn.addEventListener('click', showGrouped);
-    showGrid();
+    // No grid view: grouped-only layout. Sorting applies per-group above.
     // description toggle handlers
     document.addEventListener('click', function(e){
         const t = e.target;

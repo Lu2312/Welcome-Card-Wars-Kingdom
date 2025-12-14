@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preload" as="image" href="/resources/Main-Logo.webp">
+    <link rel="preload" as="image" href="/resources/card-wars-kingdom-icon.png">
+    
+<link rel="preload" as="image" href="/resources/home.gif">
+<!-- removed preload for missing images: map-ice, map-candy2, map-candy, map-badlands -->
+<link rel="preload" as="image" href="/resources/main-characters.png">
+<link rel="preload" as="image" href="/resources/discord-white.png">
+
+    <link rel="icon" href="https://i.postimg.cc/522JrMVz/AT-Card-Wars2-Logo-Eng-1.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com/">
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="anonymous">
+    <title>Welcome Card Wars Kingdom</title>
+    <meta name="description" content="Card Wars Kingdom – Free to Play Online Card Game based on Cartoon Network's Adventure Time.">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Rubik+Doodle+Shadow&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&display=swap" rel="stylesheet">
+    <!-- using local global stylesheet (static/css/styles.css) for site theme and background -->
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body class="font-[Poppins] antialiased text-white">
+    <nav class="header-nav">
+        <div class="nav-container">
+            <a class="logo-link" href="/">
+                <img src="/resources/Main-Logo.webp" alt="CWK" class="site-logo">
+            </a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/cards">Cards</a>
+                <a href="/heroes">Heroes</a>
+                <a href="https://discord.gg/card-wars-revived-1227932764117143642">Support</a>
+                <!-- Admin link inserted into the main nav links -->
+                <a href="/admin-login" id="headerAdminLink">Admin Login</a>
+            </div>
+            <div class="nav-buttons">
+                <a href="/download" aria-label="Download" class="download-btn">
+                    <span class="download-span">
+                        <span class="material-symbols-outlined">download</span>Download
+                    </span>
+                </a>
+                <div class="online-indicator">
+                    <span class="online-dot"></span>
+                    <div class="online-tooltip">
+                        <span id="online-count">31</span> Online
+                    </div>
+                </div>
+            </div>
+            <button aria-label="Open menu" class="menu-btn">
+                <span class="material-symbols-outlined text-xl">menu</span>
+            </button>
+        </div>
+        <div class="mobile-menu">
+            <div class="mobile-menu-content">
+                <div class="mobile-logo">
+                    <img src="/resources/Main-Logo.webp" alt="CWK" class="site-logo">
+                </div>
+                <div class="mobile-links">
+                    <a target="_blank" href="https://discord.gg/card-wars-revived-1227932764117143642">News</a>
+                    <a href="/#museum-teleporte">Museum</a>
+                    <a target="_blank" href="https://discord.gg/card-wars-revived-1227932764117143642">Support</a>
+                    <a href="/heroes">Heroes</a>
+                    <a href="/card-museum">Card Museum</a>
+                    <a href="/download" class="mobile-download">
+                        <span class="mobile-download-span">
+                            <span class="material-symbols-outlined">download</span>Download
+                        </span>
+                    </a>
+                    <a href="/admin-login" id="mobileAdminLink" aria-label="Admin">Admin Login</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+<div hidden=""></div>
+<main class="main-style">
+
+        <section class="section-hero relative bg-gradient-to-b from-black via-[#0a0a0d] to-black pt-1">
+            <div class="mx-auto max-w-7xl px-4 pt-4 pb-4">
+                <div class="hero-gif-container rounded-2xl p-8 border border-white/10 shadow-1xl">
+                    <img src="/resources/home.gif" alt="Card Wars Kingdom" class="h-20 sm:h-28 lg:h-32 w-auto drop-shadow-2xl mx-auto ">
+                </div>
+            </div>
+            
+         
+        </section>
+<h1 class="index-welcome-h1">
+    Welcome to the 'Card Wars Kingdom: Revived.' Original Fandom Wiki<br>
+</h1>
+</h2>
+    Here you can find all the information about this game. Enjoy and play now click on <a href="/download">DOWNLOAD</a> 
+    And don't forget join <a href="https://discord.gg/card-wars-revived-1227932764117143642" target="_blank">DISCORD SERVER</a>
+    <br>
+</h2>    
+
+
+    <table class="factions-table">
+        <thead>
+            <tr class="main-header">
+                <th colspan="6">Factions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="faction-header">
+                <th class="blue-plains">Blue Plains</th>
+                <th class="cornfields">Cornfields</th>
+                <th class="nicelands">Nicelands</th>
+            </tr>
+            <tr>
+                <td class="image-cell">
+                    <img src="resources\Faction\Spell_BluePlains_BluePlains.png" alt="Blue Plains">
+                </td>
+                <td class="image-cell">
+                    <img src="resources\Faction\Spell_Corn_Cornlands.png" alt="Cornfields">
+                </td>
+                <td class="image-cell">
+                    <img src="resources\Faction\Spell_Nicelands_Nicelands.png" alt="Nicelands">
+                </td>
+            </tr>
+            <tr class="faction-header">
+                <th class="sandylands">Sandylands</th>
+                <th class="useless-swamp">Useless Swamp</th>
+                <th class="rainbow">Rainbow</th>
+            </tr>
+            <tr>
+                <td class="image-cell">
+                    <img src="resources\Faction\Spell_Sands_Sandylands.png" alt="Sandylands">
+                </td>
+                <td class="image-cell">
+                    <img src="resources\Faction\Spell_UselessSwamp.png" alt="Useless Swamp">
+                </td>
+                <td class="image-cell">
+                    <img src="resources\Faction\Rainbow.png" alt="Rainbow">
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h1>
+    Menu
+</h1>
+        <ul class="menu-nav">
+        <li><a href="/heroes">Heroes</a></li>
+        <li><a href="/creatures">Creatures</a></li>
+        <li><a href="/spells">Spells</a></li>
+        <li><a href="/pvpseason">Multiplayer (PvP)</a></li>
+        <li><a href="/dungeons">Dungeons</a></li>
+        <li><a href="/treasure-chest-cave">Treasure Chest Cave</a></li>
+        <li><a href="/store">Store</a></li>
+        <li><a href="/status-effects">Status Effects</a></li>
+        <li><a href="/labs">Lab's</a></li>
+        <li><a href="/specials">Specials</a></li>
+    </ul>
+    <br>
+            <nav class="main-nav">
+
+                </div>
+            </div>
+        </section>
+
+        <section class="section-heroes">
+            <div class="gradient-heroes"></div>
+            <div class="container-heroes">
+                <div class="flex-heroes">
+                    <div class="hidden-lg">
+                        <img src="/resources/main-characters.png" alt="Main characters" class="heroes-image">
+                    </div>
+                    <div class="grid-heroes-text">
+                        <h1 class="heroes-title">YOUR <br><span class="yellow-span">HEROES</span></h1>
+                        <h2 class="heroes-subtitle">✨ IMAGINATION IS YOUR STRONGEST SPELL.</h2>
+                        <p class="heroes-p">In Card Wars Kingdom, you'll summon an army of powerful creatures, each with unique abilities and skills that give you the edge in battle. From fiery spells to strategic gameplay, your heroes wield an array of magic that no other deck can match. No two creatures fight alike, and no two battles ever play out the same way.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-community">
+            <div class="container-community">
+                <div class="flex-community">
+                    <h1 class="community-h1">Join our community on</h1>
+                    <a href="https://discord.gg/card-wars-revived-1227932764117143642" target="_blank" class="discord-link">
+                        <img src="/resources/discord-white.png" alt="Discord" class="discord-image">
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script>
+        // Update online users count
+        async function updateOnlineCount() {
+            try {
+                const response = await fetch('/api/users/online');
+                const data = await response.json();
+                document.getElementById('online-count').textContent = data.count;
+            } catch (error) {
+                console.error('Error fetching online count:', error);
+            }
+        }
+
+        // Send heartbeat to server
+        async function sendHeartbeat() {
+            try {
+                await fetch('/api/users/heartbeat');
+            } catch (error) {
+                console.error('Error sending heartbeat:', error);
+            }
+        }
+
+        // Update count every 30 seconds
+        updateOnlineCount();
+        setInterval(updateOnlineCount, 30000);
+
+        // Send heartbeat every 2 minutes
+        sendHeartbeat();
+        setInterval(sendHeartbeat, 120000);
+    </script>
+    <script>
+        window.__CREATURES__ = [];
+        window.__IS_ADMIN__ = false;
+    </script>
+    <!-- Add small script at end of body to toggle mobile menu -->
+    <script>
+		(function(){
+			const menuBtn = document.querySelector('button[aria-label="Open menu"]');
+			// find the mobile menu panel (the next element with sm:hidden bg..)
+			const mobilePanel = Array.from(document.querySelectorAll('div')).find(d => d.className && d.className.includes('sm:hidden') && d.style.overflow === undefined);
+			if (menuBtn && mobilePanel) {
+				menuBtn.addEventListener('click', () => {
+					if (mobilePanel.classList.contains('mobile-menu-open')) {
+						mobilePanel.classList.remove('mobile-menu-open');
+						mobilePanel.style.maxHeight = '0';
+					} else {
+						mobilePanel.classList.add('mobile-menu-open');
+						mobilePanel.style.maxHeight = '900px';
+					}
+				});
+			}
+		})();
+	</script>
+
+    <!-- Add admin login/logout logic (after existing scripts) -->
+<script>
+		(function(){
+    // admin elements
+    const headerAdminBtn = document.getElementById('headerAdminBtn');
+   const headerAdminLink = document.getElementById('headerAdminLink');
+    const mobileAdminLink = document.getElementById('mobileAdminLink');
+    const loginModal = document.getElementById('loginModal');
+    const loginSubmit = document.getElementById('loginSubmit');
+    const loginCancel = document.getElementById('loginCancel');
+    const loginPwd = document.getElementById('loginPassword');
+    const loginStatus = document.getElementById('loginStatus');
+
+    function updateAdminUI() {
+        const isAdmin = !!window.__IS_ADMIN__ || document.documentElement.getAttribute('data-is-admin') === '1';
+        document.documentElement.setAttribute('data-is-admin', isAdmin ? '1' : '0');
+
+        // Show/hide edit buttons
+        const buttons = [
+            document.getElementById('headerEditBtn'),
+            document.getElementById('pageEditBtn'),
+            document.getElementById('editModeBtn'),
+            document.getElementById('mobileEditLink')
+            // Removed undefined editBtn
+        ];
+        buttons.forEach(btn => {
+            if (btn) btn.style.display = isAdmin ? 'inline-flex' : 'none';
+        });
+
+        // Update admin toggle button
+        const adminToggle = document.getElementById('adminToggleBtn');
+        if (adminToggle) {
+            adminToggle.textContent = isAdmin ? 'Logout' : 'Login';
+            adminToggle.onclick = isAdmin ? logoutAdmin : showLoginModal;
+        }
+    }
+
+    async function adminToggleHandler(e) {
+        if (e) e.preventDefault && e.preventDefault();
+        if (window.__IS_ADMIN__) {
+            await fetch('/logout', { method: 'POST' }).catch(()=>{});
+            window.__IS_ADMIN__ = false;
+            updateAdminUI();
+        } else {
+            loginStatus.textContent = '';
+            loginPwd.value = '';
+            if (loginModal) loginModal.style.display = 'flex';
+            loginPwd && loginPwd.focus();
+        }
+    }
+
+    if (headerAdminBtn) headerAdminBtn.addEventListener('click', adminToggleHandler);
+    if (mobileAdminLink) mobileAdminLink.addEventListener('click', adminToggleHandler);
+
+    loginCancel && loginCancel.addEventListener('click', () => { if (loginModal) loginModal.style.display = 'none'; });
+
+    loginSubmit && loginSubmit.addEventListener('click', async () => {
+        const pwd = (loginPwd && loginPwd.value) || '';
+        if (!pwd) { loginStatus.textContent = 'Enter password'; return; }
+        loginStatus.textContent = 'Signing in...';
+        try {
+            const res = await fetch('/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password: pwd })
+            });
+            if (!res.ok) {
+                const body = await res.json().catch(()=>({}));
+                loginStatus.textContent = body.error || 'Login failed';
+                return;
+            }
+            // --- Comportamiento añadido: igual que en cards.html ---
+            window.__IS_ADMIN__ = true;
+            if (loginModal) loginModal.style.display = 'none';
+            updateAdminUI();
+            // Si la página contiene las funciones de edición/recarga del wiki, llamarlas (mismo comportamiento que cards.html)
+            try {
+                if (typeof window.loadEditableList === 'function') {
+                    await window.loadEditableList();
+                } else if (typeof window.loadAndRenderWiki === 'function') {
+                    await window.loadAndRenderWiki();
+                }
+            } catch (e) {
+                // no bloquear si las funciones no existen o fallan
+                console.error('Post-login action error:', e);
+            }
+            // optionally refresh list endpoint (silent)
+            try { await fetch('/creature-book-list'); } catch(e){/*ignore*/};
+        } catch (err) {
+            console.error(err);
+            loginStatus.textContent = 'Network error';
+        }
+    });
+
+    // init
+    updateAdminUI();
+})();
+	</script>
+
+    <!-- Add Login Modal (desktop + mobile can use it) -->
+<div id="loginModal" style="display:none;position:fixed;inset:0;z-index:120;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;">
+	<div class="login-modal-content" style="background:#0b0b0e;color:#fff;">
+		<h3 style="margin:0 0 8px 0">Admin Login</h3>
+		<form>
+			<input id="loginPassword" type="password" placeholder="Password" style="width:100%;padding:8px;margin-bottom:8px;border-radius:6px;border:1px solid #333;background:#071;color:white;">
+			<div style="display:flex;gap:8px;justify-content:flex-end;">
+				<button id="loginCancel" style="background:#333;color:#fff;padding:8px 10px;border-radius:6px;border:none">Cancel</button>
+                <button id="loginSubmit" style="background:var(--at-accent);color:#fff;padding:8px 10px;border-radius:6px;border:none">Login</button>
+			</div>
+			<div id="loginStatus" style="margin-top:8px;color:#f88;font-size:13px;"></div>
+		</form>
+	</div>
+</div>
+<!-- add script near end of body (after existing scripts) to handle editable texts -->
+<script>
+(async function(){
+    async function fetchTexts() {
+        try {
+            const r = await fetch('/api/texts');
+            if (r.ok) return await r.json();
+        } catch(e){console.warn(e);}
+        return {};
+    }
+    async function updateTextServer(key, value) {
+        try {
+            const r = await fetch('/api/texts/update', {
+                method: 'POST',
+                headers: {'Content-Type':'application/json'},
+                body: JSON.stringify({ key, value })
+            });
+            return r.ok;
+        } catch(e){ console.error(e); return false; }
+    }
+
+    const texts = await fetchTexts();
+    document.querySelectorAll('[data-text-key]').forEach(el => {
+        const key = el.getAttribute('data-text-key');
+        if (texts && key in texts) {
+            el.textContent = texts[key];
+        }
+        if (window.__IS_ADMIN__) {
+            el.setAttribute('contenteditable','true');
+            el.style.outline = '1px dashed rgba(255,255,255,0.08)';
+            // save on blur
+            el.addEventListener('blur', async () => {
+                const val = el.textContent || '';
+                const ok = await updateTextServer(key, val);
+                // optional visual feedback
+                if (!ok) { el.style.background = 'rgba(255,0,0,0.06)'; setTimeout(()=>el.style.background='',800); }
+            });
+        }
+    });
+})();
+</script>
+
+    <footer class="bg-gradient-to-t from-gray-900 to-gray-800 py-12 border-t border-gray-700 backdrop-blur-sm">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col items-center text-center space-y-8">
+            <img src="/resources/card-wars-kingdom-icon.png" alt="Card Wars Icon" class="w-20 h-20 drop-shadow-2xl rounded-full border-2 border-purple-500">
+            <div class="flex flex-col sm:flex-row gap-6 text-sm font-medium">
+                <a href="/download" class="hover:scale-105 transition-all duration-300 flex items-center gap-2" style="background: black; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                    <span class="material-symbols-outlined text-lg" style="-webkit-text-fill-color: initial; background: linear-gradient(135deg, var(--at-accent), var(--at-pink)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">download</span> FREE DOWNLOAD
+                </a>
+                <a href="https://discord.gg/card-wars-revived-1227932764117143642" target="_blank" class="text-gray-300 hover:text-white hover:scale-105 transition-all duration-300 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-lg">chat</span> DISCORD SERVER
+                </a>
+            </div>
+            <div class="flex items-center gap-8 opacity-80">
+            </div>
+            <p class="text-xs text-gray-400 max-w-lg leading-relaxed font-light">
+                2025 Card Wars Kingdom Remake • Fan Project<br>
+                No monetization involved.
+            </p>
+        </div>
+    </footer>
+</body>
+</html>
