@@ -333,25 +333,13 @@ nav.download-nav a:hover { color: white; }
 .spells-page { padding: 1rem 0 3rem; }
 
 /* Grid layout for the cards: responsive columns that fit the container */
-.spells-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; align-items: start; }
-
-/* Individual card container: padding, subtle background and rounded corners */
-.spell-card { display: block; padding: 8px; background: rgba(255,255,255,0.02); border-radius: 40px; }
-
-/* Frame wrapper: creates an aspect-ratio box using padding-bottom; overflow:hidden crops the image to the frame */
-.spell-frame-wrap { position: relative; width: 110%; height: 0; padding-bottom: 110%; overflow: hidden; border-radius: 10px; }
-
-/* Card frame image: absolutely positioned to fill the wrapper. object-fit:cover ensures it fills while keeping aspect ratio */
-.spell-frame { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
-
-/* Spell icon overlay: positioned over the frame, centered with transform; size is relative to the frame */
+.spells-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(285px, 1fr)); gap: 40px; align-items: start; }
+.spell-card { display: block; padding: 1px; background: rgba(255,255,255,0.02); border-radius: 0px; }
+.spell-frame-wrap { position: relative; width: 100%; height: 0; padding-bottom: 100%; overflow: hidden; border-radius: 10px; }
+.spell-frame { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; object-position: center; display: block; }
 .spell-icon { position: absolute; width: 48%; height: 48%; left: 50%; top: 40%; transform: translate(-50%, -40%); object-fit: contain; }
-
-/* Cost badge: small pill-like badge positioned over the frame (top-left) */
 .spell-cost { position: absolute; top: 64px; left: 15px; background: rgba(0,0,0,0.6); color: #fff; padding: 6px 8px; border-radius: 6px; font-weight: 900; }
-
-/* Info area below the image: padding for title/description */
-.spell-info { padding: 8px 6px 0 6px; }
+.spell-info { padding: 10px 8px 0 6px; }
 
 /* Note: the following .spell-frame-wrap block controls the overlay (caption) shown on the bottom of the frame */
 .spell-frame-wrap {
@@ -391,7 +379,7 @@ nav.download-nav a:hover { color: white; }
 
 @media (max-width: 640px) {
     .spell-icon { width: 38%; height: 38%; }
-    .spell-frame-wrap { padding-bottom: 120%; }
+    .spell-frame-wrap { padding-bottom: 100%; }
 }
 .spells-page .spells-grid { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
 .spells-page .spell-card { padding: 6px; }
