@@ -334,17 +334,84 @@ nav.download-nav a:hover { color: white; }
 
 /* Grid layout for the cards: responsive columns that fit the container */
 .spells-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(285px, 1fr)); gap: 40px; align-items: start; }
-.spell-card { display: block; padding: 1px; background: rgba(255,255,255,0.02); border-radius: 0px; }
-.spell-frame-wrap { position: relative; width: 100%; height: 0; padding-bottom: 100%; overflow: hidden; border-radius: 10px; }
-.spell-frame { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; object-position: center; display: block; }
-.spell-icon { position: absolute; width: 48%; height: 48%; left: 50%; top: 40%; transform: translate(-50%, -40%); object-fit: contain; }
-.spell-cost { position: absolute; top: 64px; left: 15px; background: rgba(0,0,0,0.6); color: #fff; padding: 6px 8px; border-radius: 6px; font-weight: 900; }
+.spell-card {
+    display: block;
+    /* make the article 10% wider than its grid column to emphasize the card */
+    width: 110%;
+    margin: 0 auto;
+    box-sizing: border-box;
+    padding: 1px;
+    background: rgba(255,255,255,0.02);
+    border-radius: 4px;
+    position: relative; /* ensures children positioned absolute are relative to the card */
+    overflow: hidden; /* clip any overflow so frame matches article boundaries */
+}
+.spell-frame-wrap {
+    position: relative;
+    /* ensure the frame wrapper matches the article/card width so the image equals the article size */
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    margin: 0; /* align with article edges */
+    height: 0;
+    /* maintain the taller aspect ratio (height = 150% of width previously set) */
+    padding-bottom: 150%;
+    overflow: hidden;
+    border-radius: 10px;
+}
+.spell-frame {
+    position: absolute;
+    inset: 0;
+    /* fully fill the wrapper and keep the image centered and contained */
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none !important;
+    max-height: none !important;
+     /* Use fill so the image exactly matches the container (stretches to fit and may distort).
+         Alternatives: 'cover' keeps aspect ratio and fills (may crop); 'contain' keeps aspect ratio and fits inside (may leave gaps). */
+     object-fit: fill;
+    object-position: center center;
+    display: block;
+}
+
+/* Fallback: if the frame is an <img> inside a wrapper, ensure it also fills */
+.spell-frame img {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none !important;
+    max-height: none !important;
+    object-fit: fill !important;
+    object-position: center center !important;
+    display: block !important;
+}
+.spell-icon {
+    position: absolute;
+    width: 48%;
+    height: 48%;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    object-fit: contain;
+}
+.spell-cost { position: absolute; top: 20%; left: 18%; background: rgba(0,0,0,0.6); color: #fff; padding: 6px 8px; border-radius: 6px; font-weight: 900; }
+.spell-number {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    background: rgba(0,0,0,0.6);
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 0.85rem;
+}
 .spell-info { padding: 10px 8px 0 6px; }
 
 /* Note: the following .spell-frame-wrap block controls the overlay (caption) shown on the bottom of the frame */
 .spell-frame-wrap {
     /* Variable to control caption overlay height (adjust this to reposition/resize caption) */
-    --spell-caption-height: 45%; /* change this value (px, %, etc.) to raise/lower overlay */
+    --spell-caption-height: 42%; /* change this value (px, %, etc.) to raise/lower overlay */
 }
 .spell-frame-wrap .spell-info {
     position: absolute;
@@ -362,10 +429,15 @@ nav.download-nav a:hover { color: white; }
     padding-top: 10px; /* ensure consistent offset from overlay top */
     gap: 6px;
 }
-.spell-frame-wrap .spell-info h3 { color: rgb(209, 10, 10); margin: 0; text-align: center; }
-.spell-frame-wrap .spell-info p { color: rgb(0, 0, 0); margin: 0; text-align: center; }
+.spell-frame-wrap .spell-info h3 { color: rgb(23, 10, 209); margin: 0 0 0.6em; text-align: center; }
+.spell-frame-wrap .spell-info p {
+    color: rgb(0, 0, 0);
+    margin: 0 auto; /* center the text */
+    text-align: center;
+    max-width: 70%; /* limit width for readability */
+}
 .spell-info h3 { margin: 0 0 4px; font-size: 1rem;}
-.spell-info p { margin: 0 0 6px; color: rgba(124, 0, 0, 0.86); }
+.spell-info p { margin: 0.6em 0 6px; color: rgba(124, 0, 0, 0.86); }
 
 .desc-preview { font-size: 0.95rem; }
 .desc-full { font-size: 0.9rem; color: rgba(255,255,255,0.9); margin-top: 6px; }
@@ -379,7 +451,13 @@ nav.download-nav a:hover { color: white; }
 
 @media (max-width: 640px) {
     .spell-icon { width: 38%; height: 38%; }
-    .spell-frame-wrap { padding-bottom: 100%; }
+    /* Keep the same 40% taller aspect ratio on small screens too */
+    /* revert width to 100% on narrow screens to avoid overflow */
+    .spell-frame-wrap { width: 100%; padding-bottom: 150%; }
+    /* ensure the article/card fits the viewport on mobile */
+    .spell-card { width: 100%; }
+    /* slightly reduce top spacing for smaller screens */
+    .spell-info p { margin: 0.4em 0 6px; }
 }
 .spells-page .spells-grid { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
 .spells-page .spell-card { padding: 6px; }

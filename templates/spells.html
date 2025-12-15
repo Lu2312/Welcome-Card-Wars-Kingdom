@@ -12,9 +12,15 @@
         <div style="display:flex; gap:8px; align-items:center;">
             <input id="spells-filter" placeholder="Filter by name, faction, type..." style="flex:1; padding:8px; border-radius:8px; border:1px solid rgba(255,255,255,0.06); background:rgba(255,255,255,0.02); color: white;"/>
             <select id="spells-sort" style="padding:8px; border-radius:8px; background:rgba(255,255,255,0.02); color: white;">
+                <option value="json">JSON (remote order)</option>
                 <option value="name">Name</option>
                 <option value="cost">Cost</option>
+                <option value="number">Number</option>
                 <option value="faction">Faction</option>
+            </select>
+            <select id="spells-groupby" style="padding:8px; border-radius:8px; background:rgba(255,255,255,0.02); color: white; margin-left:6px;">
+                <option value="category">Group: Category</option>
+                <option value="faction">Group: Faction</option>
             </select>
             <div style="display:flex; gap:6px; margin-left:6px;">
                 <button class="btn-category" data-cat="All" style="background:rgba(255,255,255,0.02); color:white; border-radius:8px; padding:6px 10px;">All ({{ spells|length }})</button>
@@ -40,11 +46,19 @@
     {% if spells|length == 0 %}
         <div class="card" style="padding:20px;">No spells found. If the remote JSON couldn't be fetched, try running the app with network access or create `data/db_ActionCards.json` locally as cache.</div>
     {% endif %}
+    {# Build a map of original indexes so we can preserve JSON ordering client-side #}
+    {% set _ns = namespace(map={}) %}
+    {% for s in spells %}
+        {% set _ = _ns.map.update({ (s.get('ID') or s.get('Name') or ''): loop.index0 }) %}
+    {% endfor %}
+
     {% for cat in category_list %}
         <h3 style="margin-top:1.5rem;">{{ cat }} <small class="muted">({{ category_counts.get(cat,0) }})</small></h3>
         <div class="spells-grid">
             {% for spell in spells|selectattr('category','equalto',cat)|list %}
             {% set id = (spell.get('ID') or spell.get('Name') or '').strip() %}
+            {# extract numeric suffix from IDs like CORN_0001 -> 1 #}
+            {% set card_num = (id.split('_')[-1]|int) if '_' in id and id.split('_')[-1].isdigit() else '' %}
             {% set name = spell.get('display_name') or spell.get('Name') or spell.get('ID') %}
             {% set desc = spell.get('display_description') or spell.get('Description') or spell.get('CardText') or '' %}
             {% set frame = spell.get('CardFrame') or spell.get('CardFramePath') or '' %}
@@ -52,11 +66,21 @@
             {% set cost = spell.get('Cost') or spell.get('Energy') or '' %}
             {% set frame_path = spell_asset('cardframes', frame) or '/resources/dungeon/Screenshot-placeholder.svg' %}
             {% set sprite_path = spell_asset('cardicons', sprite) or '/resources/dungeon/Spell-Icon-placeholder.svg' %}
-            <article class="card spell-card" data-id="{{ id }}" data-name="{{ name|lower }}" data-faction="{{ spell.get('Faction','')|lower }}" data-type="{{ (spell.get('TypeText') or '')|lower }}" data-cost="{{ (spell.get('Cost') or spell.get('Energy') or '') }}" data-category="{{ (spell.get('category') or 'Other')|lower }}">
+            <article class="card spell-card" data-id="{{ id }}" data-name="{{ name|lower }}" data-faction="{{ spell.get('Faction','')|lower }}" data-type="{{ (spell.get('TypeText') or '')|lower }}" data-cost="{{ (spell.get('Cost') or spell.get('Energy') or '') }}" data-number="{{ card_num }}" data-category="{{ (spell.get('category') or 'Other')|lower }}" data-index="{{ _ns.map.get(id, loop.index0) }}">
                 <div class="spell-frame-wrap">
                     <img class="spell-frame" src="{{ frame_path }}" alt="{{ frame }}" loading="lazy" decoding="async">
-                    <img class="spell-icon" src="{{ sprite_path }}" alt="{{ name }}" loading="lazy" decoding="async">
+                    {% set missing_icon = ('placeholder' in (sprite_path or '').lower()) %}
+                    <img class="spell-icon" src="{{ sprite_path }}" alt="{{ name }}" loading="lazy" decoding="async" {% if missing_icon %} style="outline:2px solid #a00;" title="No icon found (placeholder)" {% endif %}>
+                    {% if is_admin %}
+                    <div class="spell-admin-controls" style="position:absolute; right:6px; top:6px; z-index:20; display:flex; gap:6px;">
+                        <button class="btn small btn-edit-icon" data-key="{{ sprite }}" title="Edit icon">🖼️</button>
+                        <small style="color:#ddd; font-size:11px;">{{ icon_map.get(sprite, '') }}</small>
+                    </div>
+                    {% endif %}
                     <div class="spell-cost">{{ cost }}</div>
+                    {% if card_num %}
+                    <div class="spell-number">#{{ card_num }}</div>
+                    {% endif %}
                     <!-- Image caption/overlay: move or change --spell-caption-height in CSS to adjust height -->
                     <div class="spell-info">
                     <h3>{{ name }}</h3>
@@ -93,49 +117,131 @@ document.addEventListener('DOMContentLoaded', function(){
         categoryButtons.forEach(x => x.style.opacity = 1);
         this.style.opacity = 0.6; // indicate active
         activeCategory = this.getAttribute('data-cat');
-        applyFilter();
+        renderGroups();
     }));
 
-    function applyFilter(){
+    function renderGroups(){
         const q = (filter.value || '').trim().toLowerCase();
-        let shown = 0;
-        grid.forEach(function(card){
+        const key = sortSelect.value || 'name';
+        // Use the selected sort key. When 'json' is selected we rely on the
+        // per-card data-index (built from the remote JSON order) to sort items.
+        const groupBy = (document.getElementById('spells-groupby') && document.getElementById('spells-groupby').value) || 'category';
+        // If we're grouping by faction and using JSON order, prefer to sort
+        // cards inside each faction by their numeric card number so that
+        // cards like CORN_0001 appear first within the Red faction.
+        let internalSortKey = key;
+        if(groupBy === 'faction' && key === 'json'){
+            internalSortKey = 'number';
+        }
+
+        // collect all cards (they will be moved around)
+        const allCards = Array.from(document.querySelectorAll('.spell-card'));
+
+        // filter cards according to text/filter/category
+        const visibleCards = allCards.filter(card => {
             const name = card.getAttribute('data-name') || '';
             const faction = card.getAttribute('data-faction') || '';
             const type = card.getAttribute('data-type') || '';
             const category = (card.getAttribute('data-category') || 'other');
             const catMatch = (activeCategory === 'All') || (category === activeCategory.toLowerCase());
-            const match = catMatch && (!q || name.includes(q) || faction.includes(q) || type.includes(q));
-            card.style.display = match ? 'block' : 'none';
-            if(match) shown++;
+            return catMatch && (!q || name.includes(q) || faction.includes(q) || type.includes(q));
         });
-        countElt.textContent = shown;
-    }
-    function sortGrid(){
-        const key = sortSelect.value || 'name';
-        // Sort items within each .spells-grid container (grouped view may have many)
-        const containers = document.querySelectorAll('.spells-grid');
-        containers.forEach(function(gridContainer){
-            const items = Array.from(gridContainer.querySelectorAll('.spell-card'));
-            items.sort(function(a,b){
-                if(key === 'cost'){
+        countElt.textContent = visibleCards.length;
+
+        // group cards
+        const groups = {};
+        visibleCards.forEach(card => {
+            const keyName = (groupBy === 'category') ? (card.getAttribute('data-category') || 'other') : (card.getAttribute('data-faction') || 'unknown');
+            if(!groups[keyName]) groups[keyName] = [];
+            groups[keyName].push(card);
+        });
+
+        // order group keys:
+        // - if ordering by original JSON, place groups by the earliest original index of their members
+        // - otherwise, alphabetical
+        let groupKeys = Object.keys(groups);
+        if(key === 'json'){
+            // When sorting by json and grouping by faction, order groups by
+            // the smallest card number within the group so the faction that
+            // contains card #1 (CORN_0001) will appear first.
+            if(groupBy === 'faction'){
+                groupKeys.sort((a,b) => {
+                    const mina = Math.min(...groups[a].map(c => parseInt(c.getAttribute('data-number')||'999999')));
+                    const minb = Math.min(...groups[b].map(c => parseInt(c.getAttribute('data-number')||'999999')));
+                    return mina - minb;
+                });
+            } else {
+                groupKeys.sort((a,b) => {
+                    const mina = Math.min(...groups[a].map(c => parseInt(c.getAttribute('data-index')||'999999')));
+                    const minb = Math.min(...groups[b].map(c => parseInt(c.getAttribute('data-index')||'999999')));
+                    return mina - minb;
+                });
+            }
+        } else {
+            groupKeys.sort((a,b) => a.localeCompare(b));
+        }
+
+        // sort cards inside each group by current key
+        groupKeys.forEach(g => {
+            groups[g].sort((a,b) => {
+                const sortKey = internalSortKey;
+                if(sortKey === 'cost'){
                     const ca = parseInt(a.getAttribute('data-cost')||'') || 9999;
                     const cb = parseInt(b.getAttribute('data-cost')||'') || 9999;
                     return ca - cb;
                 }
-                if(key === 'faction'){
+                if(sortKey === 'number'){
+                    const na = parseInt(a.getAttribute('data-number')||'') || 9999;
+                    const nb = parseInt(b.getAttribute('data-number')||'') || 9999;
+                    return na - nb;
+                }
+                if(sortKey === 'json'){
+                    const ia = parseInt(a.getAttribute('data-index')||'') || 999999;
+                    const ib = parseInt(b.getAttribute('data-index')||'') || 999999;
+                    return ia - ib;
+                }
+                if(sortKey === 'faction'){
                     return (a.getAttribute('data-faction')||'').localeCompare((b.getAttribute('data-faction')||''));
                 }
                 return (a.getAttribute('data-name')||'').localeCompare((b.getAttribute('data-name')||''));
             });
-            // re-append in order
-            items.forEach(i => gridContainer.appendChild(i));
+        });
+
+        // clear existing groups and render new grouped layout
+        const wrapper = document.getElementById('spells-grouped');
+        // remove any direct children that are not the 'no spells' message placeholder (we'll replace entirely)
+        // if no cards, show explanatory message
+        wrapper.innerHTML = '';
+        if(visibleCards.length === 0){
+            const msg = document.createElement('div');
+            msg.className = 'card';
+            msg.style.padding = '20px';
+            msg.textContent = 'No spells found. If the remote JSON couldn\'t be fetched, try running the app with network access or create `data/db_ActionCards.json` locally as cache.';
+            wrapper.appendChild(msg);
+            return;
+        }
+
+        groupKeys.forEach(g => {
+            const h = document.createElement('h3');
+            h.style.marginTop = '1.5rem';
+            h.innerHTML = g + ' <small class="muted">(' + groups[g].length + ')</small>';
+            const gridContainer = document.createElement('div');
+            gridContainer.className = 'spells-grid';
+            groups[g].forEach(card => gridContainer.appendChild(card));
+            wrapper.appendChild(h);
+            wrapper.appendChild(gridContainer);
         });
     }
-    filter.addEventListener('input', applyFilter);
-    sortSelect.addEventListener('change', function(){ sortGrid(); applyFilter(); });
-    // initial sort
-    sortGrid();
+    filter.addEventListener('input', renderGroups);
+    sortSelect.addEventListener('change', renderGroups);
+    const groupBySelect = document.getElementById('spells-groupby');
+    if(groupBySelect) groupBySelect.addEventListener('change', renderGroups);
+    // initial render
+    renderGroups();
+    // Per your request: show grouped by faction and ordered by the remote JSON
+    if(groupBySelect){ groupBySelect.value = 'faction'; }
+    if(sortSelect){ sortSelect.value = 'json'; }
+    renderGroups();
     // No grid view: grouped-only layout. Sorting applies per-group above.
     // description toggle handlers
     document.addEventListener('click', function(e){
@@ -155,6 +261,102 @@ document.addEventListener('DOMContentLoaded', function(){
             }
         }
     });
+
+    // Admin icon editor
+    async function openIconEditor(key, imgElt, currentInputElt){
+        try{
+            const res = await fetch('/admin/icon-mappings/suggestions/' + encodeURIComponent(key));
+            if(!res.ok){ alert('No suggestions (not authorized or error).'); return; }
+            const data = await res.json();
+            // build modal
+            const modal = document.createElement('div');
+            modal.style.position = 'fixed'; modal.style.left = 0; modal.style.top = 0; modal.style.right = 0; modal.style.bottom = 0; modal.style.background = 'rgba(0,0,0,0.6)'; modal.style.display='flex'; modal.style.alignItems='center'; modal.style.justifyContent='center'; modal.style.zIndex = 9999;
+            const box = document.createElement('div'); box.style.background='#0b0b0d'; box.style.padding='14px'; box.style.border='1px solid #222'; box.style.borderRadius='8px'; box.style.maxWidth='900px'; box.style.width='90%'; box.style.maxHeight='80%'; box.style.overflow='auto';
+            const title = document.createElement('h3'); title.style.margin='0 0 6px 0'; title.textContent = 'Edit icon for ' + key; box.appendChild(title);
+            const grid = document.createElement('div'); grid.style.display='grid'; grid.style.gridTemplateColumns='repeat(auto-fit, minmax(140px,1fr))'; grid.style.gap='8px';
+            // browse all files control
+            const browseBar = document.createElement('div'); browseBar.style.display='flex'; browseBar.style.gap='8px'; browseBar.style.marginBottom='8px';
+            const browseBtn = document.createElement('button'); browseBtn.textContent = 'Browse all files'; browseBtn.className='btn small';
+            const searchInput = document.createElement('input'); searchInput.placeholder = 'Filter files...'; searchInput.style.flex='1'; searchInput.style.padding='6px'; searchInput.style.borderRadius='6px'; searchInput.style.border='1px solid #333';
+            browseBar.appendChild(browseBtn); browseBar.appendChild(searchInput); box.appendChild(browseBar);
+            // helper to create preview src
+            function previewFor(file){
+                if(!file) return '';
+                if(file.startsWith('/')) return file;
+                if(file.toLowerCase().startsWith('resources/')) return '/' + file.replace(/\\\\/g,'/');
+                return '/resources/spells/cardicons/' + file;
+            }
+            data.candidates.forEach(c => {
+                const card = document.createElement('div'); card.style.background='#0f1113'; card.style.padding='6px'; card.style.border='1px solid #222'; card.style.borderRadius='6px'; card.style.textAlign='center';
+                const img = document.createElement('img'); img.src = previewFor(c.file); img.style.maxWidth='100%'; img.style.height='80px'; img.style.objectFit='contain'; img.alt = c.file;
+                const lbl = document.createElement('div'); lbl.style.marginTop='6px'; lbl.style.fontSize='12px'; lbl.style.color='#ddd'; lbl.textContent = c.file + (c.score ? ' ('+c.score+')' : '');
+                const btn = document.createElement('button'); btn.textContent = 'Use'; btn.className='btn small'; btn.style.marginTop='6px'; btn.addEventListener('click', async ()=>{
+                    const mappingValue = (c.file.startsWith('resources/') ? '/' + c.file : c.file);
+                    const payload = {}; payload[key] = mappingValue;
+                    const r = await fetch('/admin/icon-mappings/save', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+                    const j = await r.json();
+                    if(j && j.ok){
+                        // update currentInputElt and image
+                        if(currentInputElt) currentInputElt.value = mappingValue;
+                        const newSrc = previewFor(c.file);
+                        if(imgElt){ imgElt.src = newSrc; }
+                        document.body.removeChild(modal);
+                    } else {
+                        alert('Failed to save: ' + (j && j.error || 'unknown'));
+                    }
+                });
+                card.appendChild(img); card.appendChild(lbl); card.appendChild(btn); grid.appendChild(card);
+            });
+            // container for browse results (initially hidden)
+            const browseContainer = document.createElement('div'); browseContainer.style.display='none'; browseContainer.style.marginTop='8px'; browseContainer.style.gridGap='8px';
+            const browseGrid = document.createElement('div'); browseGrid.style.display='grid'; browseGrid.style.gridTemplateColumns='repeat(auto-fit, minmax(140px,1fr))'; browseGrid.style.gap='8px';
+            browseContainer.appendChild(browseGrid);
+            box.appendChild(browseContainer);
+
+            async function loadBrowse(filter){
+                browseGrid.innerHTML = '';
+                const url = '/admin/icon-mappings/files' + (filter ? ('?q=' + encodeURIComponent(filter)) : '');
+                const r = await fetch(url);
+                if(!r.ok) { browseGrid.textContent = 'Failed to load files.'; return; }
+                const j = await r.json();
+                const list = j.files || [];
+                list.forEach(fn => {
+                    const card = document.createElement('div'); card.style.background='#0f1113'; card.style.padding='6px'; card.style.border='1px solid #222'; card.style.borderRadius='6px'; card.style.textAlign='center';
+                    const img = document.createElement('img'); img.src = '/resources/spells/cardicons/' + fn; img.style.maxWidth='100%'; img.style.height='80px'; img.style.objectFit='contain'; img.alt = fn;
+                    const lbl = document.createElement('div'); lbl.style.marginTop='6px'; lbl.style.fontSize='12px'; lbl.style.color='#ddd'; lbl.textContent = fn;
+                    const btn = document.createElement('button'); btn.textContent = 'Use'; btn.className='btn small'; btn.style.marginTop='6px'; btn.addEventListener('click', async ()=>{
+                        const mappingValue = fn;
+                        const payload = {}; payload[key] = mappingValue;
+                        const res = await fetch('/admin/icon-mappings/save', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+                        const jr = await res.json();
+                        if(jr && jr.ok){ if(currentInputElt) currentInputElt.value = mappingValue; if(imgElt) imgElt.src = '/resources/spells/cardicons/' + fn; document.body.removeChild(modal); } else { alert('Failed to save: ' + (jr && jr.error || 'unknown')); }
+                    });
+                    card.appendChild(img); card.appendChild(lbl); card.appendChild(btn); browseGrid.appendChild(card);
+                });
+            }
+
+            browseBtn.addEventListener('click', async ()=>{ loadBrowse(searchInput.value.trim()); browseContainer.style.display = ''; });
+            searchInput.addEventListener('keydown', async (ev)=>{ if(ev.key === 'Enter'){ loadBrowse(searchInput.value.trim()); browseContainer.style.display = ''; } });
+            box.appendChild(grid);
+            const close = document.createElement('div'); close.style.marginTop='8px'; close.style.textAlign='right';
+            const closeBtn = document.createElement('button'); closeBtn.textContent = 'Close'; closeBtn.className='btn admin-btn-cancel'; closeBtn.addEventListener('click', ()=>document.body.removeChild(modal));
+            close.appendChild(closeBtn); box.appendChild(close);
+            modal.appendChild(box); document.body.appendChild(modal);
+        }catch(err){ console.error(err); alert('Error fetching suggestions.'); }
+    }
+
+    if(document.querySelectorAll('.btn-edit-icon').length){
+        document.querySelectorAll('.btn-edit-icon').forEach(btn => {
+            btn.addEventListener('click', function(e){
+                const key = this.getAttribute('data-key');
+                // find image element near this button
+                const article = this.closest('.spell-card');
+                const imgElt = article && article.querySelector('.spell-icon');
+                const currentInput = this.closest('.spell-frame-wrap').querySelector('.mapping-current');
+                openIconEditor(key, imgElt, currentInput);
+            });
+        });
+    }
 });
 </script>
 

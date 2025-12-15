@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-hero container">
+    <h1 class="page-title">Creature Book / Cards</h1>
+    <p class="muted">Gallery of creature images found under <code>resources/Creature Book</code>.</p>
+</div>
+<section class="container">
+    <div class="grid-3-cols">
+        {% for c in creatures %}
+        <div class="card" style="text-align:center;">
+            {% if c.images and c.images[0] %}
+            <a href="/creature-book/{{ c.folder }}/{{ c.images[0] }}"><img src="/creature-book/{{ c.images[0] }}" alt="{{ c.name }}" style="max-width:200px; height:auto; display:block; margin:0 auto 8px;"/></a>
+            {% endif %}
+            <div><strong>{{ c.name }}</strong></div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+{% endblock %}

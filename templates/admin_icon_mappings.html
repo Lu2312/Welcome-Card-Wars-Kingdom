@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="admin-container">
+  <div class="admin-body">
+    <h2>Icon Mappings <small class="muted">Review and accept suggested mappings</small></h2>
+    <p class="admin-note">This page lists sprite keys from `db_ActionCards.json` and the best candidate files found in <code>resources/spells/cardicons</code> (and hero images). Select a candidate or enter a custom path, then click <strong>Save selected</strong> to persist mappings to <code>data/icon_map.json</code>.</p>
+
+    <div style="overflow:auto; max-height:60vh; border:1px solid #222; padding:8px; margin-top:12px;">
+      <table style="width:100%; border-collapse:collapse;">
+        <thead>
+          <tr>
+            <th style="text-align:left; padding:6px; width:30%">Key</th>
+            <th style="text-align:left; padding:6px; width:30%">Current mapping</th>
+            <th style="text-align:left; padding:6px; width:40%">Candidates / Custom</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for key, info in suggestions.items() %}
+          <tr data-key="{{ key }}">
+            <td style="padding:6px; vertical-align:top; border-top:1px solid #222;"><code>{{ key }}</code></td>
+            <td style="padding:6px; vertical-align:top; border-top:1px solid #222;">
+              <input class="mapping-current" style="width:100%; padding:6px;" value="{{ info.mapped or '' }}">
+            </td>
+            <td style="padding:6px; vertical-align:top; border-top:1px solid #222;">
+              <div style="display:flex; gap:8px; align-items:start;">
+                <select class="candidate-select" style="flex:1; padding:6px;">
+                  <option value="">-- choose candidate --</option>
+                  {% for c in info.candidates %}
+                  <option value="{{ c.file }}">{{ c.file }} {{ ' (score:'+('%.3f'|format(c.score))+')' if c.score is not none }}</option>
+                  {% endfor %}
+                </select>
+                <button class="btn-apply small">Apply</button>
+              </div>
+              <div style="margin-top:6px; display:flex; gap:8px; align-items:center;">
+                <small class="muted">Or enter custom path (e.g. <code>/resources/spells/cardicons/Spell_X.png</code>)</small>
+                <button class="btn-clear small" style="margin-left:auto;">Clear</button>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div style="margin-top:12px; display:flex; gap:8px; justify-content:flex-end;">
+      <button id="saveAll" class="admin-btn">Save selected</button>
+      <a href="/admin" class="admin-btn-cancel">Back</a>
+    </div>
+
+    <div id="status" class="admin-msg"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  function qs(sel, el) { return (el||document).querySelector(sel); }
+  function qsa(sel, el) { return Array.from((el||document).querySelectorAll(sel)); }
+
+  qsa('.btn-apply').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const row = e.target.closest('tr');
+      const sel = row.querySelector('.candidate-select');
+      const cur = row.querySelector('.mapping-current');
+      if(sel && sel.value){ cur.value = sel.value; }
+    });
+  });
+  qsa('.btn-clear').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const row = e.target.closest('tr');
+      const cur = row.querySelector('.mapping-current');
+      if(cur){ cur.value = ''; }
+    });
+  });
+
+  document.getElementById('saveAll').addEventListener('click', function(){
+    const rows = qsa('tbody tr[data-key]');
+    const payload = {};
+    rows.forEach(r => {
+      const k = r.getAttribute('data-key');
+      const v = r.querySelector('.mapping-current').value.trim();
+      if(v) payload[k] = v; else payload[k] = '';
+    });
+    const status = document.getElementById('status');
+    status.textContent = 'Saving...';
+    fetch('/admin/icon-mappings/save', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).then(r => r.json()).then(j => {
+      if(j && j.ok){ status.textContent = 'Saved successfully.'; setTimeout(()=>status.textContent=''); }
+      else { status.textContent = 'Save failed: ' + (j && j.error || 'unknown'); }
+    }).catch(err => { status.textContent = 'Save failed: ' + err; });
+  });
+})();
+</script>
+
+{% endblock %}

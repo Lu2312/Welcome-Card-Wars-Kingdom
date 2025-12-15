@@ -5,6 +5,7 @@ import functools
 import requests
 import re
 import json
+import difflib
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
@@ -46,6 +47,7 @@ ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'admin')
 DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
 TEXTS_FILE = os.path.join(DATA_DIR, 'editable_texts.json')
 os.makedirs(DATA_DIR, exist_ok=True)
+ICON_MAP_FILE = os.path.join(DATA_DIR, 'icon_map.json')
 
 def load_texts():
     if os.path.exists(TEXTS_FILE):
@@ -55,6 +57,37 @@ def load_texts():
         except:
             pass
     return {}
+
+
+def load_icon_map():
+    try:
+        if os.path.exists(ICON_MAP_FILE):
+            with open(ICON_MAP_FILE, 'r', encoding='utf-8') as f:
+                return json.load(f)
+    except Exception:
+        pass
+    return {}
+
+
+# In-memory icon map (kept in sync with file)
+ICON_MAP = load_icon_map()
+
+
+def save_icon_map(m):
+    try:
+        with open(ICON_MAP_FILE, 'w', encoding='utf-8') as f:
+            json.dump(m, f, ensure_ascii=False, indent=2)
+        # update in-memory map
+        global ICON_MAP
+        ICON_MAP = m
+        # Clear cached asset lookups because mappings changed
+        try:
+            find_local_asset.cache_clear()
+        except Exception:
+            pass
+        return True
+    except Exception:
+        return False
 
 
 def load_local_spell_texts(xml_path=None):
@@ -110,6 +143,17 @@ def find_local_asset(kind, key):
     """
     if not key:
         return None
+    # First check explicit mappings created by the admin
+    try:
+        mapped = ICON_MAP.get(key)
+        if mapped:
+            # If mapping looks like a relative resources path, return as-is
+            if mapped.startswith('/resources/') or mapped.startswith('resources/'):
+                return mapped if mapped.startswith('/') else ('/' + mapped)
+            # otherwise assume it's a filename in cardicons
+            return f"/resources/spells/{kind}/{mapped}"
+    except Exception:
+        pass
     # Normalize arguments for cache key stability
     kind = str(kind or '')
     key = str(key or '')
@@ -371,7 +415,7 @@ def spells_page():
 
     # category list in order
     category_list = [name for name, _ in CATEGORIES] + ['Other']
-    return render_template('spells.html', spells=spells, category_counts=category_counts, category_list=category_list)
+    return render_template('spells.html', spells=spells, category_counts=category_counts, category_list=category_list, is_admin=bool(session.get('is_admin')), icon_map=ICON_MAP)
 
 @app.route('/api/health')
 def health():
@@ -483,6 +527,172 @@ def inject_helpers():
     return {
         'spell_asset': find_local_asset
     }
+
+
+@app.route('/admin/icon-mappings')
+def admin_icon_mappings():
+    if not require_admin():
+        return redirect('/admin-login')
+
+    # Load keys from local cache or remote JSON
+    local_json = os.path.join(DATA_DIR, 'db_ActionCards.json')
+    keys = set()
+    data = []
+    try:
+        if os.path.exists(local_json):
+            with open(local_json, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+        else:
+            resp = requests.get(ACTIONS_JSON_URL, timeout=6)
+            if resp.status_code == 200:
+                data = resp.json()
+        for item in data:
+            for k in ('SpriteName', 'UITexture', 'Icon'):
+                v = item.get(k)
+                if v:
+                    keys.add(v)
+    except Exception:
+        pass
+
+    # gather available icon files
+    cardicons_dir = os.path.join(os.path.dirname(__file__), 'resources', 'spells', 'cardicons')
+    files = []
+    if os.path.exists(cardicons_dir):
+        for root, _, filenames in os.walk(cardicons_dir):
+            for fn in filenames:
+                files.append(fn)
+
+    # hero files for leader textures
+    hero_files = []
+    heroes_dir = os.path.join(os.path.dirname(__file__), 'resources', 'Heroes')
+    if os.path.exists(heroes_dir):
+        for root, _, filenames in os.walk(heroes_dir):
+            for fn in filenames:
+                hero_files.append(os.path.join('resources', 'Heroes', fn))
+
+    def norm(s):
+        return ''.join(c.lower() for c in s if c.isalnum())
+
+    files_norm = {fn: norm(fn) for fn in files}
+
+    suggestions = {}
+    for key in sorted(keys):
+        entry = {'mapped': ICON_MAP.get(key), 'candidates': []}
+        # exact and substring matches
+        for f in files:
+            if f.lower() == key.lower() or f.lower() == ('spell_' + key).lower() or key.lower() in f.lower() or f.lower() in key.lower():
+                entry['candidates'].append({'file': f, 'score': 1.0})
+        if not entry['candidates']:
+            kn = norm(key)
+            scores = [(f, difflib.SequenceMatcher(None, kn, files_norm[f]).ratio()) for f in files]
+            scores.sort(key=lambda x: x[1], reverse=True)
+            entry['candidates'] = [{'file': s[0], 'score': round(s[1], 3)} for s in scores[:6]]
+        # leaders: add hero candidates
+        if key.lower().startswith('leader_'):
+            sub = key.split('_')[1].lower()
+            hero_cands = [hf for hf in hero_files if sub in hf.lower()]
+            for hf in hero_cands[:3]:
+                entry['candidates'].append({'file': hf, 'score': 0.45})
+        suggestions[key] = entry
+
+    return render_template('admin_icon_mappings.html', suggestions=suggestions, is_admin=True)
+
+
+def suggest_for_key(key):
+    # return a dict with 'mapped' and 'candidates' list
+    cardicons_dir = os.path.join(os.path.dirname(__file__), 'resources', 'spells', 'cardicons')
+    files = []
+    if os.path.exists(cardicons_dir):
+        for root, _, filenames in os.walk(cardicons_dir):
+            for fn in filenames:
+                files.append(fn)
+    heroes_dir = os.path.join(os.path.dirname(__file__), 'resources', 'Heroes')
+    hero_files = []
+    if os.path.exists(heroes_dir):
+        for root, _, filenames in os.walk(heroes_dir):
+            for fn in filenames:
+                hero_files.append(os.path.join('resources', 'Heroes', fn))
+
+    def norm(s):
+        return ''.join(c.lower() for c in s if c.isalnum())
+
+    files_norm = {fn: norm(fn) for fn in files}
+    entry = {'mapped': ICON_MAP.get(key), 'candidates': []}
+    # exact and substring
+    for f in files:
+        if f.lower() == key.lower() or f.lower() == ('spell_' + key).lower() or key.lower() in f.lower() or f.lower() in key.lower():
+            entry['candidates'].append({'file': f, 'score': 1.0})
+    if not entry['candidates']:
+        kn = norm(key)
+        scores = [(f, difflib.SequenceMatcher(None, kn, files_norm[f]).ratio()) for f in files]
+        scores.sort(key=lambda x: x[1], reverse=True)
+        entry['candidates'] = [{'file': s[0], 'score': round(s[1], 3)} for s in scores[:8]]
+    if key.lower().startswith('leader_'):
+        sub = key.split('_')[1].lower()
+        hero_cands = [hf for hf in hero_files if sub in hf.lower()]
+        for hf in hero_cands[:3]:
+            entry['candidates'].append({'file': hf, 'score': 0.45})
+    return entry
+
+
+@app.route('/admin/icon-mappings/suggestions/<path:key>')
+def admin_icon_mapping_suggestions(key):
+    if not require_admin():
+        return jsonify({'error': 'unauthorized'}), 403
+    try:
+        entry = suggest_for_key(key)
+        return jsonify(entry)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/admin/icon-mappings/files')
+def admin_icon_mapping_files():
+    """Return a list of files available under resources/spells/cardicons. Optional query param 'q' filters filenames."""
+    if not require_admin():
+        return jsonify({'error': 'unauthorized'}), 403
+    q = (request.args.get('q') or '').strip().lower()
+    cardicons_dir = os.path.join(os.path.dirname(__file__), 'resources', 'spells', 'cardicons')
+    files = []
+    try:
+        if os.path.exists(cardicons_dir):
+            for root, _, filenames in os.walk(cardicons_dir):
+                for fn in filenames:
+                    if not fn.lower().endswith(('.png', '.jpg', '.jpeg', '.webp', '.svg')):
+                        continue
+                    if q and q not in fn.lower():
+                        continue
+                    files.append(fn)
+        files.sort(key=lambda x: x.lower())
+        return jsonify({'files': files})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/admin')
+def admin_index():
+    if not require_admin():
+        return redirect('/admin-login')
+    return render_template('admin_index.html', is_admin=True)
+
+
+@app.route('/admin/icon-mappings/save', methods=['POST'])
+def admin_icon_mappings_save():
+    if not require_admin():
+        return jsonify({'error': 'unauthorized'}), 403
+    data = request.get_json(silent=True) or {}
+    if not isinstance(data, dict):
+        return jsonify({'error': 'invalid payload'}), 400
+    new_map = dict(ICON_MAP)
+    for k, v in data.items():
+        if v is None or v == '':
+            new_map.pop(k, None)
+        else:
+            new_map[k] = v
+    ok = save_icon_map(new_map)
+    if ok:
+        return jsonify({'ok': True})
+    return jsonify({'error': 'failed saving'}), 500
 
 # ---------- protect rename endpoint ----------
 @app.route('/creature-book-rename', methods=['POST'])
@@ -612,6 +822,16 @@ def not_found(error):
     """404 error handler"""
     return "<h1>404 - Page Not Found</h1>", 404
 
+@app.route('/favicon.ico')
+def favicon():
+    # try serving a static favicon if present, otherwise return 204 to avoid 404 logs
+    try:
+        static_fav = os.path.join(os.path.dirname(__file__), 'static', 'favicon.ico')
+        if os.path.exists(static_fav):
+            return send_from_directory(os.path.join(os.path.dirname(__file__), 'static'), 'favicon.ico')
+    except Exception:
+        pass
+    return ('', 204)
 @app.errorhandler(500)
 def internal_error(error):
     """500 error handler"""
