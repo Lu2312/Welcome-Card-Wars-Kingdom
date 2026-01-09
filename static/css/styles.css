@@ -373,6 +373,7 @@ nav.download-nav a:hover { color: white; }
      object-fit: fill;
     object-position: center center;
     display: block;
+    z-index: 1; /* Encima del icono para que el frame quede sobre el sprite */
 }
 
 /* Fallback: if the frame is an <img> inside a wrapper, ensure it also fills */
@@ -384,17 +385,39 @@ nav.download-nav a:hover { color: white; }
     object-fit: fill !important;
     object-position: center center !important;
     display: block !important;
-}
+    position: relative;
+} 
+/* =========================================
+   ORDEN DE CAPAS EN LAS CARTAS DE SPELLS
+   =========================================
+   z-index: 0 -> spell-icon (icono/sprite debajo)
+   z-index: 1 -> spell-frame (marco encima del icono)
+   z-index: 10 -> spell-cost, spell-number, spell-info (encima de todo)
+   
+   Esto permite que:
+   - El frame tenga bordes decorativos que cubran el icono
+   - Los elementos de información (costo, número, descripción) sean siempre visibles
+   - Se mantenga un orden de capas limpio y profesional
+*/
 .spell-icon {
     position: absolute;
-    width: 48%;
-    height: 48%;
+    width: 60%;
+    height: 60%;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
     object-fit: contain;
+    z-index: 0; /* Debajo del frame (frame tiene z-index: auto o 0 por defecto) */
+    /* Si el frame necesita estar encima, asignarle z-index: 1 explícitamente */
 }
-.spell-cost { position: absolute; top: 20%; left: 18%; background: rgba(0,0,0,0.6); color: #fff; padding: 6px 8px; border-radius: 6px; font-weight: 900; }
+.spell-cost { position: absolute; top: 20%; left: 18%; background: rgba(0,0,0,0.6); color: #fff; padding: 6px 8px; border-radius: 6px; font-weight: 900; z-index: 10; /* Encima de frame e icono */ }
+/* AJUSTES DE POSICIÓN Y CAPAS:
+   - Para ajustar la posición del icono: modificar top/left/width/height en .spell-icon
+   - Para cambiar el tamaño del icono: ajustar width y height (actualmente 60% x 60%)
+   - Para que el icono quede MÁS encima: cambiar z-index a un valor mayor (ej: z-index: 2)
+   - Para que el icono quede MÁS debajo: cambiar z-index a un valor menor (ej: z-index: -1)
+   - El transform: translate(-50%, -50%) centra el icono perfectamente
+*/
 .spell-number {
     position: absolute;
     top: 10px;
@@ -405,6 +428,7 @@ nav.download-nav a:hover { color: white; }
     border-radius: 6px;
     font-weight: 700;
     font-size: 0.85rem;
+    z-index: 10; /* Encima de frame e icono */
 }
 .spell-info { padding: 10px 8px 0 6px; }
 
@@ -428,6 +452,7 @@ nav.download-nav a:hover { color: white; }
     justify-content: flex-start; /* align content to the top of the caption overlay so all titles start at the same height */
     padding-top: 10px; /* ensure consistent offset from overlay top */
     gap: 6px;
+    z-index: 10; /* Encima de frame e icono para que sea visible */
 }
 .spell-frame-wrap .spell-info h3 { color: rgb(23, 10, 209); margin: 0 0 0.6em; text-align: center; }
 .spell-frame-wrap .spell-info p {

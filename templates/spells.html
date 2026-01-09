@@ -3,44 +3,17 @@
 <link rel="preload" as="image" href="/resources/home.gif">
 {% endblock %}
 {% block content %}
+<!-- ESTILOS DEL HERO:
+     - Para cambiar el fondo, añade: style="background: linear-gradient(...);" a la div
+     - Para ajustar el espaciado, modifica padding o margin en línea
+     - Los estilos de .page-hero y .page-title están en /static/css/styles.css
+-->
 <div class="page-hero container">
     <h1 class="page-title">Spells / Action Cards</h1>
     <p class="muted">Complete action and spell card library. Uses external JSON and local resources for artwork.</p>
 </div>
-<section class="container">
-    <div class="grid-2-cols">
-        <div style="display:flex; gap:8px; align-items:center;">
-            <input id="spells-filter" placeholder="Filter by name, faction, type..." style="flex:1; padding:8px; border-radius:8px; border:1px solid rgba(255,255,255,0.06); background:rgba(255,255,255,0.02); color: white;"/>
-            <select id="spells-sort" style="padding:8px; border-radius:8px; background:rgba(255,255,255,0.02); color: white;">
-                <option value="json">JSON (remote order)</option>
-                <option value="name">Name</option>
-                <option value="cost">Cost</option>
-                <option value="number">Number</option>
-                <option value="faction">Faction</option>
-            </select>
-            <select id="spells-groupby" style="padding:8px; border-radius:8px; background:rgba(255,255,255,0.02); color: white; margin-left:6px;">
-                <option value="category">Group: Category</option>
-                <option value="faction">Group: Faction</option>
-            </select>
-            <div style="display:flex; gap:6px; margin-left:6px;">
-                <button class="btn-category" data-cat="All" style="background:rgba(255,255,255,0.02); color:white; border-radius:8px; padding:6px 10px;">All ({{ spells|length }})</button>
-                <button class="btn-category" data-cat="CORN" style="background:rgba(255,255,255,0.02); color:white; border-radius:8px; padding:6px 10px;">CORN ({{ category_counts.get('CORN', 0) }})</button>
-                <button class="btn-category" data-cat="DUNGEON" style="background:rgba(255,255,255,0.02); color:white; border-radius:8px; padding:6px 10px;">DUNGEON ({{ category_counts.get('DUNGEON', 0) }})</button>
-                <button class="btn-category" data-cat="Leader" style="background:rgba(255,255,255,0.02); color:white; border-radius:8px; padding:6px 10px;">Leader ({{ category_counts.get('Leader', 0) }})</button>
-                <button class="btn-category" data-cat="NICE" style="background:rgba(255,255,255,0.02); color:white; border-radius:8px; padding:6px 10px;">NICE ({{ category_counts.get('NICE', 0) }})</button>
-                <button class="btn-category" data-cat="PLAINS" style="background:rgba(255,255,255,0.02); color:white; border-radius:8px; padding:6px 10px;">PLAINS ({{ category_counts.get('PLAINS', 0) }})</button>
-                <button class="btn-category" data-cat="sand" style="background:rgba(255,255,255,0.02); color:white; border-radius:8px; padding:6px 10px;">sand ({{ category_counts.get('sand', category_counts.get('Sand', 0)) }})</button>
-                <button class="btn-category" data-cat="SWAMP" style="background:rgba(255,255,255,0.02); color:white; border-radius:8px; padding:6px 10px;">SWAMP ({{ category_counts.get('SWAMP', 0) }})</button>
-                <button class="btn-category" data-cat="TUT" style="background:rgba(255,255,255,0.02); color:white; border-radius:8px; padding:6px 10px;">TUT ({{ category_counts.get('TUT', 0) }})</button>
-            </div>
-        </div>
-        <div style="text-align:right;">
-            <small class="muted">Total: <span id="spells-count">{{ spells|length }}</span></small>
-        </div>
-    </div>
-</section>
 
-{# Replaced grid view with grouped-only view. If no spells, show an explanatory message here. #}
+{# Barra de filtros eliminada para mostrar todas las cartas en orden del JSON #}
 
 <section class="container" id="spells-grouped">
     {% if spells|length == 0 %}
@@ -53,7 +26,18 @@
     {% endfor %}
 
     {% for cat in category_list %}
+        <!-- ESTILOS DE LOS TÍTULOS DE CATEGORÍA:
+             - margin-top:1.5rem: espacio superior del título
+             - Para cambiar el tamaño de fuente: añadir font-size:24px
+             - Para cambiar el color: añadir color:#colorHex
+        -->
         <h3 style="margin-top:1.5rem;">{{ cat }} <small class="muted">({{ category_counts.get(cat,0) }})</small></h3>
+        <!-- ESTILOS DE LA CUADRÍCULA DE HECHIZOS:
+             - .spells-grid está definida en /static/css/styles.css
+             - Probablemente usa display:grid con grid-template-columns
+             - Para cambiar el número de columnas, modifica grid-template-columns en CSS
+             - Para ajustar el espacio entre tarjetas, modifica gap en CSS
+        -->
         <div class="spells-grid">
             {% for spell in spells|selectattr('category','equalto',cat)|list %}
             {% set id = (spell.get('ID') or spell.get('Name') or '').strip() %}
@@ -64,12 +48,54 @@
             {% set frame = spell.get('CardFrame') or spell.get('CardFramePath') or '' %}
             {% set sprite = spell.get('SpriteName') or spell.get('UITexture') or spell.get('Icon') or '' %}
             {% set cost = spell.get('Cost') or spell.get('Energy') or '' %}
-            {% set frame_path = spell_asset('cardframes', frame) or '/resources/dungeon/Screenshot-placeholder.svg' %}
-            {% set sprite_path = spell_asset('cardicons', sprite) or '/resources/dungeon/Spell-Icon-placeholder.svg' %}
+            {# Pasar ID y Name del spell para mejorar la búsqueda de iconos #}
+            {% set frame_path = spell_asset('cardframes', frame, id, name) or '/resources/dungeon/Screenshot-placeholder.svg' %}
+            {% set sprite_path = spell_asset('cardicons', sprite, id, name) or '/resources/dungeon/Spell-Icon-placeholder.svg' %}
+            <!-- ESTILOS DE CADA TARJETA:
+                 - .card y .spell-card: estilos base definidos en /static/css/styles.css
+                 - Para añadir sombra: style="box-shadow: 0 4px 8px rgba(0,0,0,0.3);"
+                 - Para cambiar el fondo: añadir background:#color o background:linear-gradient(...)
+                 - Para añadir borde: añadir border:2px solid #color
+                 - Para efectos hover, mejor definir en CSS: .spell-card:hover { transform: scale(1.05); }
+            -->
             <article class="card spell-card" data-id="{{ id }}" data-name="{{ name|lower }}" data-faction="{{ spell.get('Faction','')|lower }}" data-type="{{ (spell.get('TypeText') or '')|lower }}" data-cost="{{ (spell.get('Cost') or spell.get('Energy') or '') }}" data-number="{{ card_num }}" data-category="{{ (spell.get('category') or 'Other')|lower }}" data-index="{{ _ns.map.get(id, loop.index0) }}">
+                <!-- CONTENEDOR DEL FRAME DE LA CARTA:
+                     - .spell-frame-wrap contiene la imagen de fondo y los elementos superpuestos
+                     - position:relative permite posicionar elementos absolutos dentro
+                -->
                 <div class="spell-frame-wrap">
+                    <!-- IMAGEN DEL FRAME (fondo de la carta):
+                         - .spell-frame: position:absolute con width:100% (z-index: 1, encima del icono)
+                         - Para ajustar opacidad: añadir style="opacity:0.8;"
+                         - Para aplicar filtros: style="filter: brightness(1.2) contrast(1.1);"
+                         
+                         ORDEN DE CAPAS (z-index):
+                         - spell-icon: z-index: 0 (capa inferior - icono debajo)
+                         - spell-frame: z-index: 1 (capa media - frame encima del icono)
+                         - spell-cost, spell-number, spell-info: z-index: 10 (capa superior - siempre visibles)
+                         
+                         Este orden asegura que:
+                         1. El icono quede debajo del frame decorativo
+                         2. El frame cubra los bordes del icono
+                         3. Los textos e información sean siempre visibles encima de todo
+                    -->
                     <img class="spell-frame" src="{{ frame_path }}" alt="{{ frame }}" loading="lazy" decoding="async">
                     {% set missing_icon = ('placeholder' in (sprite_path or '').lower()) %}
+                    <!-- IMAGEN DEL ICONO (sprite central):
+                         - .spell-icon: superpuesta sobre el frame (z-index: 0, debajo del frame)
+                         - El outline:2px solid #a00 indica iconos faltantes (placeholder)
+                         - Para cambiar el tamaño: añadir width y height en style
+                         - Para cambiar posición: modificar top/left/right/bottom en CSS
+                         
+                         BÚSQUEDA MEJORADA DE ICONOS:
+                         La función spell_asset ahora busca iconos usando:
+                         1. El valor de SpriteName/UITexture del JSON
+                         2. El ID del spell (ej: CORN_0001, PLAINS_0023)
+                         3. El Name del spell
+                         4. Variaciones sin guiones/espacios
+                         
+                         Esto mejora significativamente la detección automática de iconos.
+                    -->
                     <img class="spell-icon" src="{{ sprite_path }}" alt="{{ name }}" loading="lazy" decoding="async" {% if missing_icon %} style="outline:2px solid #a00;" title="No icon found (placeholder)" {% endif %}>
                     {% if is_admin %}
                     <div class="spell-admin-controls" style="position:absolute; right:6px; top:6px; z-index:20; display:flex; gap:6px;">
@@ -77,16 +103,51 @@
                         <small style="color:#ddd; font-size:11px;">{{ icon_map.get(sprite, '') }}</small>
                     </div>
                     {% endif %}
+                    <!-- INDICADOR DE COSTO:
+                         - .spell-cost: muestra el costo de maná/energía
+                         - Probablemente position:absolute con estilos en CSS
+                         - Para cambiar color de fondo: añadir style="background:#color;"
+                         - Para cambiar tamaño de fuente: style="font-size:20px;"
+                         - Para cambiar posición: modificar top/right/etc en CSS
+                    -->
                     <div class="spell-cost">{{ cost }}</div>
                     {% if card_num %}
+                    <!-- NÚMERO DE CARTA:
+                         - .spell-number: muestra el número de colección
+                         - Para cambiar color del texto: style="color:#gold;"
+                         - Para añadir fondo: style="background:rgba(0,0,0,0.7); padding:4px;"
+                    -->
                     <div class="spell-number">#{{ card_num }}</div>
                     {% endif %}
-                    <!-- Image caption/overlay: move or change --spell-caption-height in CSS to adjust height -->
+                    <!-- SUPERPOSICIÓN DE INFORMACIÓN (caption):
+                         - La altura se controla con --spell-caption-height en CSS
+                         - Para cambiar el fondo del overlay: modificar .spell-info en CSS
+                    -->
+                    <!-- INFORMACIÓN DE LA CARTA:
+                         - .spell-info: contiene nombre y descripción
+                         - Para cambiar el fondo: añadir style="background:rgba(0,0,0,0.8);"
+                         - Para ajustar el padding: style="padding:12px;"
+                         - Para cambiar la alineación del texto: style="text-align:center;"
+                    -->
                     <div class="spell-info">
+                    <!-- NOMBRE DE LA CARTA:
+                         - Para cambiar color: style="color:#colorHex;"
+                         - Para cambiar tamaño: style="font-size:18px;"
+                         - Para añadir sombra al texto: style="text-shadow: 2px 2px 4px rgba(0,0,0,0.8);"
+                    -->
                     <h3>{{ name }}</h3>
+                    <!-- VISTA PREVIA DE LA DESCRIPCIÓN (primera línea) -->
                     <p class="desc-preview">{{ desc.splitlines()[0] if desc else '' }}</p>
                     {% if desc and desc != (desc.splitlines()[0] if desc else '') %}
+                    <!-- DESCRIPCIÓN COMPLETA (oculta por defecto):
+                         - style="display:none;" la oculta inicialmente
+                         - JavaScript la muestra al hacer clic en "Show more"
+                    -->
                     <p class="desc-full" style="display:none;">{{ desc }}</p>
+                    <!-- ENLACE TOGGLE:
+                         - Para cambiar color: añadir .desc-toggle en CSS con color:#colorHex
+                         - Para eliminar el subrayado: style="text-decoration:none;"
+                    -->
                     <p><a href="#" class="desc-toggle">Show more</a></p>
                     {% endif %}
                     </div>
@@ -101,148 +162,14 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function(){
-    const filter = document.getElementById('spells-filter');
-    const grid = document.querySelectorAll('.spells-grid .spell-card');
-    const countElt = document.getElementById('spells-count');
-    const sortSelect = document.getElementById('spells-sort');
-    let activeCategory = 'All';
-    const categoryButtons = document.querySelectorAll('.btn-category');
-    // default to All button active
-    (function(){
-        categoryButtons.forEach(x => x.style.opacity = 1);
-        const all = Array.from(categoryButtons).find(b => b.getAttribute('data-cat') === 'All');
-        if(all){ all.style.opacity = 0.6; }
-    })();
-    categoryButtons.forEach(b => b.addEventListener('click', function(){
-        categoryButtons.forEach(x => x.style.opacity = 1);
-        this.style.opacity = 0.6; // indicate active
-        activeCategory = this.getAttribute('data-cat');
-        renderGroups();
-    }));
-
-    function renderGroups(){
-        const q = (filter.value || '').trim().toLowerCase();
-        const key = sortSelect.value || 'name';
-        // Use the selected sort key. When 'json' is selected we rely on the
-        // per-card data-index (built from the remote JSON order) to sort items.
-        const groupBy = (document.getElementById('spells-groupby') && document.getElementById('spells-groupby').value) || 'category';
-        // If we're grouping by faction and using JSON order, prefer to sort
-        // cards inside each faction by their numeric card number so that
-        // cards like CORN_0001 appear first within the Red faction.
-        let internalSortKey = key;
-        if(groupBy === 'faction' && key === 'json'){
-            internalSortKey = 'number';
-        }
-
-        // collect all cards (they will be moved around)
-        const allCards = Array.from(document.querySelectorAll('.spell-card'));
-
-        // filter cards according to text/filter/category
-        const visibleCards = allCards.filter(card => {
-            const name = card.getAttribute('data-name') || '';
-            const faction = card.getAttribute('data-faction') || '';
-            const type = card.getAttribute('data-type') || '';
-            const category = (card.getAttribute('data-category') || 'other');
-            const catMatch = (activeCategory === 'All') || (category === activeCategory.toLowerCase());
-            return catMatch && (!q || name.includes(q) || faction.includes(q) || type.includes(q));
-        });
-        countElt.textContent = visibleCards.length;
-
-        // group cards
-        const groups = {};
-        visibleCards.forEach(card => {
-            const keyName = (groupBy === 'category') ? (card.getAttribute('data-category') || 'other') : (card.getAttribute('data-faction') || 'unknown');
-            if(!groups[keyName]) groups[keyName] = [];
-            groups[keyName].push(card);
-        });
-
-        // order group keys:
-        // - if ordering by original JSON, place groups by the earliest original index of their members
-        // - otherwise, alphabetical
-        let groupKeys = Object.keys(groups);
-        if(key === 'json'){
-            // When sorting by json and grouping by faction, order groups by
-            // the smallest card number within the group so the faction that
-            // contains card #1 (CORN_0001) will appear first.
-            if(groupBy === 'faction'){
-                groupKeys.sort((a,b) => {
-                    const mina = Math.min(...groups[a].map(c => parseInt(c.getAttribute('data-number')||'999999')));
-                    const minb = Math.min(...groups[b].map(c => parseInt(c.getAttribute('data-number')||'999999')));
-                    return mina - minb;
-                });
-            } else {
-                groupKeys.sort((a,b) => {
-                    const mina = Math.min(...groups[a].map(c => parseInt(c.getAttribute('data-index')||'999999')));
-                    const minb = Math.min(...groups[b].map(c => parseInt(c.getAttribute('data-index')||'999999')));
-                    return mina - minb;
-                });
-            }
-        } else {
-            groupKeys.sort((a,b) => a.localeCompare(b));
-        }
-
-        // sort cards inside each group by current key
-        groupKeys.forEach(g => {
-            groups[g].sort((a,b) => {
-                const sortKey = internalSortKey;
-                if(sortKey === 'cost'){
-                    const ca = parseInt(a.getAttribute('data-cost')||'') || 9999;
-                    const cb = parseInt(b.getAttribute('data-cost')||'') || 9999;
-                    return ca - cb;
-                }
-                if(sortKey === 'number'){
-                    const na = parseInt(a.getAttribute('data-number')||'') || 9999;
-                    const nb = parseInt(b.getAttribute('data-number')||'') || 9999;
-                    return na - nb;
-                }
-                if(sortKey === 'json'){
-                    const ia = parseInt(a.getAttribute('data-index')||'') || 999999;
-                    const ib = parseInt(b.getAttribute('data-index')||'') || 999999;
-                    return ia - ib;
-                }
-                if(sortKey === 'faction'){
-                    return (a.getAttribute('data-faction')||'').localeCompare((b.getAttribute('data-faction')||''));
-                }
-                return (a.getAttribute('data-name')||'').localeCompare((b.getAttribute('data-name')||''));
-            });
-        });
-
-        // clear existing groups and render new grouped layout
-        const wrapper = document.getElementById('spells-grouped');
-        // remove any direct children that are not the 'no spells' message placeholder (we'll replace entirely)
-        // if no cards, show explanatory message
-        wrapper.innerHTML = '';
-        if(visibleCards.length === 0){
-            const msg = document.createElement('div');
-            msg.className = 'card';
-            msg.style.padding = '20px';
-            msg.textContent = 'No spells found. If the remote JSON couldn\'t be fetched, try running the app with network access or create `data/db_ActionCards.json` locally as cache.';
-            wrapper.appendChild(msg);
-            return;
-        }
-
-        groupKeys.forEach(g => {
-            const h = document.createElement('h3');
-            h.style.marginTop = '1.5rem';
-            h.innerHTML = g + ' <small class="muted">(' + groups[g].length + ')</small>';
-            const gridContainer = document.createElement('div');
-            gridContainer.className = 'spells-grid';
-            groups[g].forEach(card => gridContainer.appendChild(card));
-            wrapper.appendChild(h);
-            wrapper.appendChild(gridContainer);
-        });
-    }
-    filter.addEventListener('input', renderGroups);
-    sortSelect.addEventListener('change', renderGroups);
-    const groupBySelect = document.getElementById('spells-groupby');
-    if(groupBySelect) groupBySelect.addEventListener('change', renderGroups);
-    // initial render
-    renderGroups();
-    // Per your request: show grouped by faction and ordered by the remote JSON
-    if(groupBySelect){ groupBySelect.value = 'faction'; }
-    if(sortSelect){ sortSelect.value = 'json'; }
-    renderGroups();
-    // No grid view: grouped-only layout. Sorting applies per-group above.
+    /* ========================================
+       SISTEMA SIMPLIFICADO - SIN FILTROS
+       ========================================
+       Las cartas se muestran en el orden original del archivo JSON.
+       No hay filtros ni ordenamiento dinámico.
+       El orden sigue la secuencia oficial del juego:
+       CORN → PLAINS → SAND → NICE → SWAMP → OBSIDIAN → TEST → Leader
+    */
     // description toggle handlers
     document.addEventListener('click', function(e){
         const t = e.target;

@@ -134,11 +134,13 @@ def is_image(filename):
 
 
 @functools.lru_cache(maxsize=4096)
-def find_local_asset(kind, key):
+def find_local_asset(kind, key, spell_id=None, spell_name=None):
     """Find a local asset file for spells by searching in resources/spells/<kind> for a filename containing key string.
 
     kind: either 'cardframes' or 'cardicons'
     key: text found in the JSON (e.g. 'UI_ActionCard_Frame_Corn_Spell' or 'UI_ActionCard_Icon_0' or 'Spell_HuskerAmulet')
+    spell_id: ID del spell (ej: 'CORN_0001', 'PLAINS_0023') para búsqueda adicional
+    spell_name: Nombre del spell para búsqueda adicional
     Returns a relative URL '/resources/spells/<kind>/<file>' or None if not found.
     """
     if not key:
@@ -160,19 +162,40 @@ def find_local_asset(kind, key):
     base = os.path.join(os.path.dirname(__file__), 'resources', 'spells', kind)
     if not os.path.exists(base):
         return None
+    
+    # Crear lista de términos de búsqueda: key original, ID del spell, y nombre del spell
+    search_terms = [key]
+    if spell_id:
+        search_terms.append(str(spell_id))
+        # También añadir variaciones del ID (CORN_0001 -> CORN0001, corn_0001, etc.)
+        search_terms.append(spell_id.replace('_', ''))
+        search_terms.append(spell_id.replace('_', '-'))
+    if spell_name:
+        search_terms.append(str(spell_name))
+        # Añadir versión sin espacios del nombre
+        search_terms.append(spell_name.replace(' ', ''))
+        search_terms.append(spell_name.replace(' ', '_'))
+    
     # Try to match exact name first (with common extensions)
-    possible_names = [key, key + '.png', key + '.jpg', key + '.jpeg', key + '.webp', key + '.svg']
-    for pname in possible_names:
+    for search_term in search_terms:
+        possible_names = [search_term, search_term + '.png', search_term + '.jpg', 
+                         search_term + '.jpeg', search_term + '.webp', search_term + '.svg']
+        for pname in possible_names:
+            for root, _, files in os.walk(base):
+                for f in files:
+                    if f.lower() == pname.lower():
+                        return f"/resources/spells/{kind}/{f}"
+    
+    # If exact not found, try substring match con todos los términos de búsqueda
+    for search_term in search_terms:
+        lower_term = search_term.lower()
         for root, _, files in os.walk(base):
             for f in files:
-                if f.lower() == pname.lower():
+                f_lower = f.lower()
+                # Buscar coincidencia bidireccional
+                if lower_term in f_lower or f_lower in lower_term:
                     return f"/resources/spells/{kind}/{f}"
-    # If exact not found, try substring match
-    lower_key = key.lower()
-    for root, _, files in os.walk(base):
-        for f in files:
-            if lower_key in f.lower() or f.lower() in lower_key:
-                return f"/resources/spells/{kind}/{f}"
+    
     # last resort: return None
     return None
 
