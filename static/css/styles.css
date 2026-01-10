@@ -401,10 +401,10 @@ nav.download-nav a:hover { color: white; }
 */
 .spell-icon {
     position: absolute;
-    width: 60%;
+    width: 69%;
     height: 60%;
     left: 50%;
-    top: 50%;
+    top: 40%;
     transform: translate(-50%, -50%);
     object-fit: contain;
     z-index: 0; /* Debajo del frame (frame tiene z-index: auto o 0 por defecto) */

@@ -46,7 +46,7 @@
             {% set name = spell.get('display_name') or spell.get('Name') or spell.get('ID') %}
             {% set desc = spell.get('display_description') or spell.get('Description') or spell.get('CardText') or '' %}
             {% set frame = spell.get('CardFrame') or spell.get('CardFramePath') or '' %}
-            {% set sprite = spell.get('SpriteName') or spell.get('UITexture') or spell.get('Icon') or '' %}
+            {% set sprite = spell.get('UITexture') or spell.get('SpriteName') or spell.get('Icon') or '' %}
             {% set cost = spell.get('Cost') or spell.get('Energy') or '' %}
             {# Pasar ID y Name del spell para mejorar la búsqueda de iconos #}
             {% set frame_path = spell_asset('cardframes', frame, id, name) or '/resources/dungeon/Screenshot-placeholder.svg' %}
