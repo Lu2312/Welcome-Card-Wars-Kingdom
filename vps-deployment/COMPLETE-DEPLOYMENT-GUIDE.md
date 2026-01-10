@@ -16,9 +16,8 @@ Esta guía configura ambos proyectos en tu VPS con certificados SSL de Cloudflar
 
 2. **cardwars-kingdom.net** (Sitio web)
    - Repositorio: https://github.com/Lu2312/Welcome-Card-Wars-Kingdom.git
-   - Puerto principal: 8080
-   - Puerto backup: 8081
-   - Path: `/var/www/Welcome-Card-Wars-Kingdom`
+   - Puerto principal: 8000
+   - Path: `/var/www/cardwars-kingdom`
 
 ---
 

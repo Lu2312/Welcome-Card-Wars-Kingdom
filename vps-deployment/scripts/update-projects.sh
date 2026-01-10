@@ -25,7 +25,7 @@ echo ""
 
 # Actualizar cardwars-kingdom.net
 echo -e "${YELLOW}[2/4] Actualizando cardwars-kingdom.net...${NC}"
-cd /var/www/Welcome-Card-Wars-Kingdom
+cd /var/www/cardwars-kingdom
 git pull
 venv/bin/pip install -r requirements.txt
 echo -e "${GREEN}✓ cardwars-kingdom.net actualizado${NC}"
@@ -33,10 +33,8 @@ echo ""
 
 # Reiniciar servicios
 echo -e "${YELLOW}[3/4] Reiniciando servicios...${NC}"
-systemctl restart card-wars-kingdom-app.service
-systemctl restart card-wars-kingdom-app-backup.service
-systemctl restart cardwars-kingdom-site.service
-systemctl restart cardwars-kingdom-site-backup.service
+systemctl restart card-wars-kingdom-com.service
+systemctl restart cardwars-kingdom-net.service
 echo -e "${GREEN}✓ Servicios reiniciados${NC}"
 echo ""
 
@@ -54,10 +52,8 @@ check_service() {
     fi
 }
 
-check_service card-wars-kingdom-app.service
-check_service card-wars-kingdom-app-backup.service
-check_service cardwars-kingdom-site.service
-check_service cardwars-kingdom-site-backup.service
+check_service card-wars-kingdom-com.service
+check_service cardwars-kingdom-net.service
 
 echo ""
 echo -e "${GREEN}=================================================="
