@@ -82,13 +82,18 @@ Activa en SSL/TLS:
 
 ```bash
 # Ver estado
-bash /var/www/Welcome-Card-Wars-Kingdom/vps-deployment/scripts/status.sh
+sudo systemctl status cardwars-kingdom-net.service
+sudo systemctl status card-wars-kingdom-com.service
 
 # Reiniciar servicios
-sudo bash /var/www/Welcome-Card-Wars-Kingdom/vps-deployment/scripts/restart-services.sh
+sudo systemctl restart cardwars-kingdom-net.service
+sudo systemctl restart card-wars-kingdom-com.service
 
-# Actualizar desde GitHub
-sudo bash /var/www/Welcome-Card-Wars-Kingdom/vps-deployment/scripts/update-projects.sh
+# Actualizar desde GitHub (cardwars-kingdom.net)
+cd /var/www/cardwars-kingdom && git pull origin main && source venv/bin/activate && pip install -r requirements.txt && sudo systemctl restart cardwars-kingdom-net.service
+
+# Actualizar desde GitHub (card-wars-kingdom.com)
+cd /var/www/cardwarskingdomrvd && git pull origin main && source venv/bin/activate && pip install -r requirements.txt && sudo systemctl restart card-wars-kingdom-com.service
 
 # Ver logs
 sudo journalctl -u card-wars-kingdom-app.service -f
