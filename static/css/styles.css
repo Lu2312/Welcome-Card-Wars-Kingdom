@@ -110,77 +110,116 @@ col.col-75 { width: 75px; }
 
 /* Status cards with icons */
 .status-card { display: flex; gap: 1rem; align-items: center; }
-.status-icon { object-fit: contain; border-radius: 12px; border: 2px solid rgba(255,255,255,0.04); box-shadow: 0 6px 18px rgba(0,0,0,0.4); padding: 6px; background: rgba(0,0,0,0.06); }
-.status-grid article.card { min-height: 84px; }
-.status-card h3, .status-card h4 { margin: 0 0 0.2rem 0; }
-.status-card p { margin: 0; }
+.status-icon { 
+    width: 64px; 
+    height: 64px; 
+    min-width: 64px;
+    min-height: 64px;
+    object-fit: contain; 
+    border-radius: 12px; 
+    border: 2px solid rgba(255,255,255,0.1); 
+    box-shadow: 0 6px 18px rgba(0,0,0,0.4); 
+    padding: 8px; 
+    background: rgba(0,0,0,0.3);
+}
+.status-grid article.card { min-height: 100px; }
+.status-card h3, .status-card h4 { margin: 0 0 0.35rem 0; }
+.status-card p { margin: 0; line-height: 1.5; }
 /* Make sure the text inside status cards can shrink/wrap without overlapping the icon */
 .status-card > div { flex: 1 1 auto; min-width: 0; }
 .status-card > div p { word-break: break-word; overflow-wrap: anywhere; }
 
 /* Force grid columns for status grid to be wide enough for icon+text */
-/* keep comfortable reading width per card: min 260px */
-.status-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; grid-auto-rows: auto; }
+/* keep comfortable reading width per card: min 280px */
+.status-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; grid-auto-rows: auto; }
 
-/* make positive cards span 3 columns on large screens for better readability */
+/* make positive cards span full width on mobile, 2 cols on tablet, 3 cols on desktop */
 .image-grid.status-grid > article.status-type-positive { grid-column: span 1; }
-@media (min-width: 1024px) {
+@media (min-width: 768px) {
+    .image-grid.status-grid > article.status-type-positive { grid-column: span 2; }
+}
+@media (min-width: 1280px) {
     .image-grid.status-grid > article.status-type-positive { grid-column: span 3; }
 }
 
-/* Ensure text inside the positive card has generous width when it spans 3 columns */
+/* Ensure text inside the positive card has generous width when it spans multiple columns */
 .image-grid.status-grid > article.status-type-positive .status-card > div { max-width: 100%; }
 
-/* Make negative cards also span 3 columns on large screens for better readability */
+/* Make negative cards also span appropriately on different screen sizes */
 .image-grid.status-grid > article.status-type-negative { grid-column: span 1; }
-@media (min-width: 1024px) {
+@media (min-width: 768px) {
+    .image-grid.status-grid > article.status-type-negative { grid-column: span 2; }
+}
+@media (min-width: 1280px) {
     .image-grid.status-grid > article.status-type-negative { grid-column: span 3; }
 }
 
-/* Ensure text inside the negative card has generous width when it spans 3 columns */
+/* Ensure text inside the negative card has generous width when it spans multiple columns */
 .image-grid.status-grid > article.status-type-negative .status-card > div { max-width: 100%; }
 
-/* Responsive: on smaller screens stack icon above text */
+/* Responsive: Tablet adjustments */
+@media (max-width: 1024px) {
+    .status-icon { 
+        width: 56px; 
+        height: 56px; 
+        min-width: 56px;
+        min-height: 56px;
+        padding: 6px;
+    }
+    .status-grid { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+}
+
+/* Responsive: Mobile adjustments */
 @media (max-width: 640px) {
-    .status-card { flex-direction: column; align-items: center; text-align: center; }
-    /* Mobile icons: 50% of previous 60px => 30px */
-    .status-icon { width: 30px; height: 30px; }
-    .status-grid { grid-template-columns: repeat(1, 1fr); }
-    .status-grid article.card { min-height: auto; }
+    .status-card { flex-direction: row; gap: 0.75rem; }
+    .status-icon { 
+        width: 48px; 
+        height: 48px; 
+        min-width: 48px;
+        min-height: 48px;
+        padding: 6px;
+    }
+    .status-grid { grid-template-columns: 1fr; gap: 12px; }
+    .status-grid article.card { min-height: auto; padding: 12px; }
+    .status-card h3, .status-card h4 { font-size: 0.95rem; }
+    .status-card p { font-size: 0.85rem; }
 }
 
 /* Accent styles for types */
 .status-type-landscape { border-left: 6px solid rgba(107,214,255,0.6); background: rgba(107,214,255,0.02); }
-.status-type-positive { border-left: 6px solid rgba(16,185,129,0.9); }
-.status-type-negative { border-left: 6px solid rgba(245,101,101,0.9); }
+.status-type-positive { border-left: 6px solid rgba(16,185,129,0.9); background: rgba(255,255,255,0.03); }
+.status-type-negative { border-left: 6px solid rgba(245,101,101,0.9); background: rgba(255,255,255,0.02); }
 .status-type-armor { border-left: 6px solid rgba(165,50,255,0.85); background: rgba(165,50,255,0.03); }
-
-/* Slightly darker background for negative effects to draw attention */
-.status-type-negative { background: rgba(255,255,255,0.02); }
-.status-type-positive { background: rgba(255,255,255,0.03); }
 
 /* Hover behavior for the cards */
 .status-grid article.card:hover { transform: translateY(-6px); box-shadow: 0 22px 44px rgba(0,0,0,0.35); }
 
 /* fine tune appearance to match other site cards */
-.status-grid article.card { padding: 14px; border-radius: 12px; transition: transform 0.22s ease, box-shadow 0.22s ease; min-height: 100px; }
-    .status-grid { gap: 14px; }
-    /* Desktop icons: 50% of previous 42px => 21px */
-    .status-icon { width: 21px; height: 21px; padding: 4px; }
-    .status-card > div h3, .status-card > div h4 { font-size: 1.05rem; margin-bottom: 0.2rem; }
-/* we rely on minmax auto-fit for responsive layout */
-.status-card > div p { font-size: 0.95rem; margin-top: 0.25rem; }
+.status-grid article.card { 
+    padding: 16px; 
+    border-radius: 12px; 
+    transition: transform 0.22s ease, box-shadow 0.22s ease; 
+    border: 1px solid rgba(255,255,255,0.06); 
+    background: rgba(0,0,0,0.2); 
+    box-shadow: 0 8px 18px rgba(0,0,0,0.3);
+}
 
-/* ensure the title and text horizontally align and the text doesn't overlap */
-.status-card { align-items: center; }
-.status-card > div { min-width: 0; }
-.status-card > div p { white-space: normal; overflow-wrap: break-word; }
+.status-grid article.card:focus-within, 
+.status-grid article.card:hover { 
+    box-shadow: 0 16px 36px rgba(0,0,0,0.45); 
+    transform: translateY(-4px); 
+}
 
-/* Better visual grouping for each card: a subtle card border and shadow */
-.status-grid article.card { border: 1px solid rgba(255,255,255,0.04); background: rgba(0,0,0,0.04); box-shadow: 0 8px 18px rgba(0,0,0,0.3); }
-.status-grid article.card:focus-within, .status-grid article.card:hover { box-shadow: 0 16px 36px rgba(0,0,0,0.45); transform: translateY(-4px); }
-.status-card h3, .status-card h4 { color: rgba(255,255,255,0.95); font-weight: 700; }
-.status-card p { color: rgba(255,255,255,0.8); }
+.status-card h3, .status-card h4 { 
+    color: rgba(255,255,255,0.95); 
+    font-weight: 700; 
+    font-size: 1.1rem;
+}
+
+.status-card p { 
+    color: rgba(255,255,255,0.85); 
+    line-height: 1.6;
+}
 
 /* Color headings by status type */
 .status-type-positive .status-card h3, .status-type-positive .status-card h4 { color: #33d27a; }
@@ -192,6 +231,9 @@ col.col-75 { width: 75px; }
 .grid-2-cols { display: grid; grid-template-columns: 1fr; gap: 16px; }
 @media (min-width: 768px) {
     .grid-2-cols { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px) {
+    .grid-2-cols { gap: 12px; }
 }
 
 /* Image grid used for screenshots */
