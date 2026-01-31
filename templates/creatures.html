@@ -86,10 +86,11 @@
 
     <div class="ficha-pie">
                 <div class="action-cards-contenedor">
-                {% if images_map.get(num) and images_map[num]['SPELL'] %}
-                <img src="/resources/Creature-Book/{{ '%02d' % num }}_SPELL.png" alt="Imagen action cards" loading="lazy" decoding="async">
+                {%- set portrait = (c.PortraitTexture if c and c.PortraitTexture else None) -%}
+                {% if portrait %}
+                <img src="/creature-icons/{{ portrait }}.png" alt="Icono de criatura" loading="lazy" decoding="async">
             {% else %}
-                <div class="placeholder-text">No Spell</div>
+                <div class="placeholder-text">No Icon</div>
             {% endif %}
         </div>
     </div>

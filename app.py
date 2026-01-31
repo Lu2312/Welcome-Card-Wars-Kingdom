@@ -27,6 +27,7 @@ CATEGORIES = [
     ('NICE', ['nice']),
     ('PLAINS', ['plains']),
     ('sand', ['sand']),
+    ('SNOW', ['snow', 'icylands', 'icy']),
     ('SWAMP', ['swamp']),
     ('TUT', ['tut', 'tutorial']),
 ]
@@ -272,6 +273,12 @@ def serve_creature_book(filename):
     """Serve files from Creature Book folder"""
     creature_book_dir = os.path.join(os.path.dirname(__file__), 'resources', 'Creature Book')
     return send_from_directory(creature_book_dir, filename)
+
+@app.route('/creature-icons/<path:filename>')
+def serve_creature_icons(filename):
+    """Serve creature icon files from icons folder"""
+    icons_dir = os.path.join(os.path.dirname(__file__), 'resources', 'Creature-Book', 'icons')
+    return send_from_directory(icons_dir, filename)
 
 @app.route('/download')
 def download():
