@@ -344,8 +344,45 @@ nav.download-nav a:hover { color: white; }
 .creatures-page .stat-etiqueta.stat-crt { background: #FFC107; }
 .creatures-page .stat-valor.stat-crt { border-color: #FFC107; color: #000; }
 .creatures-page .ficha-pie { background: linear-gradient(90deg, #fceb9c 60%, #f7e8b0 100%); border-top: 2px solid #a3874e; padding: 12px; border-radius: 0 0 18px 18px; }
-.creatures-page .action-cards-contenedor { height: 90px; background: #fff; border: 2px solid #a3874e; display: flex; justify-content: center; align-items: center; font-size: 18px; color: #cc0000; border-radius: 10px; box-shadow: 0 1px 4px rgba(80, 60, 20, 0.08); }
-.creatures-page .action-cards-contenedor img { max-width: 90%; max-height: 90%; object-fit: contain; }
+/* Action Cards Section Header */
+.creatures-page .ficha-pie-header { padding: 8px 12px; background: linear-gradient(135deg, #f7e8b0 0%, #fceb9c 100%); border-bottom: 1px solid #d4c589; }
+.creatures-page .ficha-pie-title { margin: 0; font-size: 14px; font-weight: 600; color: #5a4a2e; text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* Action Cards Container */
+.creatures-page .action-cards-contenedor { min-height: 140px; background: #fff; padding: 12px; display: flex; justify-content: flex-start; align-items: stretch; gap: 10px; flex-wrap: nowrap; overflow-x: auto; border-radius: 0 0 18px 18px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
+.creatures-page .action-cards-contenedor::-webkit-scrollbar { height: 6px; }
+.creatures-page .action-cards-contenedor::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+.creatures-page .action-cards-contenedor::-webkit-scrollbar-thumb { background: #c9b885; border-radius: 10px; }
+.creatures-page .action-cards-contenedor::-webkit-scrollbar-thumb:hover { background: #a3874e; }
+
+/* Individual Action Card */
+.creatures-page .action-card-mini { position: relative; min-width: 100px; max-width: 110px; display: flex; flex-direction: column; background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%); border: 2px solid #e0e0e0; border-radius: 10px; overflow: hidden; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.creatures-page .action-card-mini:hover { transform: translateY(-4px); box-shadow: 0 6px 20px rgba(163, 135, 78, 0.3); border-color: #a3874e; }
+
+/* Action Card Visual Area */
+.creatures-page .action-card-visual { position: relative; width: 100%; height: 85px; display: flex; align-items: center; justify-content: center; background: linear-gradient(180deg, #fafbfc 0%, #f5f6f7 100%); border-bottom: 1px solid #e8e8e8; overflow: hidden; }
+.creatures-page .action-frame-mini { position: absolute; width: 100%; height: 100%; object-fit: contain; z-index: 1; pointer-events: none; }
+.creatures-page .action-icon-mini { position: absolute; width: 55%; height: 55%; object-fit: contain; z-index: 0; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.15)); }
+
+/* Action Card Cost Badge */
+.creatures-page .action-card-cost { position: absolute; top: 4px; left: 14px; z-index: 10; background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%); color: white; font-size: 12px; font-weight: 700; padding: 3px 7px; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.2), inset 0 -1px 2px rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.3); }
+
+/* Action Card Info Area */
+.creatures-page .action-card-info { padding: 8px 6px; background: white; flex-grow: 1; display: flex; flex-direction: column; gap: 3px; }
+.creatures-page .action-card-name { font-size: 11px; font-weight: 600; color: #2c3e50; line-height: 1.3; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.creatures-page .action-card-desc { font-size: 9px; color: #7f8c8d; line-height: 1.2; text-align: center; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+
+/* Placeholder Card Styling */
+.creatures-page .action-card-mini.placeholder-card { background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%); border: 2px dashed #bbb; cursor: default; }
+.creatures-page .action-card-mini.placeholder-card:hover { transform: none; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.creatures-page .action-card-mini.placeholder-card .action-card-visual { background: #f0f0f0; }
+.creatures-page .placeholder-icon { font-size: 32px; color: #bbb; font-weight: 300; }
+.creatures-page .action-card-mini.placeholder-card .action-card-name { color: #999; font-weight: 400; }
+
+/* Empty State */
+.creatures-page .action-cards-empty { width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 20px; color: #999; }
+.creatures-page .empty-icon { font-size: 32px; opacity: 0.5; }
+.creatures-page .empty-text { font-size: 13px; font-weight: 500; }
 
 @media (max-width: 640px) {
     .creatures-page .creature-book-container { display: flex; flex-direction: column; gap: 16px; padding: 12px; max-width: 100%; margin: 0 auto; }
@@ -359,8 +396,13 @@ nav.download-nav a:hover { color: white; }
     .creatures-page .ficha-nivel { padding: 6px 8px !important; }
     .creatures-page .label-nivel { font-size: 0.95rem !important; }
     .creatures-page .ficha-estadisticas-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 6px; }
-    .creatures-page .action-cards-contenedor { height: auto !important; padding: 8px !important; }
-    .creatures-page .ficha-pie { padding: 8px !important; }
+    .creatures-page .action-cards-contenedor { min-height: 120px !important; padding: 8px !important; gap: 8px !important; }
+    .creatures-page .action-card-mini { min-width: 90px !important; max-width: 95px !important; }
+    .creatures-page .action-card-visual { height: 75px !important; }
+    .creatures-page .action-card-name { font-size: 10px !important; }
+    .creatures-page .action-card-desc { font-size: 8px !important; }
+    .creatures-page .ficha-pie-header { padding: 6px 10px !important; }
+    .creatures-page .ficha-pie-title { font-size: 12px !important; }
     .creatures-page .ficha-cabecera { padding: 8px 10px !important; height: auto !important; }
     .creatures-page .ficha-nombre { width: 140px !important; font-size: 14px !important; height: 28px !important; }
 }

@@ -884,38 +884,74 @@ def heroes():
 @app.route('/creatures')
 def creatures():
     """Creature Book page."""
-    # Scan resources/Creature-Book for files matching NN_CREATURE.png
     creature_dir = os.path.join(os.path.dirname(__file__), 'resources', 'Creature-Book')
-    creature_numbers = set()
-    if os.path.exists(creature_dir):
-        for fname in os.listdir(creature_dir):
-            # match any leading zeros and any number of digits (e.g. 001, 099, 100, 270)
-            m = re.match(r'^0*([0-9]+)_CREATURE\.png$', fname)
-            if m:
-                creature_numbers.add(int(m.group(1)))
-    creature_numbers = sorted(creature_numbers)
-
-    # Prepare a quick lookup for which files exist per creature number to avoid
-    # rendering <img> tags for files that are not present (prevent 404s).
-    images_map = {}
-    for n in creature_numbers:
-        key = f"{n:02d}"
-        images_map[n] = {
-            'CREATURE': os.path.isfile(os.path.join(creature_dir, f"{key}_CREATURE.png")),
-            'ICON': os.path.isfile(os.path.join(creature_dir, f"{key}_ICON.png")),
-            'PASSIVE': os.path.isfile(os.path.join(creature_dir, f"{key}_PASSIVE.png")),
-            'SPELL': os.path.isfile(os.path.join(creature_dir, f"{key}_SPELL.png")),
-        }
-
+    
     # Try to fetch remote creatures JSON server-side and build a mapping by Number.
     creatures_by_number = {}
+    creature_numbers = set()
     creatures_remote = fetch_creatures_json(CREATURES_JSON_URL)
+    # Fetch action cards/spells for mapping ActionCard1-5 IDs
+    actions_by_id = {}
+    try:
+        actions_resp = requests.get(ACTIONS_JSON_URL, timeout=8)
+        actions_resp.raise_for_status()
+        actions_data = actions_resp.json()
+        if isinstance(actions_data, list):
+            for action in actions_data:
+                action_id = action.get('ID')
+                if action_id:
+                    # Resolve display name and description using local XML texts
+                    try:
+                        # Name resolution
+                        raw_name = action.get('Name') or ''
+                        display_name = raw_name
+                        if raw_name and raw_name.startswith('!!') and raw_name in SPELL_LOCAL_TEXTS:
+                            display_name = SPELL_LOCAL_TEXTS.get(raw_name)
+                        elif raw_name and raw_name.lstrip('!') in SPELL_LOCAL_TEXTS:
+                            display_name = SPELL_LOCAL_TEXTS.get(raw_name.lstrip('!'))
+                        else:
+                            # Try by ID
+                            if action_id:
+                                for cand in (f'!!{action_id}_NAME', f'{action_id}_NAME'):
+                                    if cand in SPELL_LOCAL_TEXTS:
+                                        display_name = SPELL_LOCAL_TEXTS.get(cand)
+                                        break
+                        action['display_name'] = display_name or action.get('Name') or action.get('ID')
+
+                        # Description resolution
+                        raw_desc = (action.get('Description') or '').strip()
+                        display_desc = raw_desc
+                        if raw_desc.startswith('!!') and raw_desc in SPELL_LOCAL_TEXTS:
+                            display_desc = SPELL_LOCAL_TEXTS.get(raw_desc)
+                        elif raw_desc and raw_desc.lstrip('!') in SPELL_LOCAL_TEXTS:
+                            display_desc = SPELL_LOCAL_TEXTS.get(raw_desc.lstrip('!'))
+                        else:
+                            if action_id:
+                                for cand in (f'!!{action_id}_DESC', f'{action_id}_DESC'):
+                                    if cand in SPELL_LOCAL_TEXTS:
+                                        display_desc = SPELL_LOCAL_TEXTS.get(cand)
+                                        break
+
+                        # fallback: if description is a placeholder like '!!...' hide it
+                        if isinstance(display_desc, str) and display_desc.startswith('!!'):
+                            display_desc = ''
+                        action['display_description'] = display_desc
+                    except Exception:
+                        action['display_name'] = action.get('Name') or action.get('ID')
+                        action['display_description'] = action.get('Description') or ''
+                    
+                    actions_by_id[action_id] = action
+    except Exception:
+        pass  # If actions can't be fetched, continue without action card data
+
     for c in creatures_remote:
         try:
             num_val = c.get('Number')
             if num_val is None:
                 continue
             num_int = int(num_val)
+            # Add this creature number to our set
+            creature_numbers.add(num_int)
         except Exception:
             # Number may not be an integer — skip
             continue
@@ -946,6 +982,16 @@ def creatures():
                 c_parsed['MinHP_num'] = float(c.get('MinHP'))
         except Exception:
             pass
+        
+        # Extract ActionCard1-5 and map them to action data
+        action_cards = []
+        for i in range(1, 6):
+            action_id = c.get(f'ActionCard{i}')
+            if action_id and action_id in actions_by_id:
+                action_cards.append(actions_by_id[action_id])
+            else:
+                action_cards.append(None)  # No action card or not found
+        c_parsed['action_cards'] = action_cards
         try:
             if 'MaxHP' in c and c.get('MaxHP') is not None:
                 c_parsed['MaxHP_num'] = float(c.get('MaxHP'))
@@ -1032,6 +1078,20 @@ def creatures():
             pass
 
         creatures_by_number[num_int] = c_parsed
+
+    # Sort creature numbers for consistent display order
+    creature_numbers = sorted(creature_numbers)
+    
+    # Prepare a quick lookup for which files exist per creature number
+    images_map = {}
+    for n in creature_numbers:
+        key = f"{n:02d}"
+        images_map[n] = {
+            'CREATURE': os.path.isfile(os.path.join(creature_dir, f"{key}_CREATURE.png")) if os.path.exists(creature_dir) else False,
+            'ICON': os.path.isfile(os.path.join(creature_dir, f"{key}_ICON.png")) if os.path.exists(creature_dir) else False,
+            'PASSIVE': os.path.isfile(os.path.join(creature_dir, f"{key}_PASSIVE.png")) if os.path.exists(creature_dir) else False,
+            'SPELL': os.path.isfile(os.path.join(creature_dir, f"{key}_SPELL.png")) if os.path.exists(creature_dir) else False,
+        }
 
     return render_template(
         'creatures.html', 

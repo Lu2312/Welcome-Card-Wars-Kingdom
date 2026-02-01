@@ -19,7 +19,7 @@
     <div class="ficha-cabecera">
          <div class="ficha-nombre-contenedor">
              {%- set c = (creatures_by_number.get(num) if creatures_by_number is defined else None) -%}
-             <span class="ficha-nombre" role="text" aria-label="Nombre de criatura" id="creature-name-{{ num }}">{{ (c.Name|replace('!!','')) if c and c.Name else '—' }}</span>
+             <span class="ficha-nombre" role="text" aria-label="Nombre de criatura" id="creature-name-{{ num }}">{{ (c.Name|replace('!!','')|replace('_Awaken_NAME','')|replace('_Base_NAME','')|replace('_NAME','')) if c and c.Name else '—' }}</span>
          </div>
         <div class="ficha-acciones">
             <span class="creature-number-badge" title="Número de criatura">{{ (c.Number if c and c.Number is not none else num) }}</span>
@@ -30,19 +30,19 @@
 
     <div class="ficha-cuerpo">
         <div class="ficha-imagen-criatura-contenedor">
-            {% if images_map.get(num) and images_map[num]['CREATURE'] %}
-            <img src="/resources/Creature-Book/{{ '%02d' % num }}_CREATURE.png" alt="Imagen de criatura {{ num }}" loading="lazy" decoding="async">
+            {% if c and c.PortraitTexture %}
+            <img src="/resources/Creature-Book/icons/{{ c.PortraitTexture }}.png" alt="Icono de {{ c.Name }}" loading="lazy" decoding="async">
             {% else %}
-            <!-- Placeholder / no image available -->
-            <div class="placeholder-text">No image</div>
+            <!-- Placeholder / no icon available -->
+            <div class="placeholder-text">No Icon</div>
             {% endif %}
         </div>
         
         <div class="ficha-detalles">
             <div class="ficha-icono-contenedor">
                 <div class="icono-placeholder">
-                    {% if images_map.get(num) and images_map[num]['ICON'] %}
-                        <img src="/resources/Creature-Book/{{ '%02d' % num }}_ICON.png" alt="Icono" loading="lazy" decoding="async">
+                    {% if c and c.PortraitTexture %}
+                        <img src="/resources/Creature-Book/icons/{{ c.PortraitTexture }}.png" alt="Icono" loading="lazy" decoding="async">
                     {% else %}
                         <div class="icon-fallback"></div>
                     {% endif %}
@@ -67,7 +67,7 @@
 
             <div class="ficha-stats-nivel">
                 <span class="stat-costo">3</span>
-                <div class="stat-elemento">💧 Llanura Azul</div>
+                <div class="stat-elemento">{% if c and c.Faction %}{{ c.Faction }}{% else %}—{% endif %}</div>
                 <span class="stat-cantidad">1</span>
             </div>
 
@@ -85,13 +85,51 @@
     </div>
 
     <div class="ficha-pie">
+                <div class="ficha-pie-header">
+                    <h3 class="ficha-pie-title">Action Cards</h3>
+                </div>
                 <div class="action-cards-contenedor">
-                {%- set portrait = (c.PortraitTexture if c and c.PortraitTexture else None) -%}
-                {% if portrait %}
-                <img src="/creature-icons/{{ portrait }}.png" alt="Icono de criatura" loading="lazy" decoding="async">
-            {% else %}
-                <div class="placeholder-text">No Icon</div>
-            {% endif %}
+                {% if c and c.action_cards %}
+                    {% for action_card in c.action_cards %}
+                        {% if action_card %}
+                            {% set action_id = action_card.get('ID') or '' %}
+                            {% set action_name = action_card.get('display_name') or action_card.get('Name') or action_id %}
+                            {% set action_desc = action_card.get('display_description') or action_card.get('Description') or action_card.get('CardText') or '' %}
+                            {% set frame = action_card.get('CardFrame') or action_card.get('CardFramePath') or '' %}
+                            {% set sprite = action_card.get('UITexture') or action_card.get('SpriteName') or action_card.get('Icon') or '' %}
+                            {% set cost = action_card.get('Cost') or action_card.get('Energy') or '0' %}
+                            {% set frame_path = spell_asset('cardframes', frame, action_id, action_name) or '/resources/dungeon/Screenshot-placeholder.svg' %}
+                            {% set sprite_path = spell_asset('cardicons', sprite, action_id, action_name) or '/resources/dungeon/Spell-Icon-placeholder.svg' %}
+                            <div class="action-card-mini" title="{{ action_name }}">
+                                <div class="action-card-visual">
+                                    <img class="action-frame-mini" src="{{ frame_path }}" alt="Frame" loading="lazy">
+                                    <img class="action-icon-mini" src="{{ sprite_path }}" alt="{{ action_name }}" loading="lazy">
+                                    <div class="action-card-cost">{{ cost }}</div>
+                                </div>
+                                <div class="action-card-info">
+                                    <div class="action-card-name">{{ action_name|truncate(15, True, '...') }}</div>
+                                    {% if action_desc %}
+                                    <div class="action-card-desc">{{ action_desc|truncate(40, True, '...') }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="action-card-mini placeholder-card">
+                                <div class="action-card-visual">
+                                    <div class="placeholder-icon">?</div>
+                                </div>
+                                <div class="action-card-info">
+                                    <div class="action-card-name">Empty Slot</div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <div class="action-cards-empty">
+                        <span class="empty-icon">🎴</span>
+                        <span class="empty-text">No Action Cards Available</span>
+                    </div>
+                {% endif %}
         </div>
     </div>
 </div>
