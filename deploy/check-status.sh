@@ -49,7 +49,7 @@ echo ""
 
 echo "5. Disk Usage:"
 echo "--------------"
-df -h /var/www/cardwars-kingdom.net | tail -1
+df -h /var/www/cardwars-kingdom | tail -1
 echo ""
 
 echo "6. Memory Usage:"

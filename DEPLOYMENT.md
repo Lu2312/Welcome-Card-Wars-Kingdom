@@ -1,32 +1,30 @@
 # Deployment Guide - Card Wars Kingdom
 
-## Configuración del Servidor (Un Solo Proyecto)
+## Configuración del Servidor
 
-Este servidor solo ejecuta **cardwars-kingdom.net**
+Este servidor ejecuta **cardwars-kingdom.net**
 
 ### Arquitectura
 
 - **Servidor**: 159.89.157.63
-- **Puerto 8000**: Instancia principal de Gunicorn (peso 2)
-- **Puerto 8001**: Instancia de respaldo de Gunicorn (peso 1, backup)
+- **Puerto 8000**: Gunicorn WSGI Server
 - **Puerto 80/443**: Nginx como reverse proxy
 - **Cloudflare**: CDN, protección DDoS y proxy (oculta tu IP real)
-
-La instancia de respaldo (8001) solo recibe tráfico si la principal (8000) falla.
+- **Directorio de Producción**: /var/www/cardwars-kingdom
 
 ### 1. Instalar Dependencias
 
 ```bash
 sudo apt update
-sudo apt install nginx python3-pip python3-venv
+sudo apt install nginx python3-pip python3-venv git
 ```
 
 ### 2. Configurar el Proyecto
 
 ```bash
-# Clonar el repositorio
+# Clonar el repositorio directamente en producción
 cd /var/www
-sudo git clone <repository-url> cardwars-kingdom
+sudo git clone https://github.com/Lu2312/Welcome-Card-Wars-Kingdom.git cardwars-kingdom
 cd cardwars-kingdom
 
 # Crear entorno virtual
@@ -39,39 +37,86 @@ sudo mkdir -p /var/log/gunicorn
 sudo mkdir -p /var/run/gunicorn
 sudo chown -R www-data:www-data /var/log/gunicorn
 sudo chown -R www-data:www-data /var/run/gunicorn
+
+# Configurar permisos
+sudo chown -R www-data:www-data /var/www/cardwars-kingdom
 ```
 
-### 3. Configurar Servicios Systemd
+### 3. Configurar Servicio Systemd
 
 ```bash
-# Copiar archivos de servicio
-sudo cp systemd/cardwars-kingdom.service /etc/systemd/system/
-sudo cp systemd/cardwars-kingdom-backup.service /etc/systemd/system/
+# Copiar archivo de servicio
+sudo cp systemd/cardwars-kingdom.service /etc/systemd/system/cardwars-kingdom-net.service
 
 # Recargar systemd
 sudo systemctl daemon-reload
 
-# Habilitar servicios
-sudo systemctl enable cardwars-kingdom.service
-sudo systemctl enable cardwars-kingdom-backup.service
+# Habilitar servicio
+sudo systemctl enable cardwars-kingdom-net.service
 
-# Iniciar servicios
-sudo systemctl start cardwars-kingdom.service
-sudo systemctl start cardwars-kingdom-backup.service
+# Iniciar servicio
+sudo systemctl start cardwars-kingdom-net.service
 
 # Verificar estado
-sudo systemctl status cardwars-kingdom.service
-sudo systemctl status cardwars-kingdom-backup.service
+sudo systemctl status cardwars-kingdom-net.service
 ```
 
 ### 4. Configurar Nginx
 
 ```bash
-# Copiar configuración
-sudo cp nginx/cardwars-kingdom.conf /etc/nginx/sites-available/
+# Crear configuración de Nginx
+sudo nano /etc/nginx/sites-available/cardwars-kingdom-net
 
+# Pegar la siguiente configuración:
+```
+
+```nginx
+server {
+    listen 80;
+    server_name cardwars-kingdom.net www.cardwars-kingdom.net;
+
+    # Security headers
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-XSS-Protection "1; mode=block" always;
+
+    # Client body size
+    client_max_body_size 50M;
+
+    # Static files
+    location /static {
+        alias /var/www/cardwars-kingdom/static;
+        expires 30d;
+        add_header Cache-Control "public, immutable";
+    }
+
+    # Resources (images, icons, etc)
+    location /resources {
+        alias /var/www/cardwars-kingdom/resources;
+        expires 30d;
+        add_header Cache-Control "public, immutable";
+    }
+
+    # Proxy to Gunicorn
+    location / {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_redirect off;
+        proxy_buffering off;
+    }
+
+    # Logs
+    access_log /var/log/nginx/cardwars-kingdom-net-access.log;
+    error_log /var/log/nginx/cardwars-kingdom-net-error.log;
+}
+```
+
+```bash
 # Crear enlace simbólico
-sudo ln -s /etc/nginx/sites-available/cardwars-kingdom.conf /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/cardwars-kingdom-net /etc/nginx/sites-enabled/
 
 # Probar configuración
 sudo nginx -t
@@ -80,7 +125,11 @@ sudo nginx -t
 sudo systemctl reload nginx
 ```
 
-### 5. Configuración SSL (Cloudflare Origin Certificate)
+### 5. Configuración SSL (Opcional - Cloudflare Origin Certificate)
+
+**Nota:** Con Cloudflare en modo "Flexible", no es necesario configurar SSL en el servidor.
+
+Si deseas SSL end-to-end:
 
 1. En Cloudflare Dashboard, ve a SSL/TLS > Origin Server
 2. Crea un certificado de origen
@@ -152,36 +201,59 @@ curl -I https://cardwars-kingdom.net
 ### 7. Verificar Instalación
 
 ```bash
-# Verificar servicios Gunicorn
+# Verificar servicio Gunicorn
 curl http://localhost:8000/api/health
-curl http://localhost:8001/api/health
 
 # Verificar Nginx
 curl http://localhost/api/health
 
 # Ver logs
-sudo journalctl -u cardwars-kingdom.service -f
-sudo journalctl -u cardwars-kingdom-backup.service -f
-sudo tail -f /var/log/nginx/cardwars-kingdom-error.log
+sudo journalctl -u cardwars-kingdom-net.service -f
+sudo tail -f /var/log/nginx/cardwars-kingdom-net-error.log
+```
+
+## Actualización del Servidor
+
+### Método Rápido (Recomendado)
+
+```bash
+# SSH al servidor
+ssh root@159.89.157.63
+
+# Actualizar código
+cd /var/www/cardwars-kingdom
+git pull origin main
+
+# Activar entorno virtual e instalar dependencias (si cambió requirements.txt)
+source venv/bin/activate
+pip install -r requirements.txt
+
+# Reiniciar servicio
+sudo systemctl restart cardwars-kingdom-net.service
+
+# Verificar estado
+sudo systemctl status cardwars-kingdom-net.service
 ```
 
 ## Comandos Útiles
 
 ```bash
-# Reiniciar servicios
-sudo systemctl restart cardwars-kingdom.service
-sudo systemctl restart cardwars-kingdom-backup.service
+# Reiniciar servicio
+sudo systemctl restart cardwars-kingdom-net.service
+
+# Ver logs en tiempo real
+sudo journalctl -u cardwars-kingdom-net.service -f
+
+# Ver logs recientes
+sudo journalctl -u cardwars-kingdom-net.service -n 50
+
+# Verificar estado del servicio
+sudo systemctl status cardwars-kingdom-net.service
+
+# Recargar Nginx
 sudo systemctl reload nginx
 
-# Ver logs
-sudo journalctl -u cardwars-kingdom.service -n 50
-sudo journalctl -u cardwars-kingdom-backup.service -n 50
-
-# Actualizar código
-cd /var/www/cardwars-kingdom
-sudo git pull
-source venv/bin/activate
-pip install -r requirements.txt
-sudo systemctl restart cardwars-kingdom.service
-sudo systemctl restart cardwars-kingdom-backup.service
+# Ver logs de Nginx
+sudo tail -f /var/log/nginx/cardwars-kingdom-net-access.log
+sudo tail -f /var/log/nginx/cardwars-kingdom-net-error.log
 ```

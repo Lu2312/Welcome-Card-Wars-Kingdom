@@ -10,7 +10,7 @@ echo "=============================================="
 
 # Configuration
 VPS_HOST="root@159.89.157.63"
-PROJECT_PATH="/var/www/cardwars-kingdom.net"
+PROJECT_PATH="/var/www/cardwars-kingdom"
 REPO_URL="https://github.com/Lu2312/Welcome-Card-Wars-Kingdom.git"
 SERVICE_NAME="cardwars-kingdom-net.service"
 

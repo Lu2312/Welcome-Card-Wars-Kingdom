@@ -10,7 +10,7 @@ echo "==============================================="
 
 # Configuration
 VPS_HOST="root@159.89.157.63"
-PROJECT_PATH="/var/www/cardwars-kingdom.net"
+PROJECT_PATH="/var/www/cardwars-kingdom"
 
 # Files to check
 FILES_TO_CHECK=(

@@ -143,7 +143,7 @@ Conectarte al VPS y ejecutar el script de sincronización:
 ssh root@159.89.157.63
 
 # Ejecutar script de actualización
-cd /tmp/Welcome-Card-Wars-Kingdom
+cd /var/www/cardwars-kingdom
 git pull origin main
 sudo bash deploy/sync-and-restart.sh
 ```
@@ -162,22 +162,17 @@ El script automáticamente:
 # 1. SSH al servidor
 ssh root@159.89.157.63
 
-# 2. Actualizar repositorio temporal
-cd /tmp/Welcome-Card-Wars-Kingdom
+# 2. Actualizar código desde GitHub
+cd /var/www/cardwars-kingdom
 git pull origin main
 
-# 3. Sincronizar archivos
-sudo rsync -av --exclude='.git' --exclude='venv' --exclude='__pycache__' \
-    /tmp/Welcome-Card-Wars-Kingdom/ /var/www/cardwars-kingdom/
-
-# 4. Actualizar dependencias (si hay cambios en requirements.txt)
-cd /var/www/cardwars-kingdom
+# 3. Actualizar dependencias (si hay cambios en requirements.txt)
 sudo -u www-data venv/bin/pip install -r requirements.txt
 
-# 5. Reiniciar servicio
+# 4. Reiniciar servicio
 sudo systemctl restart cardwars-kingdom-net.service
 
-# 6. Verificar estado
+# 5. Verificar estado
 sudo systemctl status cardwars-kingdom-net.service
 ```
 
