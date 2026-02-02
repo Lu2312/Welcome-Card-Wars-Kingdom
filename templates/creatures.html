@@ -47,9 +47,28 @@
                         <div class="icon-fallback"></div>
                     {% endif %}
                 </div>
-                <div class="imagen-placeholder">
-                    {% if images_map.get(num) and images_map[num]['PASSIVE'] %}
-                        <img src="/resources/Creature-Book/{{ '%02d' % num }}_PASSIVE.png" alt="Icono de criatura" loading="lazy" decoding="async">
+                <div class="imagen-placeholder passive-description-container">
+                    {% set passive_desc = '' %}
+                    
+                    {% if c and c.passive_awaken %}
+                        {% if c.passive_awaken.display_description %}
+                            {% set passive_desc = c.passive_awaken.display_description %}
+                        {% elif c.passive_awaken.Description and not c.passive_awaken.Description.startswith('!!') %}
+                            {% set passive_desc = c.passive_awaken.Description %}
+                        {% endif %}
+                    {% endif %}
+                    {% if not passive_desc and c and c.passive_base %}
+                        {% if c.passive_base.display_description %}
+                            {% set passive_desc = c.passive_base.display_description %}
+                        {% elif c.passive_base.Description and not c.passive_base.Description.startswith('!!') %}
+                            {% set passive_desc = c.passive_base.Description %}
+                        {% endif %}
+                    {% endif %}
+                    
+                    {% if passive_desc %}
+                        <div class="passive-description" title="{{ passive_desc }}">
+                            {{ passive_desc[:120] }}{% if passive_desc|length > 120 %}...{% endif %}
+                        </div>
                     {% else %}
                         <div class="spell-fallback"></div>
                     {% endif %}

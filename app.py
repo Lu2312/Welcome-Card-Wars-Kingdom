@@ -18,6 +18,8 @@ app.config['DEBUG'] = os.environ.get('DEBUG', 'False') == 'True'
 CREATURES_JSON_URL = os.environ.get('CREATURES_JSON_URL', 'https://cardwarskingdom.pythonanywhere.com/persist/static/Blueprints/db_Creatures.json')
 # Action / Spell cards JSON (Action cards / Spells)
 ACTIONS_JSON_URL = os.environ.get('ACTIONS_JSON_URL', 'https://cardwarskingdom.pythonanywhere.com/persist/static/Blueprints/db_ActionCards.json')
+# Creature Passives JSON
+PASSIVES_JSON_URL = os.environ.get('PASSIVES_JSON_URL', 'https://cardwarskingdom.pythonanywhere.com/persist/static/Blueprints/db_CreaturePassives.json')
 
 # Categories to detect in spells (order matters: first match wins)
 CATEGORIES = [
@@ -890,6 +892,53 @@ def creatures():
     creatures_by_number = {}
     creature_numbers = set()
     creatures_remote = fetch_creatures_json(CREATURES_JSON_URL)
+    
+    # Fetch passives and build a mapping by ID
+    passives_by_id = {}
+    try:
+        passives_resp = requests.get(PASSIVES_JSON_URL, timeout=8)
+        passives_resp.raise_for_status()
+        
+        # Try to fix common JSON errors (missing commas)
+        json_text = passives_resp.text
+        # Fix pattern: "value" \n "key": (missing comma)
+        import re
+        json_text = re.sub(r'"\s*\n\s*"([A-Za-z])', r'",\n"\g<1>', json_text)
+        
+        passives_data = json.loads(json_text)
+        print(f"[DEBUG] Loaded {len(passives_data)} passives from JSON")
+        if isinstance(passives_data, list):
+            for passive in passives_data:
+                passive_id = passive.get('ID')
+                if passive_id:
+                    # Resolve description using local XML texts
+                    raw_desc = (passive.get('Description') or '').strip()
+                    display_desc = raw_desc
+                    
+                    # If description starts with !!, try to resolve it
+                    if raw_desc.startswith('!!'):
+                        if raw_desc in SPELL_LOCAL_TEXTS:
+                            display_desc = SPELL_LOCAL_TEXTS.get(raw_desc)
+                        elif raw_desc.lstrip('!') in SPELL_LOCAL_TEXTS:
+                            display_desc = SPELL_LOCAL_TEXTS.get(raw_desc.lstrip('!'))
+                        else:
+                            # Try by ID pattern
+                            for cand in (f'!!{passive_id}_DESC', f'{passive_id}_DESC', f'!!PASSIVE_{passive_id}_DESC', f'PASSIVE_{passive_id}_DESC'):
+                                if cand in SPELL_LOCAL_TEXTS:
+                                    display_desc = SPELL_LOCAL_TEXTS.get(cand)
+                                    break
+                        # If still a placeholder after trying to resolve, set to empty
+                        if display_desc.startswith('!!'):
+                            display_desc = ''
+                    
+                    # Store the resolved description
+                    passive['display_description'] = display_desc if display_desc else ''
+                    passives_by_id[passive_id] = passive
+        print(f"[DEBUG] Processed {len(passives_by_id)} passives into dictionary")
+    except Exception as e:
+        print(f"[DEBUG] Error loading passives: {e}")
+        pass  # If passives can't be fetched, continue without passive data
+    
     # Fetch action cards/spells for mapping ActionCard1-5 IDs
     actions_by_id = {}
     try:
@@ -992,6 +1041,36 @@ def creatures():
             else:
                 action_cards.append(None)  # No action card or not found
         c_parsed['action_cards'] = action_cards
+        
+        # Extract PassiveBase and PassiveAwaken and map them to passive data
+        # Passives are linked by creature ID: must match EXACTLY including suffix (_Awaken, _Base, _Special, etc.)
+        creature_id = c.get('ID', '')
+        if num_int <= 5:  # Debug first 5 creatures
+            print(f"[DEBUG] Creature {num_int}: ID={creature_id}")
+        
+        # Only exact ID match - no suffix replacement
+        c_parsed['passive_base'] = None
+        c_parsed['passive_awaken'] = None
+        
+        if creature_id and creature_id in passives_by_id:
+            # Exact match only - assign based on suffix in creature ID
+            if '_Awaken' in creature_id:
+                c_parsed['passive_awaken'] = passives_by_id[creature_id]
+            elif '_Base' in creature_id:
+                c_parsed['passive_base'] = passives_by_id[creature_id]
+            elif '_Special' in creature_id:
+                c_parsed['passive_awaken'] = passives_by_id[creature_id]  # Treat Special as awaken variant
+            else:
+                # If no recognized suffix, treat as base
+                c_parsed['passive_base'] = passives_by_id[creature_id]
+        
+        if num_int <= 5 and (c_parsed['passive_awaken'] or c_parsed['passive_base']):
+            if c_parsed['passive_awaken']:
+                desc = c_parsed['passive_awaken'].get('display_description', 'NO DESC')
+                print(f"[DEBUG] Creature {num_int} passive_awaken desc: {desc[:80] if desc else 'EMPTY'}")
+            if c_parsed['passive_base']:
+                desc = c_parsed['passive_base'].get('display_description', 'NO DESC')  
+                print(f"[DEBUG] Creature {num_int} passive_base desc: {desc[:80] if desc else 'EMPTY'}")
         try:
             if 'MaxHP' in c and c.get('MaxHP') is not None:
                 c_parsed['MaxHP_num'] = float(c.get('MaxHP'))

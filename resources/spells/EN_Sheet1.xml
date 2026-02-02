@@ -92,7 +92,7 @@ We&apos;re sorry for the inconvience. Come back later!</entry>
 <entry name="!!NICE_0035_DESC">Area 15% HP Heal. If you have 3 or more creatures on the board, Area Counterattack.</entry>
 <entry name="!!AWK_MAT_ManowarElf_Base_NAME">SHARD: Manowar Elf</entry>
 <entry name="!!PASSIVE_PreTeenWolf_Awaken_DESC"></entry>
-<entry name="!!PLAINS_0027_DESC">Creature gets Blue Plains. Grant 1 Energy for each card in your hand.</entry>
+<entry name="!!PLAINS_0027_DESC">Creature gets Blue Plains. Grant 1 Energy for each card in your hand. (Max 7) </entry>
 <entry name="!!ERROR_GEMEQUIP_UNSOCKET_REPLACE_1">Do you want to unsocket both {1} and {2} for {0} Gold in order to socket this Card?</entry>
 <entry name="!!CornLord_Awaken_NAME">Corn Emperor</entry>
 <entry name="!!GLB_100_LoseCreatures_NAME">Almost Pro 3</entry>
@@ -1732,7 +1732,7 @@ And Build A Lethal Deck</entry>
 <entry name="!!GLB_300_EarnStars_NAME">300 Golden Stars</entry>
 <entry name="!!GLB_750_PlayFactionCards4_NAME">Useless Swamp Combos 6</entry>
 <entry name="!!CANT_AFFORD_EXPEDITION_TICKETS">You don&apos;t have enough Hearts to start this Adventure. Do you want to refill your Hearts for &lt;val1&gt;?</entry>
-<entry name="!!SWAMP_0008_DESC">20% Life Leech for each card in your hand.</entry>
+<entry name="!!SWAMP_0008_DESC">25% Life Leech for each card in your hand.</entry>
 <entry name="!!SandasaurusRex_Base_NAME">Sandasaurus Rex</entry>
 <entry name="!!AWK_MAT_KnifeKite_Base_NAME">SHARD: Knife Kite</entry>
 <entry name="!!SWAMP_0039_NAME">Enfeebling Poison</entry>
@@ -1823,7 +1823,7 @@ Please update Card Wars to the latest version</entry>
 <entry name="!!CANT_AFFORD_EXPEDITION_SLOT">You can&apos;t afford to unlock an Adventure slot.</entry>
 <entry name="!!QUEST_27_NAME">Opposites Attract</entry>
 <entry name="!!LOAD_FROM_CLOUD">Load from Cloud</entry>
-<entry name="!!PLAINS_0002_DESC">Gain 1 Energy for each of your creatures on the board.</entry>
+<entry name="!!PLAINS_0002_DESC">Gain 1 Energy for each of your creatures on the board. (Doesn't work on turn 1)</entry>
 <entry name="!!FarmerTom_Base_NAME">Farmer Tom</entry>
 <entry name="!!AncientScholar_Awaken_NAME">Future Scholar</entry>
 <entry name="!!CornEyeBat_Base_NAME">Corn Eye Bat</entry>
@@ -2269,7 +2269,7 @@ Granted</entry>
 <entry name="!!Leader_GrandPrixe_AGE">Adult</entry>
 <entry name="!!ATTACK">ATTACK</entry>
 <entry name="!!GLB_700_WinAny_NAME">Champion 14</entry>
-<entry name="!!NICE_0006_DESC">Area Defense Up for 2 turns</entry>
+<entry name="!!NICE_0006_DESC">Area Defense Up for 3 turns</entry>
 <entry name="!!FarmerTom_Awaken_NAME">Farmer Tom</entry>
 <entry name="!!SEASON_GRYPHON">Gryphon</entry>
 <entry name="!!SWAMP_0040_NAME">Toxic Cotton</entry>
@@ -3125,7 +3125,7 @@ Now Available!</entry>
 <entry name="!!FTUE_SALE_06_DESC">Sale includes lots of Gems, Gold, Cake, and EXCLUSIVE Useless Swamp creature - Extraordinary Spider!</entry>
 <entry name="!!QUEST_51_NAME">Hot Beach Bodies</entry>
 <entry name="!!QB_RUNES">1.5x Ingredient Drops</entry>
-<entry name="!!KEYWORD_DESC_THORNS">Returns damage back for a number of turns. Stacks increase number of turns effect is active</entry>
+<entry name="!!KEYWORD_DESC_THORNS">Returns 90% of physical damage back for a number of turns. Stacks increase number of turns effect is active</entry>
 <entry name="!!INVITEFRIENDS">Invite Friends</entry>
 <entry name="!!PASSIVE_LieutenantLemonade_Awaken_DESC"></entry>
 <entry name="!!Leader_Jake_01_NAME">Jake&apos;s Floop</entry>
@@ -3410,11 +3410,11 @@ Then when you get a chance, please enter the following Friend Redeem Code [ {0} 
 <entry name="!!TUT_EN_PERFORMEVO">Just drag everything into those boxes and drop some science on these fools!</entry>
 <entry name="!!BLACKLISTLABEL">Black List:</entry>
 <entry name="!!SEASONRULESLABEL">PvP Rules:</entry>
-<entry name="!!SEASONRULES1">1. Do not Win Trading in PvP.</entry>
-<entry name="!!SEASONRULES2">2. Do not use Black List creatures in PvP.</entry>
-<entry name="!!SEASONRULESUSAGE1">If you do not follow these rules, 1st strike will be</entry>
-<entry name="!!SEASONRULESUSAGE2">ban 2 minute with rank reset, per strike 2 minute,</entry>
-<entry name="!!SEASONRULESUSAGE3">If 10 minute, delete account. Have Fun.</entry>
+<entry name="!!SEASONRULES1">1.Win-Trading &amp; Alt Accounts</entry>
+<entry name="!!SEASONRULESUSAGE1">Using alt accounts to gain free wins </entry>
+<entry name="!!SEASONRULESUSAGE2">(even with another player) in PVP is prohibited.</entry>
+<entry name="!!SEASONRULES2">If caught by The Staff or reported, you will be punished!</entry>
+<entry name="!!SEASONRULESUSAGE3"> (the discord server has more detailed Information about this.) </entry>
 <entry name="!!PVP_BANNED_CREATURE">&lt;creature&gt; is banned in PvP! Please remove it from your team.</entry>
 <entry name="!!CORN_0013_NAME_01">Husker Garrison</entry>
 <entry name="!!CORN_0013_DESC_01">Immunity Armor for 2 turns</entry>
@@ -3437,7 +3437,7 @@ Then when you get a chance, please enter the following Friend Redeem Code [ {0} 
 <entry name="!!PLAINS_0007_NAME_01">Portal of Summoning</entry>
 <entry name="!!PLAINS_0007_DESC_01">Gain 2 Energy for each of your Friendly Creatures on the Board</entry>
 <entry name="!!PLAINS_0009_NAME_01">Astral Energy</entry>
-<entry name="!!PLAINS_0009_DESC_01">Gain 1 Energy for every card in your hand.</entry>
+<entry name="!!PLAINS_0009_DESC_01">Gain 1 Energy for every card in your hand. (Max 8)</entry>
 <entry name="!!PLAINS_0010_NAME_01">Cave Of Solitude</entry>
 <entry name="!!PLAINS_0010_DESC_01">10% Magic Boost for every card you have played this Turn</entry>
 <entry name="!!PLAINS_0011_NAME_01">Ultimate Magic Hands</entry>
@@ -3467,7 +3467,7 @@ Then when you get a chance, please enter the following Friend Redeem Code [ {0} 
 <entry name="!!SAND_0028_NAME_01">Sloth Paw</entry>
 <entry name="!!SAND_0028_DESC_01">Area Slow for 2 Turns.</entry>
 <entry name="!!SAND_0033_NAME_01">Scorching Serve</entry>
-<entry name="!!SAND_0033_DESC_01">Berserk, Blind, 40% Burn and Slow for 2 turns.</entry>
+<entry name="!!SAND_0033_DESC_01">Berserk, Blind, 40% Burn and Slow for 1 turns.</entry>
 <entry name="!!SAND_0037_NAME_01">Angry Cactus</entry>
 <entry name="!!SAND_0037_DESC_01">Thorns and Flame Armor for 2 turns.</entry>
 <entry name="!!SAND_0039_NAME_01">Sand Volcano</entry>
@@ -3505,11 +3505,11 @@ Then when you get a chance, please enter the following Friend Redeem Code [ {0} 
 <entry name="!!CORN_0048_NAME_01">Yellow Light house</entry>
 <entry name="!!CORN_0048_DESC_01">Cornfields and Haste for 3 turns.</entry>
 <entry name="!!CORN_0049_NAME_01">Berserk Bakery</entry>
-<entry name="!!CORN_0049_DESC_01">Area 20% Heal, Defense Up and Fortitude for 3 turns.</entry>
+<entry name="!!CORN_0049_DESC_01">Gain 2 Energy , Area 20% Heal , Defense Up and Fortitude for 3 turns.</entry>
 <entry name="!!CORN_0050_NAME_01">Commendation</entry>
 <entry name="!!CORN_0050_DESC_01">Fortitude for 2 turns, When this turns deployed friendly creature, Haste for 2 turns.</entry>
 <entry name="!!PLAINS_0014_NAME_01">Psychic Tempest</entry>
-<entry name="!!PLAINS_0014_DESC_01">Creature gets 1 Energy Sap for each of your creatures on the Board.</entry>
+<entry name="!!PLAINS_0014_DESC_01">Creature gets 1 Energy Sap for each of your creatures on the Board. (Max 3)</entry>
 <entry name="!!PLAINS_0021_NAME_01">Diplomatic Immunity</entry>
 <entry name="!!PLAINS_0021_DESC_01">Remove Vanish Armor, Void Armor, Toxic Armor and Shield.</entry>
 <entry name="!!PLAINS_0030_NAME_01">Dirtied Staff</entry>
@@ -3519,7 +3519,7 @@ Then when you get a chance, please enter the following Friend Redeem Code [ {0} 
 <entry name="!!PLAINS_0035_NAME_01">Dark Portal</entry>
 <entry name="!!PLAINS_0035_DESC_01">2x Energy Sap and 2x Block Card.</entry>
 <entry name="!!PLAINS_0039_NAME_01">Illusory Anchor</entry>
-<entry name="!!PLAINS_0039_DESC_01">Slow and Magic Down for 2 turns.</entry>
+<entry name="!!PLAINS_0039_DESC_01">Slow, Attack Down and Magic Down for 2 turns.</entry>
 <entry name="!!PLAINS_0041_NAME_01">Door Of Strength</entry>
 <entry name="!!PLAINS_0041_DESC_01">Silence for 3 Turns.</entry>
 <entry name="!!PLAINS_0025_NAME_01">Shaman&apos;vs Forsaken Wand</entry>
@@ -3533,5 +3533,24 @@ Then when you get a chance, please enter the following Friend Redeem Code [ {0} 
 <entry name="!!PLAINS_0043_NAME_01">Arcane Shield</entry>
 <entry name="!!PLAINS_0043_DESC_01">Creature gets Shield. Remove any Landscapes on creature.</entry>
 <entry name="!!PLAINS_0047_NAME_01">Magical Gem Seed</entry>
-<entry name="!!PLAINS_0047_DESC_01">Creature gets Blue Plains. Grant 1 Energy for each card in your hand.</entry>
+<entry name="!!PLAINS_0047_DESC_01">Creature gets Blue Plains. Grant 1 Energy for each card in your hand. (Max 7)</entry>
+<entry name="!!NICE_0006_DESC_01">Area Defense Up for 3 turns</entry>
+<entry name="!!SWAMP_0008_DESC_01">25% Life Leech for each card in your hand.</entry>
+<entry name="!!CORN_0049_DESC_02">Gain 2 Energy , Area 20% Heal , Defense Up and Fortitude for 3 turns.</entry>
+<entry name="!!PLAINS_0039_DESC_02">Slow,Attack Down and Magic Down for 2 turns.</entry>
+<entry name="!!TURN_REQUIREMENT_NOT_MET">Not on turn 1</entry>
+<entry name="!!BUY_EVOLUTION_SHARDS">Evolution Shards (&lt;val1&gt;)</entry>
+<entry name="!!BUY_EVOLUTION_SHARDS_NEED_STONES">You need more gems to buy Evolution Shards!</entry>
+<entry name="!!BUY_EVOLUTION_SHARDS_CONFIRM">Buy &lt;val2&gt; Evolution Shards?</entry>
+<entry name="!!BUY_EVOLUTION_SHARDS_SUCCESS">You received &lt;val1&gt; Evolution Shards!</entry>
+<entry name="!!EVOLVE_WITH_SHARDS">Evolve with Shards (Skip Requirements)</entry>
+<entry name="!!NOT_ENOUGH_SHARDS">Not Enough Shards</entry>
+<entry name="!!NOT_ENOUGH_EVOLUTION_SHARDS">You don't have enough Evolution Shards to evolve this creature.</entry>
+<entry name="!!CONFIRM_EVOLVE_WITH_SHARDS">Evolve &lt;creature&gt; using &lt;cost&gt; Evolution Shards?
+
+This will skip all material requirements.</entry>
+<entry name="!!EVOLUTION_SHARDS_COST">Cost: {0} Evolution Shards</entry>
+<entry name="!!EVOLUTION_SHARDS_OWNED">Owned: {0}</entry>
+<entry name="!!AWAKEN_WITH_SHARDS">Or use Shards to skip requirements</entry>
+<entry name="!!EVO_SHARDS_AMOUNT">Your Evolution Shards: &lt;val1&gt; </entry>
 </entries>

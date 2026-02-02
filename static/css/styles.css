@@ -20,6 +20,11 @@
     --at-accent-dark: rgba(165,50,255,0.10);
 }
 
+/* Box sizing universal para evitar problemas de ancho */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
 /* Adventure Time style display font (Luckiest Guy) */
 @import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap');
 
@@ -322,6 +327,8 @@ nav.download-nav a:hover { color: white; }
 .creatures-page .icono-placeholder img { max-width: 80%; max-height: 80%; object-fit: contain; }
 .creatures-page .imagen-placeholder { width: 110px; height: 54px; background: #fff; border: 2px solid #a3874e; display: flex; justify-content: center; align-items: center; border-radius: 8px; box-shadow: 0 1px 4px rgba(80, 60, 20, 0.08); }
 .creatures-page .imagen-placeholder img { max-width: 90%; max-height: 90%; object-fit: contain; }
+.creatures-page .passive-description-container { width: 110px; min-height: 54px; height: auto; padding: 4px 6px; }
+.creatures-page .passive-description { font-size: 9px; line-height: 1.3; color: #333; text-align: left; overflow: hidden; word-wrap: break-word; }
 .creatures-page .ficha-nivel { background: #fceb9c; border-radius: 7px; padding: 7px 10px; box-shadow: 0 1px 4px rgba(80, 60, 20, 0.08); }
 .creatures-page .label-nivel { font-weight: bold; font-size: 17px; }
 .creatures-page .barra-xp-contenedor { background: #e0e0e0; height: 16px; border-radius: 10px; margin-top: 4px; position: relative; overflow: hidden; }
@@ -607,14 +614,18 @@ nav.download-nav a:hover { color: white; }
 /* Estilo para el header/nav: barra fija con blur, fondo semi-transparente, borde y sombra */
 .header-nav {
     width: 100%;
+    max-width: 100vw;
     position: fixed;
     top: 0;
+    left: 0;
+    right: 0;
     z-index: 50;
     backdrop-filter: blur(16px);
     /* Adventure Time-style translucent header */
     background: linear-gradient(90deg, rgba(43,22,82,0.85), rgba(11,16,32,0.85));
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow-x: hidden;
 }
 
 /* Estilo para el contenedor interno del nav: centrado con max-width */
@@ -627,6 +638,7 @@ nav.download-nav a:hover { color: white; }
     display: flex;
     align-items: center;
     justify-content: space-between;
+    box-sizing: border-box;
 }
 
 /* Estilo para el enlace del logo: flex con gap */
@@ -987,6 +999,9 @@ a:hover, a:focus {
         transition: all 0.3s;
         overflow: hidden;
         max-height: 0;
+        width: 100%;
+        max-width: 100vw;
+        box-sizing: border-box;
     }
     .mobile-menu-open {
         max-height: 900px;
@@ -1002,6 +1017,8 @@ a:hover, a:focus {
     gap: 0.75rem;
     text-align: center;
     font-weight: 600;
+    box-sizing: border-box;
+    max-width: 100%;
 }
 
 /* Estilo para el logo en mobile */
@@ -1137,16 +1154,19 @@ a:hover, a:focus {
     .ficha-cuerpo { flex-direction: column; }
     .ficha-imagen-criatura-contenedor { height: 180px; }
 }
-
 /* Estilo para la primera sección hero: gradiente de fondo, padding, centrado de contenido y min-height para colocar debajo del header */
 .section-hero {
     position: relative;
-    background: linear-gradient(to bottom, black, #0a0a0d, black);
+    background: radial-gradient(circle at 15% 20%, rgba(255, 209, 102, 0.08), transparent 12%),
+                radial-gradient(circle at 85% 70%, rgba(107,214,255,0.06), transparent 14%),
+                linear-gradient(to bottom right, #001032 0%, #2b1652 60%, #001032 100%);
+    border-bottom: 8px solid rgba(165,50,255,0.06);
     padding-top: 1rem; /* Cambiado de 0.25rem a 4rem para compensar la altura del header fijo (4rem) */
     display: flex; /* Usa flexbox para centrar el contenido */
     align-items: center; /* Centra verticalmente */
     justify-content: center; /* Centra horizontalmente */
     min-height: 50vh; /* Altura mínima para colocar la imagen debajo del header */
+    overflow: hidden; /* Evita scroll horizontal por pseudo-elementos */
 }
 
 /* Generic page hero block used across templates like page-hero (ensures spacing from fixed header) */
@@ -1154,14 +1174,6 @@ a:hover, a:focus {
     padding-top: 1.25rem; /* extra space inside hero */
     padding-bottom: 1rem;
     margin-top: 0.5rem; /* small gap to visualize separation */
-}
-
-/* Adventure Time inspired hero styles */
-.section-hero {
-    background: radial-gradient(circle at 15% 20%, rgba(255, 209, 102, 0.08), transparent 12%),
-                radial-gradient(circle at 85% 70%, rgba(107,214,255,0.06), transparent 14%),
-                linear-gradient(to bottom right, #001032 0%, #2b1652 60%, #001032 100%);
-    border-bottom: 8px solid rgba(165,50,255,0.06);
 }
 
 .intro { max-width: 1200px; margin: 1.25rem auto; padding: 1rem 1.5rem; text-align: center; }
@@ -1184,33 +1196,6 @@ a:hover, a:focus {
     color: #fff; border: 2px solid rgba(255,255,255,0.08);
     border-left: 6px solid rgba(255, 209, 102, 0.25);
     box-shadow: 0 10px 25px -10px rgba(0,0,0,0.75), 0 6px 20px rgba(165,50,255,0.06) inset;
-}
-
-/* small cloud/star decorative shapes for hero via pseudo-elements */
-.section-hero::before {
-    content: '';
-    position: absolute;
-    left: -5%;
-    top: -8%;
-    width: 250px;
-    height: 250px;
-    background: radial-gradient(circle at 30% 30%, rgba(255,209,102,0.18), rgba(255,255,255,0.02));
-    border-radius: 50%;
-    filter: blur(30px);
-    transform: rotate(-10deg);
-    opacity: 0.9;
-}
-.section-hero::after {
-    content: '';
-    position: absolute;
-    right: -8%;
-    bottom: -6%;
-    width: 300px;
-    height: 210px;
-    background: radial-gradient(circle at 30% 40%, rgba(107,214,255,0.12), rgba(0,0,0,0));
-    border-radius: 50%;
-    filter: blur(28px);
-    transform: scale(1.1);
 }
 
 /* Menu responsive: horizontal on wide screens, vertical on mobile */
@@ -2095,9 +2080,9 @@ footer img:hover {
     
     /* Index.html específico - Tabla de facciones */
     .factions-table {
-        width: 100%;
+        width: calc(100% - 2rem);
         font-size: 0.8rem;
-        margin: 1rem 0;
+        margin: 1rem auto;
     }
     
     .factions-table th, .factions-table td {
@@ -2123,7 +2108,7 @@ footer img:hover {
     
     /* Menu list */
     .menu-list {
-        padding: 0.5rem;
+        padding: 0 1rem;
         width: 100%;
     }
     
@@ -2192,7 +2177,7 @@ footer img:hover {
     }
     
     .container-community {
-        padding: 0 0.5rem;
+        padding: 0 1rem;
     }
     
     .flex-community {
@@ -2225,7 +2210,7 @@ footer img:hover {
     
     /* Intro section */
     .intro {
-        padding: 1rem;
+        padding: 1rem 1rem;
         text-align: center;
     }
     
@@ -2247,7 +2232,7 @@ footer img:hover {
     }
     
     footer .max-w-7xl {
-        padding: 0 0.5rem !important;
+        padding: 0 1rem !important;
     }
     
     footer .flex {
@@ -2267,9 +2252,10 @@ footer img:hover {
     
     /* Nav header adjustments */
     .nav-container {
-        padding: 0.5rem 1rem;
+        padding: 0.5rem 0.75rem;
         flex-wrap: nowrap;
         gap: 0.5rem;
+        max-width: 100vw;
     }
     
     .site-logo {
