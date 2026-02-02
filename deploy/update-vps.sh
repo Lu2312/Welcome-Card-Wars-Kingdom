@@ -12,7 +12,7 @@ echo -e "${GREEN}  Card Wars Kingdom - Update${NC}"
 echo -e "${GREEN}=========================================${NC}"
 echo ""
 
-PROJECT_DIR="/var/www/cardwars-kingdom.net"
+PROJECT_DIR="/var/www/cardwars-kingdom"
 
 # Hacer backup
 echo -e "${YELLOW}[1/5] Creando backup...${NC}"
@@ -23,7 +23,7 @@ echo "Backup guardado en: $BACKUP_DIR"
 # Pull cambios
 echo -e "${YELLOW}[2/5] Obteniendo cambios de GitHub...${NC}"
 # Configurar el directorio como seguro para git
-git config --global --add safe.directory /var/www/cardwars-kingdom.net 2>/dev/null || true
+git config --global --add safe.directory /var/www/cardwars-kingdom 2>/dev/null || true
 git config --global --add safe.directory /tmp/Welcome-Card-Wars-Kingdom 2>/dev/null || true
 
 # Usar el repositorio temporal en lugar del directorio de producción

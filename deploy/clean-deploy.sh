@@ -36,7 +36,7 @@ BACKUP_NAME="$PROJECT_PATH.backup.$(date +%Y%m%d_%H%M%S)"
 ssh $VPS_HOST "if [ -d '$PROJECT_PATH' ]; then mv '$PROJECT_PATH' '$BACKUP_NAME' && echo '✅ Backup created: $BACKUP_NAME'; else echo 'ℹ️  No existing deployment found'; fi"
 
 echo "📥 Step 3: Cloning fresh repository..."
-ssh $VPS_HOST "cd /var/www && git clone $REPO_URL cardwars-kingdom.net"
+ssh $VPS_HOST "cd /var/www && git clone $REPO_URL cardwars-kingdom"
 
 echo "🐍 Step 4: Setting up Python virtual environment..."
 ssh $VPS_HOST "cd $PROJECT_PATH && python3 -m venv venv"
