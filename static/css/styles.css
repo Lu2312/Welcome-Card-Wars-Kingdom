@@ -570,12 +570,8 @@ nav.download-nav a:hover { color: white; }
 
 @media (max-width: 640px) {
     .spell-icon { width: 38%; height: 38%; }
-    /* Keep the same 40% taller aspect ratio on small screens too */
-    /* revert width to 100% on narrow screens to avoid overflow */
     .spell-frame-wrap { width: 100%; padding-bottom: 150%; }
-    /* ensure the article/card fits the viewport on mobile */
     .spell-card { width: 100%; }
-    /* slightly reduce top spacing for smaller screens */
     .spell-info p { margin: 0.4em 0 6px; }
 }
 .spells-page .spells-grid { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
@@ -600,15 +596,52 @@ nav.download-nav a:hover { color: white; }
     animation: fadeInUp 0.8s ease-out;
 }
 
-/* Estilo para el contenedor del GIF hero: animación de pulso y fondo con gradiente */
+/* ========================================
+   HERO GIF CONTAINER (unified definition)
+   ======================================== */
 .hero-gif-container {
     position: relative;
-    background: linear-gradient(135deg, rgba(165, 50, 255, 0.05) 0%, rgba(98, 95, 255, 0.05) 100%);
+    background: linear-gradient(135deg, rgba(255,249,196,0.06), rgba(165,50,255,0.06));
     border-radius: 1rem;
-    padding: 2rem;
-    border: 10px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
     backdrop-filter: blur(8px);
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Hero GIF image - responsive sizing */
+.hero-gif-img {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    max-height: 280px;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+    filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.5));
+}
+
+@media (min-width: 640px) {
+    .hero-gif-container {
+        padding: 2rem 1.5rem;
+    }
+    .hero-gif-img {
+        max-height: 360px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .hero-gif-container {
+        padding: 2.5rem 2rem;
+    }
+    .hero-gif-img {
+        max-height: 420px;
+    }
 }
 
 /* Estilo para el header/nav: barra fija con blur, fondo semi-transparente, borde y sombra */
@@ -988,22 +1021,24 @@ a:hover, a:focus {
     }
 }
 
-/* Estilo para el menú mobile: oculto por defecto, con transición */
+/* Estilo para el menú mobile: oculto en desktop, collapsed en mobile */
 .mobile-menu {
     display: none;
 }
 @media (max-width: 639px) {
     .mobile-menu {
+        display: block;
         background-color: rgba(10, 10, 10, 0.94);
         backdrop-filter: blur(24px);
-        transition: all 0.3s;
+        transition: max-height 0.35s ease, padding 0.35s ease;
         overflow: hidden;
         max-height: 0;
         width: 100%;
         max-width: 100vw;
         box-sizing: border-box;
+        padding: 0;
     }
-    .mobile-menu-open {
+    .mobile-menu.mobile-menu-open {
         max-height: 900px;
         padding: 12px 0;
     }
@@ -1154,19 +1189,18 @@ a:hover, a:focus {
     .ficha-cuerpo { flex-direction: column; }
     .ficha-imagen-criatura-contenedor { height: 180px; }
 }
-/* Estilo para la primera sección hero: gradiente de fondo, padding, centrado de contenido y min-height para colocar debajo del header */
+/* Section hero: gradient background with centered hero content */
 .section-hero {
     position: relative;
     background: radial-gradient(circle at 15% 20%, rgba(255, 209, 102, 0.08), transparent 12%),
                 radial-gradient(circle at 85% 70%, rgba(107,214,255,0.06), transparent 14%),
                 linear-gradient(to bottom right, #001032 0%, #2b1652 60%, #001032 100%);
-    border-bottom: 8px solid rgba(165,50,255,0.06);
-    padding-top: 1rem; /* Cambiado de 0.25rem a 4rem para compensar la altura del header fijo (4rem) */
-    display: flex; /* Usa flexbox para centrar el contenido */
-    align-items: center; /* Centra verticalmente */
-    justify-content: center; /* Centra horizontalmente */
-    min-height: 50vh; /* Altura mínima para colocar la imagen debajo del header */
-    overflow: hidden; /* Evita scroll horizontal por pseudo-elementos */
+    border-bottom: 4px solid rgba(165,50,255,0.06);
+    padding: 2rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
 }
 
 /* Generic page hero block used across templates like page-hero (ensures spacing from fixed header) */
@@ -1222,11 +1256,6 @@ a:hover, a:focus {
 .factions-table .main-header th { border-radius: 10px; padding: 1.6rem; }
 .factions-table .image-cell img { border: 6px solid rgba(255,255,255,0.03); border-radius: 12px; }
 
-/* Make hero GIF container more cartoonish */
-.hero-gif-container {
-    background: linear-gradient(90deg, rgba(255,249,196,0.06), rgba(165,50,255,0.06));
-    border: 6px solid rgba(255,255,255,0.03);
-}
 
 /* Additional index-friendly spacing */
 .section-heroes { padding: 3rem 0; }
@@ -1235,36 +1264,6 @@ a:hover, a:focus {
 /* small rounded accent for download button inside hero */
 .download-btn { border-radius: 1rem; }
 
-/* Estilo para el contenedor del GIF hero: centrado, padding y borde */
-.hero-gif-container {
-    border-radius: 0.75rem;
-    padding: 2rem;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-}
-
-/* Estilo para la imagen del GIF: tamaño responsivo y sombra */
-.hero-gif {
-    height: 3rem;
-    width: auto;
-}
-
-@media (min-width: 640px) {
-    .hero-gif {
-        height: 4.5rem;
-    }
-}
-
-@media (min-width: 1024px) {
-    .hero-gif {
-        height: 6rem;
-    }
-}
-
-.hero-gif {
-    filter: drop-shadow(0 25px 25px rgba(0, 0, 0, 0.5));
-    margin: 0 auto;
-}
 
 /* Estilo para el contenedor de flex centrado */
 .flex-center {
@@ -1413,16 +1412,16 @@ a:hover, a:focus {
     }
 }
 
-/* Estilo para la imagen oculta en lg */
-.hidden-lg {
-    display: none;
+/* Heroes image wrapper - visible on all screen sizes */
+.heroes-image-wrap {
+    display: block;
+    max-width: 100%;
+    animation: fadeInUp 1s ease-out;
 }
 
 @media (min-width: 1024px) {
-    .hidden-lg {
-        display: block;
+    .heroes-image-wrap {
         max-width: 50%;
-        animation: fadeInUp 1s ease-out;
     }
 }
 
@@ -1440,9 +1439,15 @@ a:hover, a:focus {
 
 /* Estilo para el contenedor de grid de texto de heroes */
 .grid-heroes-text {
-    max-width: 50%;
+    max-width: 100%;
     display: grid;
     gap: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+    .grid-heroes-text {
+        max-width: 50%;
+    }
 }
 
 /* Estilo para el título de heroes */
@@ -2031,9 +2036,12 @@ footer img:hover {
         padding: 8px 12px;
     }
     
-    /* Ocultar botón de menú no funcional en móviles */
+    /* Mobile hamburger menu button - visible on small screens */
     .menu-btn {
-        display: none !important;
+        display: inline-flex !important;
+        background: none;
+        border: none;
+        cursor: pointer;
     }
     
     /* Buttons */
@@ -2197,15 +2205,15 @@ footer img:hover {
     
     /* Hero section con GIF */
     .section-hero {
-        padding: 0.5rem 0 !important;
+        padding: 1rem 0.75rem !important;
     }
     
     .hero-gif-container {
-        padding: 1rem !important;
+        padding: 0.75rem !important;
     }
     
-    .hero-gif-container img {
-        height: 60px !important;
+    .hero-gif-img {
+        max-height: 200px;
     }
     
     /* Intro section */
