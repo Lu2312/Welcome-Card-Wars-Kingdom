@@ -33,14 +33,7 @@
         
         <div class="ficha-detalles">
             <div class="ficha-icono-contenedor">
-                <div class="icono-placeholder">
-                    {% if c and c.PortraitTexture %}
-                        <img src="/resources/Creature-Book/icons/{{ c.PortraitTexture }}.png" alt="Icono" loading="lazy" decoding="async">
-                    {% else %}
-                        <div class="icon-fallback"></div>
-                    {% endif %}
-                </div>
-                <div class="imagen-placeholder passive-description-container">
+                <div class="passive-container">
                     {% set passive_desc = '' %}
                     
                     {% if c and c.passive_awaken %}
@@ -60,10 +53,10 @@
                     
                     {% if passive_desc %}
                         <div class="passive-description" title="{{ passive_desc }}">
-                            {{ passive_desc[:120] }}{% if passive_desc|length > 120 %}...{% endif %}
+                            {{ passive_desc }}
                         </div>
                     {% else %}
-                        <div class="spell-fallback"></div>
+                        <div class="spell-fallback">No Passive</div>
                     {% endif %}
                 </div>
             </div>
