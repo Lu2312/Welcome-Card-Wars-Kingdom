@@ -944,7 +944,16 @@ def creatures():
     try:
         actions_resp = requests.get(ACTIONS_JSON_URL, timeout=8)
         actions_resp.raise_for_status()
-        actions_data = actions_resp.json()
+        
+        json_text = actions_resp.text
+        import re
+        # Fix missing commas between properties: "value" \n "key"
+        json_text = re.sub(r'"\s*\n\s*"([A-Za-z])', r'",\n"\g<1>', json_text)
+        # Fix trailing commas: "value", }
+        json_text = re.sub(r',\s*}', '}', json_text)
+        json_text = re.sub(r',\s*]', ']', json_text)
+        actions_data = json.loads(json_text)
+        
         if isinstance(actions_data, list):
             for action in actions_data:
                 action_id = action.get('ID')
@@ -990,7 +999,8 @@ def creatures():
                         action['display_description'] = action.get('Description') or ''
                     
                     actions_by_id[action_id] = action
-    except Exception:
+    except Exception as e:
+        print(f"[DEBUG] Error loading actions: {e}")
         pass  # If actions can't be fetched, continue without action card data
 
     for c in creatures_remote:
