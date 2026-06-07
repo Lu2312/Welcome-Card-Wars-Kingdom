@@ -1,14 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 {% extends "base.html" %}
-{% block additional_preloads %}
-<link rel="preload" as="image" href="/resources/home.gif">
-<!-- removed preload for missing images: map-ice, map-candy2, map-candy, map-badlands -->
-<link rel="preload" as="image" href="/resources/main-characters.png">
-<link rel="preload" as="image" href="/resources/main-map.png">
-<link rel="preload" as="image" href="/resources/discord-white.png">
-<link rel="preload" as="image" href="/resources/Cartoon_Network_2010.svg">
-{% endblock %}
+
 {% block content %}
 <div class="creatures-page">
 
@@ -126,9 +119,9 @@
                                     <div class="action-card-cost">{{ cost }}</div>
                                 </div>
                                 <div class="action-card-info">
-                                    <div class="action-card-name">{{ action_name|truncate(15, True, '...') }}</div>
+                                    <div class="action-card-name">{{ action_name }}</div>
                                     {% if action_desc %}
-                                    <div class="action-card-desc">{{ action_desc|truncate(40, True, '...') }}</div>
+                                    <div class="action-card-desc">{{ action_desc }}</div>
                                     {% endif %}
                                 </div>
                             </div>
