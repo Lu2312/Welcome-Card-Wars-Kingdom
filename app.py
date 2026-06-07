@@ -274,13 +274,29 @@ def card_museum():
 def serve_creature_book(filename):
     """Serve files from Creature Book folder"""
     creature_book_dir = os.path.join(os.path.dirname(__file__), 'resources', 'Creature Book')
-    return send_from_directory(creature_book_dir, filename)
+    full_path = os.path.normpath(os.path.join(creature_book_dir, filename))
+    if os.path.isfile(full_path):
+        return send_from_directory(creature_book_dir, filename)
+    if filename.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg')):
+        import base64
+        from flask import Response
+        return Response(base64.b64decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="), mimetype="image/png")
+    from flask import abort
+    abort(404)
 
 @app.route('/creature-icons/<path:filename>')
 def serve_creature_icons(filename):
     """Serve creature icon files from icons folder"""
     icons_dir = os.path.join(os.path.dirname(__file__), 'resources', 'Creature-Book', 'icons')
-    return send_from_directory(icons_dir, filename)
+    full_path = os.path.normpath(os.path.join(icons_dir, filename))
+    if os.path.isfile(full_path):
+        return send_from_directory(icons_dir, filename)
+    if filename.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg')):
+        import base64
+        from flask import Response
+        return Response(base64.b64decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="), mimetype="image/png")
+    from flask import abort
+    abort(404)
 
 @app.route('/download')
 def download():
@@ -830,7 +846,21 @@ def serve_creature_file(filepath):
 @app.route('/resources/<path:filename>')
 def serve_files(filename):
     files_dir = os.path.join(os.path.dirname(__file__), 'resources')
-    return send_from_directory(files_dir, filename)
+    full_path = os.path.normpath(os.path.join(files_dir, filename))
+    
+    if os.path.isfile(full_path):
+        return send_from_directory(files_dir, filename)
+        
+    # Prevent 404 console spam for missing images
+    if filename.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg')):
+        import base64
+        from flask import Response
+        # 1x1 transparent PNG
+        img_data = base64.b64decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=")
+        return Response(img_data, mimetype="image/png")
+        
+    from flask import abort
+    abort(404)
 
 
 @app.after_request
