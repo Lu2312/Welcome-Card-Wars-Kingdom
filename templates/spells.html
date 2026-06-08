@@ -3,193 +3,250 @@
 <link rel="preload" as="image" href="/resources/home.gif">
 {% endblock %}
 {% block content %}
-<!-- ESTILOS DEL HERO:
-     - Para cambiar el fondo, añade: style="background: linear-gradient(...);" a la div
-     - Para ajustar el espaciado, modifica padding o margin en línea
-     - Los estilos de .page-hero y .page-title están en /static/css/styles.css
--->
+
 <div class="page-hero container">
     <h1 class="page-title">Spells / Action Cards</h1>
     <p class="muted">Complete action and spell card library. Uses external JSON and local resources for artwork.</p>
 </div>
 
-{# Barra de filtros eliminada para mostrar todas las cartas en orden del JSON #}
+<!-- Dynamic Search & Filters Section -->
+<section class="container" style="margin-bottom: 2rem;">
+    <div class="card" style="padding: 20px; background: rgba(15, 17, 20, 0.75); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.45);">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; align-items: end;">
+            
+            <!-- Text Search -->
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+                <label for="spell-search" style="font-weight: 700; font-size: 0.8rem; color: #dfb2f4; text-transform: uppercase; letter-spacing: 0.05em;">Search Cards</label>
+                <input type="text" id="spell-search" placeholder="Search by name, ID or desc..." style="padding: 10px 14px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.15); background: rgba(0, 0, 0, 0.4); color: #fff; font-family: inherit; font-size: 0.95rem; outline: none; transition: border-color 0.3s, box-shadow 0.3s; width: 100%; box-sizing: border-box;">
+            </div>
 
+            <!-- Faction Selector -->
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+                <label for="spell-faction" style="font-weight: 700; font-size: 0.8rem; color: #dfb2f4; text-transform: uppercase; letter-spacing: 0.05em;">Faction</label>
+                <select id="spell-faction" style="padding: 10px 14px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.15); background: rgba(0, 0, 0, 0.4); color: #fff; font-family: inherit; font-size: 0.95rem; outline: none; cursor: pointer; width: 100%; box-sizing: border-box;">
+                    <option value="all">All Factions</option>
+                    <option value="red">Cornfields (Red)</option>
+                    <option value="white">Blue Plains (White)</option>
+                    <option value="green">Useless Swamp (Green)</option>
+                    <option value="light">Sandy Lands (Light)</option>
+                    <option value="blue">Icylands (Blue)</option>
+                    <option value="dark">Obsidian Wasteland (Dark)</option>
+                    <option value="colorless">Colorless</option>
+                </select>
+            </div>
+
+            <!-- Category Selector -->
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+                <label for="spell-category-filter" style="font-weight: 700; font-size: 0.8rem; color: #dfb2f4; text-transform: uppercase; letter-spacing: 0.05em;">Category</label>
+                <select id="spell-category-filter" style="padding: 10px 14px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.15); background: rgba(0, 0, 0, 0.4); color: #fff; font-family: inherit; font-size: 0.95rem; outline: none; cursor: pointer; width: 100%; box-sizing: border-box;">
+                    <option value="all">All Categories</option>
+                    {% for cat in category_list %}
+                    <option value="{{ cat|lower }}">{{ cat }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Cost Selector -->
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+                <label for="spell-cost-filter" style="font-weight: 700; font-size: 0.8rem; color: #dfb2f4; text-transform: uppercase; letter-spacing: 0.05em;">Energy Cost</label>
+                <select id="spell-cost-filter" style="padding: 10px 14px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.15); background: rgba(0, 0, 0, 0.4); color: #fff; font-family: inherit; font-size: 0.95rem; outline: none; cursor: pointer; width: 100%; box-sizing: border-box;">
+                    <option value="all">All Costs</option>
+                    <option value="0">0 Energy</option>
+                    <option value="1">1 Energy</option>
+                    <option value="2">2 Energy</option>
+                    <option value="3">3 Energy</option>
+                    <option value="4">4 Energy</option>
+                    <option value="5">5 Energy</option>
+                    <option value="6">6+ Energy</option>
+                </select>
+            </div>
+            
+            <!-- Clear Button -->
+            <div>
+                <button id="btn-clear-filters" class="btn small" style="width: 100%; padding: 11px; font-weight: 600; text-transform: uppercase; border-radius: 8px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); cursor: pointer; transition: all 0.3s;">Clear Filters</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Cards Grouped Section -->
 <section class="container" id="spells-grouped">
     {% if spells|length == 0 %}
         <div class="card" style="padding:20px;">No spells found. If the remote JSON couldn't be fetched, try running the app with network access or create `data/db_ActionCards.json` locally as cache.</div>
     {% endif %}
-    {# Build a map of original indexes so we can preserve JSON ordering client-side #}
+    
     {% set _ns = namespace(map={}) %}
     {% for s in spells %}
         {% set _ = _ns.map.update({ (s.get('ID') or s.get('Name') or ''): loop.index0 }) %}
     {% endfor %}
 
     {% for cat in category_list %}
-        <!-- ESTILOS DE LOS TÍTULOS DE CATEGORÍA:
-             - margin-top:1.5rem: espacio superior del título
-             - Para cambiar el tamaño de fuente: añadir font-size:24px
-             - Para cambiar el color: añadir color:#colorHex
-        -->
-        <h3 style="margin-top:1.5rem;">{{ cat }} <small class="muted">({{ category_counts.get(cat,0) }})</small></h3>
-        <!-- ESTILOS DE LA CUADRÍCULA DE HECHIZOS:
-             - .spells-grid está definida en /static/css/styles.css
-             - Probablemente usa display:grid con grid-template-columns
-             - Para cambiar el número de columnas, modifica grid-template-columns en CSS
-             - Para ajustar el espacio entre tarjetas, modifica gap en CSS
-        -->
-        <div class="spells-grid">
-            {% for spell in spells|selectattr('category','equalto',cat)|list %}
-            {% set id = (spell.get('ID') or spell.get('Name') or '').strip() %}
-            {# extract numeric suffix from IDs like CORN_0001 -> 1 #}
-            {% set card_num = (id.split('_')[-1]|int) if '_' in id and id.split('_')[-1].isdigit() else '' %}
-            {% set name = spell.get('display_name') or spell.get('Name') or spell.get('ID') %}
-            {% set desc = spell.get('display_description') or spell.get('Description') or spell.get('CardText') or '' %}
-            {% set frame = spell.get('CardFrame') or spell.get('CardFramePath') or '' %}
-            {% set sprite = spell.get('UITexture') or spell.get('SpriteName') or spell.get('Icon') or '' %}
-            {% set cost = spell.get('Cost') or spell.get('Energy') or '' %}
-            {# Pasar ID y Name del spell para mejorar la búsqueda de iconos #}
-            {% set frame_path = spell_asset('cardframes', frame, id, name) or '/resources/dungeon/Screenshot-placeholder.svg' %}
-            {% set sprite_path = spell_asset('cardicons', sprite, id, name) or '/resources/dungeon/Spell-Icon-placeholder.svg' %}
-            <!-- ESTILOS DE CADA TARJETA:
-                 - .card y .spell-card: estilos base definidos en /static/css/styles.css
-                 - Para añadir sombra: style="box-shadow: 0 4px 8px rgba(0,0,0,0.3);"
-                 - Para cambiar el fondo: añadir background:#color o background:linear-gradient(...)
-                 - Para añadir borde: añadir border:2px solid #color
-                 - Para efectos hover, mejor definir en CSS: .spell-card:hover { transform: scale(1.05); }
-            -->
-            <article class="card spell-card" data-id="{{ id }}" data-name="{{ name|lower }}" data-faction="{{ spell.get('Faction','')|lower }}" data-type="{{ (spell.get('TypeText') or '')|lower }}" data-cost="{{ (spell.get('Cost') or spell.get('Energy') or '') }}" data-number="{{ card_num }}" data-category="{{ (spell.get('category') or 'Other')|lower }}" data-index="{{ _ns.map.get(id, loop.index0) }}">
-                <!-- CONTENEDOR DEL FRAME DE LA CARTA:
-                     - .spell-frame-wrap contiene la imagen de fondo y los elementos superpuestos
-                     - position:relative permite posicionar elementos absolutos dentro
-                -->
-                <div class="spell-frame-wrap">
-                    <!-- IMAGEN DEL FRAME (fondo de la carta):
-                         - .spell-frame: position:absolute con width:100% (z-index: 1, encima del icono)
-                         - Para ajustar opacidad: añadir style="opacity:0.8;"
-                         - Para aplicar filtros: style="filter: brightness(1.2) contrast(1.1);"
-                         
-                         ORDEN DE CAPAS (z-index):
-                         - spell-icon: z-index: 0 (capa inferior - icono debajo)
-                         - spell-frame: z-index: 1 (capa media - frame encima del icono)
-                         - spell-cost, spell-number, spell-info: z-index: 10 (capa superior - siempre visibles)
-                         
-                         Este orden asegura que:
-                         1. El icono quede debajo del frame decorativo
-                         2. El frame cubra los bordes del icono
-                         3. Los textos e información sean siempre visibles encima de todo
-                    -->
-                    <img class="spell-frame" src="{{ frame_path }}" alt="{{ frame }}" loading="lazy" decoding="async">
-                    {% set missing_icon = ('placeholder' in (sprite_path or '').lower()) %}
-                    <!-- IMAGEN DEL ICONO (sprite central):
-                         - .spell-icon: superpuesta sobre el frame (z-index: 0, debajo del frame)
-                         - El outline:2px solid #a00 indica iconos faltantes (placeholder)
-                         - Para cambiar el tamaño: añadir width y height en style
-                         - Para cambiar posición: modificar top/left/right/bottom en CSS
-                         
-                         BÚSQUEDA MEJORADA DE ICONOS:
-                         La función spell_asset ahora busca iconos usando:
-                         1. El valor de SpriteName/UITexture del JSON
-                         2. El ID del spell (ej: CORN_0001, PLAINS_0023)
-                         3. El Name del spell
-                         4. Variaciones sin guiones/espacios
-                         
-                         Esto mejora significativamente la detección automática de iconos.
-                    -->
-                    <img class="spell-icon" src="{{ sprite_path }}" alt="{{ name }}" loading="lazy" decoding="async" {% if missing_icon %} style="outline:2px solid #a00;" title="No icon found (placeholder)" {% endif %}>
-                    {% if is_admin %}
-                    <div class="spell-admin-controls" style="position:absolute; right:6px; top:6px; z-index:20; display:flex; gap:6px;">
-                        <button class="btn small btn-edit-icon" data-key="{{ sprite }}" title="Edit icon">🖼️</button>
-                        <small style="color:#ddd; font-size:11px;">{{ icon_map.get(sprite, '') }}</small>
+        <div class="category-group" data-category="{{ cat|lower }}" style="margin-bottom: 2.5rem;">
+            <h3 class="category-header" style="margin-top:1.5rem; margin-bottom:1rem; font-size: 1.4rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 6px; color: #dfb2f4;">
+                {{ cat }} <small class="muted" style="font-size: 0.9rem; font-weight: normal; color: #888;">(<span class="category-count">{{ category_counts.get(cat,0) }}</span>)</small>
+            </h3>
+            <div class="spells-grid">
+                {% for spell in spells|selectattr('category','equalto',cat)|list %}
+                {% set id = (spell.get('ID') or spell.get('Name') or '').strip() %}
+                {# extract numeric suffix from IDs like CORN_0001 -> 1 #}
+                {% set card_num = (id.split('_')[-1]|int) if '_' in id and id.split('_')[-1].isdigit() else '' %}
+                {% set name = spell.get('display_name') or spell.get('Name') or spell.get('ID') %}
+                {% set desc = spell.get('display_description') or spell.get('Description') or spell.get('CardText') or '' %}
+                {% set frame = spell.get('CardFrame') or spell.get('CardFramePath') or '' %}
+                {% set sprite = spell.get('UITexture') or spell.get('SpriteName') or spell.get('Icon') or '' %}
+                {% set cost = spell.get('Cost') if spell.get('Cost') is not none else (spell.get('Energy') if spell.get('Energy') is not none else '0') %}
+                {% set faction = (spell.get('Faction') or 'Colorless') %}
+                
+                {% set frame_path = spell_asset('cardframes', frame, id, name) or '/resources/dungeon/Screenshot-placeholder.svg' %}
+                {% set sprite_path = spell_asset('cardicons', sprite, id, name) or '/resources/dungeon/Spell-Icon-placeholder.svg' %}
+                
+                <article class="card spell-card" 
+                         data-id="{{ id }}" 
+                         data-name="{{ name|lower }}" 
+                         data-desc="{{ desc|lower }}"
+                         data-faction="{{ faction|lower }}" 
+                         data-type="{{ (spell.get('TypeText') or '')|lower }}" 
+                         data-cost="{{ cost }}" 
+                         data-number="{{ card_num }}" 
+                         data-category="{{ (spell.get('category') or 'Other')|lower }}" 
+                         data-index="{{ _ns.map.get(id, loop.index0) }}">
+                    
+                    <!-- Visual card frame & art -->
+                    <div class="spell-frame-wrap">
+                        <img class="spell-frame" src="{{ frame_path }}" alt="{{ frame }}" loading="lazy" decoding="async">
+                        {% set missing_icon = ('placeholder' in (sprite_path or '').lower()) %}
+                        
+                        <img class="spell-icon" src="{{ sprite_path }}" alt="{{ name }}" loading="lazy" decoding="async" {% if missing_icon %} style="outline:2px solid #a00;" title="No icon found (placeholder)" {% endif %}>
+                        
+                        {% if is_admin %}
+                        <div class="spell-admin-controls" style="position:absolute; right:6px; top:6px; z-index:20; display:flex; gap:6px;">
+                            <button class="btn small btn-edit-icon" data-key="{{ sprite }}" title="Edit icon">🖼️</button>
+                            <small style="color:#ddd; font-size:11px;">{{ icon_map.get(sprite, '') }}</small>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Cost circle badge -->
+                        <div class="spell-cost">{{ cost }}</div>
+                        
+                        {% if card_num %}
+                        <!-- Card number -->
+                        <div class="spell-number">#{{ card_num }}</div>
+                        {% endif %}
                     </div>
-                    {% endif %}
-                    <!-- INDICADOR DE COSTO:
-                         - .spell-cost: muestra el costo de maná/energía
-                         - Probablemente position:absolute con estilos en CSS
-                         - Para cambiar color de fondo: añadir style="background:#color;"
-                         - Para cambiar tamaño de fuente: style="font-size:20px;"
-                         - Para cambiar posición: modificar top/right/etc en CSS
-                    -->
-                    <div class="spell-cost">{{ cost }}</div>
-                    {% if card_num %}
-                    <!-- NÚMERO DE CARTA:
-                         - .spell-number: muestra el número de colección
-                         - Para cambiar color del texto: style="color:#gold;"
-                         - Para añadir fondo: style="background:rgba(0,0,0,0.7); padding:4px;"
-                    -->
-                    <div class="spell-number">#{{ card_num }}</div>
-                    {% endif %}
-                    <!-- SUPERPOSICIÓN DE INFORMACIÓN (caption):
-                         - La altura se controla con --spell-caption-height en CSS
-                         - Para cambiar el fondo del overlay: modificar .spell-info en CSS
-                    -->
-                    <!-- INFORMACIÓN DE LA CARTA:
-                         - .spell-info: contiene nombre y descripción
-                         - Para cambiar el fondo: añadir style="background:rgba(0,0,0,0.8);"
-                         - Para ajustar el padding: style="padding:12px;"
-                         - Para cambiar la alineación del texto: style="text-align:center;"
-                    -->
+                    
+                    <!-- Spell Details below the art (prevents text clipping) -->
                     <div class="spell-info">
-                    <!-- NOMBRE DE LA CARTA:
-                         - Para cambiar color: style="color:#colorHex;"
-                         - Para cambiar tamaño: style="font-size:18px;"
-                         - Para añadir sombra al texto: style="text-shadow: 2px 2px 4px rgba(0,0,0,0.8);"
-                    -->
-                    <h3>{{ name }}</h3>
-                    <!-- VISTA PREVIA DE LA DESCRIPCIÓN (primera línea) -->
-                    <p class="desc-preview">{{ desc.splitlines()[0] if desc else '' }}</p>
-                    {% if desc and desc != (desc.splitlines()[0] if desc else '') %}
-                    <!-- DESCRIPCIÓN COMPLETA (oculta por defecto):
-                         - style="display:none;" la oculta inicialmente
-                         - JavaScript la muestra al hacer clic en "Show more"
-                    -->
-                    <p class="desc-full" style="display:none;">{{ desc }}</p>
-                    <!-- ENLACE TOGGLE:
-                         - Para cambiar color: añadir .desc-toggle en CSS con color:#colorHex
-                         - Para eliminar el subrayado: style="text-decoration:none;"
-                    -->
-                    <p><a href="#" class="desc-toggle">Show more</a></p>
-                    {% endif %}
+                        <div class="spell-card-type">{{ (spell.get('TypeText') or 'Action Card') }}</div>
+                        <h3>{{ name }}</h3>
+                        <p class="spell-card-desc">{{ desc }}</p>
                     </div>
-                </div>
-            </article>
-            {% endfor %}
+                </article>
+                {% endfor %}
+            </div>
         </div>
     {% endfor %}
 </section>
 
-{# Duplicate grouped section removed to avoid rendering spells twice (performance improvement) #}
-
 <script>
 document.addEventListener('DOMContentLoaded', function(){
-    /* ========================================
-       SISTEMA SIMPLIFICADO - SIN FILTROS
-       ========================================
-       Las cartas se muestran en el orden original del archivo JSON.
-       No hay filtros ni ordenamiento dinámico.
-       El orden sigue la secuencia oficial del juego:
-       CORN → PLAINS → SAND → NICE → SWAMP → OBSIDIAN → TEST → Leader
-    */
-    // description toggle handlers
-    document.addEventListener('click', function(e){
-        const t = e.target;
-        if(t && t.classList && t.classList.contains('desc-toggle')){
-            e.preventDefault();
-            const parent = t.closest('.spell-info');
-            if(!parent) return;
-            const full = parent.querySelector('.desc-full');
-            if(!full) return;
-            if(full.style.display === 'none' || full.style.display === ''){
-                full.style.display = 'block';
-                t.textContent = 'Show less';
-            } else {
-                full.style.display = 'none';
-                t.textContent = 'Show more';
-            }
-        }
+    const searchInput = document.getElementById('spell-search');
+    const factionSelect = document.getElementById('spell-faction');
+    const categorySelect = document.getElementById('spell-category-filter');
+    const costSelect = document.getElementById('spell-cost-filter');
+    const clearBtn = document.getElementById('btn-clear-filters');
+    
+    const cards = Array.from(document.querySelectorAll('.spell-card'));
+    const categories = Array.from(document.querySelectorAll('.category-group'));
+    
+    // Style clear button hover
+    clearBtn.addEventListener('mouseenter', () => {
+        clearBtn.style.background = 'rgba(255, 255, 255, 0.1)';
+        clearBtn.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+    });
+    clearBtn.addEventListener('mouseleave', () => {
+        clearBtn.style.background = 'rgba(255, 255, 255, 0.05)';
+        clearBtn.style.borderColor = 'rgba(255, 255, 255, 0.1)';
     });
 
-    // Admin icon editor
+    // Real-time filtering function
+    function applyFilters() {
+        const query = searchInput.value.trim().toLowerCase();
+        const faction = factionSelect.value;
+        const category = categorySelect.value;
+        const costStr = costSelect.value;
+        
+        categories.forEach(group => {
+            let visibleInGroup = 0;
+            const groupCategory = group.getAttribute('data-category');
+            const grid = group.querySelector('.spells-grid');
+            const groupCards = Array.from(grid.querySelectorAll('.spell-card'));
+            
+            // Check if this whole category group should be hidden by category filter
+            if (category !== 'all' && groupCategory !== category) {
+                group.style.display = 'none';
+                return;
+            }
+            
+            groupCards.forEach(card => {
+                const cardName = card.getAttribute('data-name') || '';
+                const cardId = card.getAttribute('data-id').toLowerCase() || '';
+                const cardDesc = card.getAttribute('data-desc') || '';
+                const cardFaction = card.getAttribute('data-faction') || '';
+                const cardCostVal = parseInt(card.getAttribute('data-cost')) || 0;
+                
+                // 1. Text Search Filter
+                const matchesText = !query || 
+                                    cardName.includes(query) || 
+                                    cardId.includes(query) || 
+                                    cardDesc.includes(query);
+                                    
+                // 2. Faction Filter
+                const matchesFaction = (faction === 'all') || (cardFaction === faction);
+                
+                // 3. Cost Filter
+                let matchesCost = false;
+                if (costStr === 'all') {
+                    matchesCost = true;
+                } else if (costStr === '6') {
+                    matchesCost = (cardCostVal >= 6);
+                } else {
+                    matchesCost = (cardCostVal === parseInt(costStr));
+                }
+                
+                // Combine all filter rules
+                if (matchesText && matchesFaction && matchesCost) {
+                    card.style.display = 'flex';
+                    visibleInGroup++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            
+            // Update UI: show/hide category group and update dynamic counts
+            if (visibleInGroup > 0) {
+                group.style.display = 'block';
+                group.querySelector('.category-count').textContent = visibleInGroup;
+            } else {
+                group.style.display = 'none';
+            }
+        });
+    }
+    
+    // Register event listeners
+    searchInput.addEventListener('input', applyFilters);
+    factionSelect.addEventListener('change', applyFilters);
+    categorySelect.addEventListener('change', applyFilters);
+    costSelect.addEventListener('change', applyFilters);
+    
+    clearBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        factionSelect.value = 'all';
+        categorySelect.value = 'all';
+        costSelect.value = 'all';
+        applyFilters();
+    });
+
+    // Admin icon editor modal function
     async function openIconEditor(key, imgElt, currentInputElt){
         try{
             const res = await fetch('/admin/icon-mappings/suggestions/' + encodeURIComponent(key));
@@ -204,8 +261,8 @@ document.addEventListener('DOMContentLoaded', function(){
             // browse all files control
             const browseBar = document.createElement('div'); browseBar.style.display='flex'; browseBar.style.gap='8px'; browseBar.style.marginBottom='8px';
             const browseBtn = document.createElement('button'); browseBtn.textContent = 'Browse all files'; browseBtn.className='btn small';
-            const searchInput = document.createElement('input'); searchInput.placeholder = 'Filter files...'; searchInput.style.flex='1'; searchInput.style.padding='6px'; searchInput.style.borderRadius='6px'; searchInput.style.border='1px solid #333';
-            browseBar.appendChild(browseBtn); browseBar.appendChild(searchInput); box.appendChild(browseBar);
+            const searchInputFile = document.createElement('input'); searchInputFile.placeholder = 'Filter files...'; searchInputFile.style.flex='1'; searchInputFile.style.padding='6px'; searchInputFile.style.borderRadius='6px'; searchInputFile.style.border='1px solid #333';
+            browseBar.appendChild(browseBtn); browseBar.appendChild(searchInputFile); box.appendChild(browseBar);
             // helper to create preview src
             function previewFor(file){
                 if(!file) return '';
@@ -223,7 +280,6 @@ document.addEventListener('DOMContentLoaded', function(){
                     const r = await fetch('/admin/icon-mappings/save', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
                     const j = await r.json();
                     if(j && j.ok){
-                        // update currentInputElt and image
                         if(currentInputElt) currentInputElt.value = mappingValue;
                         const newSrc = previewFor(c.file);
                         if(imgElt){ imgElt.src = newSrc; }
@@ -262,8 +318,8 @@ document.addEventListener('DOMContentLoaded', function(){
                 });
             }
 
-            browseBtn.addEventListener('click', async ()=>{ loadBrowse(searchInput.value.trim()); browseContainer.style.display = ''; });
-            searchInput.addEventListener('keydown', async (ev)=>{ if(ev.key === 'Enter'){ loadBrowse(searchInput.value.trim()); browseContainer.style.display = ''; } });
+            browseBtn.addEventListener('click', async ()=>{ loadBrowse(searchInputFile.value.trim()); browseContainer.style.display = ''; });
+            searchInputFile.addEventListener('keydown', async (ev)=>{ if(ev.key === 'Enter'){ loadBrowse(searchInputFile.value.trim()); browseContainer.style.display = ''; } });
             box.appendChild(grid);
             const close = document.createElement('div'); close.style.marginTop='8px'; close.style.textAlign='right';
             const closeBtn = document.createElement('button'); closeBtn.textContent = 'Close'; closeBtn.className='btn admin-btn-cancel'; closeBtn.addEventListener('click', ()=>document.body.removeChild(modal));
@@ -276,10 +332,9 @@ document.addEventListener('DOMContentLoaded', function(){
         document.querySelectorAll('.btn-edit-icon').forEach(btn => {
             btn.addEventListener('click', function(e){
                 const key = this.getAttribute('data-key');
-                // find image element near this button
                 const article = this.closest('.spell-card');
                 const imgElt = article && article.querySelector('.spell-icon');
-                const currentInput = this.closest('.spell-frame-wrap').querySelector('.mapping-current');
+                const currentInput = this.closest('.spell-card').querySelector('.mapping-current');
                 openIconEditor(key, imgElt, currentInput);
             });
         });

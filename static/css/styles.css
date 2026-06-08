@@ -421,144 +421,153 @@ nav.download-nav a:hover { color: white; }
 .spells-page { padding: 1rem 0 3rem; }
 
 /* Grid layout for the cards: responsive columns that fit the container */
-.spells-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(285px, 1fr)); gap: 40px; align-items: start; }
+.spells-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 30px; align-items: start; }
+
 .spell-card {
-    display: block;
-    /* make the article 10% wider than its grid column to emphasize the card */
-    width: 110%;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
     margin: 0 auto;
     box-sizing: border-box;
-    padding: 1px;
-    background: rgba(255,255,255,0.02);
-    border-radius: 4px;
-    position: relative; /* ensures children positioned absolute are relative to the card */
-    overflow: hidden; /* clip any overflow so frame matches article boundaries */
+    background: rgba(20, 23, 28, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
+
+.spell-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5), 0 0 15px rgba(223, 178, 244, 0.2);
+    border-color: rgba(223, 178, 244, 0.4);
+}
+
 .spell-frame-wrap {
     position: relative;
-    /* ensure the frame wrapper matches the article/card width so the image equals the article size */
     display: block;
     width: 100%;
-    max-width: 100%;
-    box-sizing: border-box;
-    margin: 0; /* align with article edges */
     height: 0;
-    /* maintain the taller aspect ratio (height = 150% of width previously set) */
-    padding-bottom: 150%;
+    padding-bottom: 110%;
     overflow: hidden;
-    border-radius: 10px;
+    background: #0d0e11;
 }
+
 .spell-frame {
     position: absolute;
     inset: 0;
-    /* fully fill the wrapper and keep the image centered and contained */
     width: 100% !important;
     height: 100% !important;
-    max-width: none !important;
-    max-height: none !important;
-     /* Use fill so the image exactly matches the container (stretches to fit and may distort).
-         Alternatives: 'cover' keeps aspect ratio and fills (may crop); 'contain' keeps aspect ratio and fits inside (may leave gaps). */
-     object-fit: fill;
-    object-position: center center;
-    display: block;
-    z-index: 1; /* Encima del icono para que el frame quede sobre el sprite */
+    object-fit: cover !important;
+    z-index: 1;
 }
 
-/* Fallback: if the frame is an <img> inside a wrapper, ensure it also fills */
-.spell-frame img {
-    width: 100% !important;
-    height: 100% !important;
-    max-width: none !important;
-    max-height: none !important;
-    object-fit: fill !important;
-    object-position: center center !important;
-    display: block !important;
-    position: relative;
-} 
-/* =========================================
-   ORDEN DE CAPAS EN LAS CARTAS DE SPELLS
-   =========================================
-   z-index: 0 -> spell-icon (icono/sprite debajo)
-   z-index: 1 -> spell-frame (marco encima del icono)
-   z-index: 10 -> spell-cost, spell-number, spell-info (encima de todo)
-   
-   Esto permite que:
-   - El frame tenga bordes decorativos que cubran el icono
-   - Los elementos de información (costo, número, descripción) sean siempre visibles
-   - Se mantenga un orden de capas limpio y profesional
-*/
 .spell-icon {
     position: absolute;
-    width: 69%;
-    height: 60%;
+    width: 55%;
+    height: 55%;
     left: 50%;
-    top: 40%;
+    top: 45%;
     transform: translate(-50%, -50%);
     object-fit: contain;
-    z-index: 0; /* Debajo del frame (frame tiene z-index: auto o 0 por defecto) */
-    /* Si el frame necesita estar encima, asignarle z-index: 1 explícitamente */
+    z-index: 0;
 }
-.spell-cost { position: absolute; top: 20%; left: 18%; background: rgba(0,0,0,0.6); color: #fff; padding: 6px 8px; border-radius: 6px; font-weight: 900; z-index: 10; /* Encima de frame e icono */ }
-/* AJUSTES DE POSICIÓN Y CAPAS:
-   - Para ajustar la posición del icono: modificar top/left/width/height en .spell-icon
-   - Para cambiar el tamaño del icono: ajustar width y height (actualmente 60% x 60%)
-   - Para que el icono quede MÁS encima: cambiar z-index a un valor mayor (ej: z-index: 2)
-   - Para que el icono quede MÁS debajo: cambiar z-index a un valor menor (ej: z-index: -1)
-   - El transform: translate(-50%, -50%) centra el icono perfectamente
-*/
+
+/* Faction borders on the info block */
+.spell-info {
+    padding: 14px;
+    background: #15181d;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    gap: 6px;
+    border-left: 4px solid #4a4a4a;
+    transition: border-color 0.3s;
+}
+
+/* Faction-specific border accents */
+.spell-card[data-faction="red"] .spell-info { border-left-color: #ff4757; } /* Cornfields */
+.spell-card[data-faction="white"] .spell-info { border-left-color: #54a0ff; } /* Blue Plains */
+.spell-card[data-faction="green"] .spell-info { border-left-color: #2ed573; } /* Swamp */
+.spell-card[data-faction="light"] .spell-info { border-left-color: #ffb142; } /* Sandy Lands */
+.spell-card[data-faction="blue"] .spell-info { border-left-color: #00d2d3; } /* Icylands */
+.spell-card[data-faction="dark"] .spell-info { border-left-color: #5f27cd; } /* Obsidian */
+.spell-card[data-faction="colorless"] .spell-info { border-left-color: #a4b0be; }
+
+.spell-info h3 {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+    letter-spacing: 0.02em;
+    text-align: left;
+}
+
+.spell-card-type {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #dfb2f4;
+    opacity: 0.85;
+    letter-spacing: 0.05em;
+    margin-bottom: 2px;
+}
+
+.spell-card-desc {
+    font-size: 0.82rem;
+    line-height: 1.4;
+    color: #cbd5e1;
+    margin: 2px 0 0 0;
+    text-align: left;
+}
+
+/* Spell Cost Badge styling */
+.spell-cost {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 32px;
+    height: 32px;
+    background: radial-gradient(circle, #54a0ff 0%, #2e86de 100%);
+    border: 2px solid #fff;
+    border-radius: 50%;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    font-weight: 900;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4), 0 0 8px rgba(84, 160, 255, 0.6);
+    z-index: 10;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    padding: 0;
+}
+
+.spell-card[data-faction="red"] .spell-cost { background: radial-gradient(circle, #ff6b6b 0%, #ee5253 100%); box-shadow: 0 4px 10px rgba(0,0,0,0.4), 0 0 8px rgba(255, 107, 107, 0.6); }
+.spell-card[data-faction="green"] .spell-cost { background: radial-gradient(circle, #2ed573 0%, #10ac84 100%); box-shadow: 0 4px 10px rgba(0,0,0,0.4), 0 0 8px rgba(46, 213, 115, 0.6); }
+.spell-card[data-faction="light"] .spell-cost { background: radial-gradient(circle, #feca57 0%, #ff9f43 100%); box-shadow: 0 4px 10px rgba(0,0,0,0.4), 0 0 8px rgba(254, 202, 87, 0.6); }
+.spell-card[data-faction="blue"] .spell-cost { background: radial-gradient(circle, #00d2d3 0%, #01a3a4 100%); box-shadow: 0 4px 10px rgba(0,0,0,0.4), 0 0 8px rgba(0, 210, 211, 0.6); }
+.spell-card[data-faction="dark"] .spell-cost { background: radial-gradient(circle, #9c88ff 0%, #8c7ae6 100%); box-shadow: 0 4px 10px rgba(0,0,0,0.4), 0 0 8px rgba(156, 136, 255, 0.6); }
+.spell-card[data-faction="colorless"] .spell-cost { background: radial-gradient(circle, #d2d2d2 0%, #7f8c8d 100%); box-shadow: 0 4px 10px rgba(0,0,0,0.4), 0 0 8px rgba(210, 210, 210, 0.6); }
+
+/* Card Number Badge styling */
 .spell-number {
     position: absolute;
     top: 10px;
-    right: 12px;
-    background: rgba(0,0,0,0.6);
-    color: #fff;
-    padding: 4px 8px;
-    border-radius: 6px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.7);
+    color: #ffd700;
+    padding: 3px 8px;
+    border-radius: 20px;
     font-weight: 700;
-    font-size: 0.85rem;
-    z-index: 10; /* Encima de frame e icono */
+    font-size: 0.75rem;
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    z-index: 10;
+    letter-spacing: 0.05em;
 }
-.spell-info { padding: 10px 8px 0 6px; }
-
-/* Note: the following .spell-frame-wrap block controls the overlay (caption) shown on the bottom of the frame */
-.spell-frame-wrap {
-    /* Variable to control caption overlay height (adjust this to reposition/resize caption) */
-    --spell-caption-height: 42%; /* change this value (px, %, etc.) to raise/lower overlay */
-}
-.spell-frame-wrap .spell-info {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: var(--spell-caption-height);
-    box-sizing: border-box;
-    padding: 10px 12px;
-    background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.65) 60%);
-    color: rgb(85, 0, 0);
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start; /* align content to the top of the caption overlay so all titles start at the same height */
-    padding-top: 10px; /* ensure consistent offset from overlay top */
-    gap: 6px;
-    z-index: 10; /* Encima de frame e icono para que sea visible */
-}
-.spell-frame-wrap .spell-info h3 { color: rgb(23, 10, 209); margin: 0 0 0.6em; text-align: center; }
-.spell-frame-wrap .spell-info p {
-    color: rgb(9, 9, 9);
-    margin: 0 auto; /* center the text */
-    text-align: center;
-    max-width: 70%; /* limit width for readability */
-    background: rgba(255, 255, 255, 0.75); /* fondo semi-transparente blanco - 25% transparencia */
-    padding: 6px 10px; /* espaciado interno */
-    border-radius: 4px; /* bordes redondeados */
-}
-.spell-info h3 { margin: 0 0 4px; font-size: 1rem;}
-.spell-info p { margin: 0.6em 0 6px; color: rgba(124, 0, 0, 0.86); }
-
-.desc-preview { font-size: 0.95rem; color: #9b59b6; }
-.desc-full { font-size: 0.9rem; color: rgba(141, 52, 213, 0.9); margin-top: 6px; }
-.desc-toggle { color: var(--at-accent); text-decoration: none; font-weight: 700; font-size: 0.9rem; }
-.desc-toggle:hover { text-decoration: underline; }
 
 /* Category buttons */
 .btn-category { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); color: white; padding: 6px 10px; border-radius: 8px; cursor: pointer; }
@@ -566,15 +575,12 @@ nav.download-nav a:hover { color: white; }
 .btn-category:active { transform: translateY(1px); }
 
 @media (max-width: 640px) {
-    .spell-icon { width: 38%; height: 38%; }
-    .spell-frame-wrap { width: 100%; padding-bottom: 150%; }
+    .spell-icon { width: 50%; height: 50%; }
+    .spell-frame-wrap { padding-bottom: 110%; }
     .spell-card { width: 100%; }
-    .spell-info p { margin: 0.4em 0 6px; }
+    .spell-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; }
 }
-.spells-page .spells-grid { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
-.spells-page .spell-card { padding: 6px; }
-.spells-page .spell-info p { font-size: 0.9rem; }
-.spells-grid h3{ margin: 0 0 8px 0; }
+
 .spell-card[style*="display: none"] { opacity: 0.4; }
 
 /* Improved animations: subtle and professional */

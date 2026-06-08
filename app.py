@@ -247,6 +247,35 @@ def fetch_creatures_json(url, timeout=5):
         # fail silently, caller will handle empty list
         return []
 
+
+def fetch_action_cards_json(url, timeout=8):
+    """Fetch and return list of action cards/spells from remote JSON, cleaning up syntax/formatting errors.
+
+    Returns a list of objects (or [] on error).
+    """
+    try:
+        resp = requests.get(url, timeout=timeout)
+        resp.raise_for_status()
+        json_text = resp.text
+        # Clean up missing commas between properties
+        json_text = re.sub(r'"\s*\n\s*"([A-Za-z])', r'",\n"\g<1>', json_text)
+        # Clean up trailing commas
+        json_text = re.sub(r',\s*}', '}', json_text)
+        json_text = re.sub(r',\s*]', ']', json_text)
+
+        data = json.loads(json_text)
+        if isinstance(data, list):
+            return data
+        if isinstance(data, dict):
+            for key in ('action_cards', 'data', 'items', 'cards', 'spells'):
+                if key in data and isinstance(data[key], list):
+                    return data[key]
+        return []
+    except Exception as e:
+        print(f"[DEBUG] Error fetching/parsing action cards: {e}")
+        return []
+
+
 @app.route('/')
 def index():
     """Home page"""
@@ -344,38 +373,37 @@ def latest_release():
 @app.route('/api/spells/database')
 def spells_database():
     """Get action / spell cards database from external API"""
-    try:
-        external_api = ACTIONS_JSON_URL
-        response = requests.get(external_api, timeout=10)
-
-        if response.status_code == 200:
-            cards_data = response.json()
-            return jsonify(cards_data)
-        else:
-            return jsonify({'error': 'Failed to fetch spells database'}), 500
-
-    except requests.RequestException as e:
-        return jsonify({'error': str(e)}), 500
+    cards_data = fetch_action_cards_json(ACTIONS_JSON_URL)
+    if cards_data:
+        return jsonify(cards_data)
+    else:
+        # Fallback to local cache if remote fails
+        local_cache = os.path.join(DATA_DIR, 'db_ActionCards.json')
+        try:
+            if os.path.exists(local_cache):
+                with open(local_cache, 'r', encoding='utf-8') as f:
+                    cached = json.load(f)
+                    if isinstance(cached, list):
+                        return jsonify(cached)
+        except Exception:
+            pass
+        return jsonify({'error': 'Failed to fetch spells database'}), 500
 
 
 @app.route('/spells')
 def spells_page():
     """Render a book of spells (action cards) by fetching external JSON"""
-    spells = []
     local_cache = os.path.join(DATA_DIR, 'db_ActionCards.json')
-    try:
-        resp = requests.get(ACTIONS_JSON_URL, timeout=8)
-        resp.raise_for_status()
-        data = resp.json()
-        if isinstance(data, list):
-            spells = data
-            # update local cache
-            try:
-                with open(local_cache, 'w', encoding='utf-8') as f:
-                    json.dump(spells, f, ensure_ascii=False, indent=2)
-            except Exception:
-                pass
-    except requests.RequestException:
+    spells = fetch_action_cards_json(ACTIONS_JSON_URL)
+
+    if spells:
+        # update local cache
+        try:
+            with open(local_cache, 'w', encoding='utf-8') as f:
+                json.dump(spells, f, ensure_ascii=False, indent=2)
+        except Exception:
+            pass
+    else:
         # If we have a local cache, use it as fallback
         try:
             if os.path.exists(local_cache):
@@ -972,18 +1000,13 @@ def creatures():
     # Fetch action cards/spells for mapping ActionCard1-5 IDs
     actions_by_id = {}
     try:
-        actions_resp = requests.get(ACTIONS_JSON_URL, timeout=8)
-        actions_resp.raise_for_status()
-        
-        json_text = actions_resp.text
-        import re
-        # Fix missing commas between properties: "value" \n "key"
-        json_text = re.sub(r'"\s*\n\s*"([A-Za-z])', r'",\n"\g<1>', json_text)
-        # Fix trailing commas: "value", }
-        json_text = re.sub(r',\s*}', '}', json_text)
-        json_text = re.sub(r',\s*]', ']', json_text)
-        actions_data = json.loads(json_text)
-        
+        actions_data = fetch_action_cards_json(ACTIONS_JSON_URL)
+        if not actions_data:
+            local_cache = os.path.join(DATA_DIR, 'db_ActionCards.json')
+            if os.path.exists(local_cache):
+                with open(local_cache, 'r', encoding='utf-8') as f:
+                    actions_data = json.load(f)
+
         if isinstance(actions_data, list):
             for action in actions_data:
                 action_id = action.get('ID')
@@ -1024,10 +1047,12 @@ def creatures():
                         if isinstance(display_desc, str) and display_desc.startswith('!!'):
                             display_desc = ''
                         action['display_description'] = display_desc
-                    except Exception:
+                    except Exception as e:
+                        import traceback
+                        print(f"ERROR PARSING ACTION {action_id}: {e}")
+                        traceback.print_exc()
                         action['display_name'] = action.get('Name') or action.get('ID')
                         action['display_description'] = action.get('Description') or ''
-                    
                     actions_by_id[action_id] = action
     except Exception as e:
         print(f"[DEBUG] Error loading actions: {e}")
@@ -1219,11 +1244,6 @@ def creatures():
         images_map=images_map
     )
 
-# 3. Spells
-@app.route('/spells')
-def spells():
-    """Muestra la página de Hechizos."""
-    return render_template('spells.html')
 
 # 4. PvP Seasons
 @app.route('/pvpseason')
